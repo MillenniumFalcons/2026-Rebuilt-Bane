@@ -4,9 +4,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import team3647.lib.TalonFXSubsystem;
 
-public class Rollers extends TalonFXSubsystem {
+public class ShooterOne extends TalonFXSubsystem {
 
-    public Rollers(
+    public ShooterOne(
             TalonFX motor,
             double velocityConversion,
             double positionConversion,
@@ -30,6 +30,6 @@ public class Rollers extends TalonFXSubsystem {
 
     @Override
     public String getName() {
-        return "rollers";
+        return "ShooterOne";
     }
 }

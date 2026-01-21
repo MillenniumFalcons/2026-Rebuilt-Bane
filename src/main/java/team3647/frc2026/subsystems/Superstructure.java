@@ -3,29 +3,32 @@ package team3647.frc2026.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import team3647.frc2026.commands.KickerCommands;
-import team3647.frc2026.commands.RollersCommands;
+import team3647.frc2026.commands.ShooterCommands;
 
 public class Superstructure {
 
-    public final Rollers rollers;
+    public final ShooterOne shooterOne;
+    public final ShooterTwo shooterTwo;
     public final Kicker kicker;
 
-    public final RollersCommands rollersCommands;
+    public final ShooterCommands shooterCommands;
     public final KickerCommands kickerCommands;
 
     public Superstructure(
-            Rollers rollers,
+            ShooterOne shooterOne,
+            ShooterTwo shooterTwo,
             Kicker kicker) {
-        this.rollers = rollers;
+        this.shooterOne = shooterOne;
+        this.shooterTwo = shooterTwo;
         this.kicker = kicker;
-        this.rollersCommands = new RollersCommands(this.rollers);
+        this.shooterCommands = new ShooterCommands(this.shooterOne, this.shooterTwo);
         this.kickerCommands = new KickerCommands(this.kicker);
     }
 
     public Command shoot(double velocity, double tolerance) {
         // Run roller control in parallel with the logic to wait and kick
         return Commands.parallel(
-            rollersCommands.setVelocity(velocity),
+            shooterCommands.setVelocity(velocity),
             Commands.sequence(
                 Commands.waitSeconds(1),
                 kickerCommands.setOpenLoop(1)

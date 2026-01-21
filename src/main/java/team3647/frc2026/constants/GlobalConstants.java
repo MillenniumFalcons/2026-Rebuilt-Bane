@@ -7,16 +7,19 @@ import edu.wpi.first.units.measure.MomentOfInertia;
 public class GlobalConstants {
     public static final double kDt = 0.02;
 
+    public static final double kFalconTicksPerRotation = 1;
+
     public static final Mass kRobotMass = Units.Kilogram.of(125);
     public static final MomentOfInertia kRobotMoi = Units.KilogramSquareMeters.of(3.20472599);
 
-    public static final String kDriveCanbusName = "rio";
-    public static final String kSubsystemCanbusName = "rio";
+    public static final String kDriveCanbusName = "drivetrain";
+    public static final String kSubsystemCanbusName = "subsystems";
 
     public static double kNominalVoltage = 11.0;
 
-    public class RollersIds {
-        public static final int kMasterId = 27;
+    public class ShooterIds {
+        public static final int kShooterOneId = 27;
+        public static final int kShooterTwoId = 28;
     }
 
     public class KickerIds {

@@ -25,18 +25,19 @@ import team3647.frc2026.Util.LEDTriggers;
 import team3647.frc2026.Util.AutoDrive.DriveMode;
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.KickerCommands;
-import team3647.frc2026.commands.RollersCommands;
+import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.SwerveDriveCommands;
 import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.KickerConstants;
-import team3647.frc2026.constants.RollersConstants;
+import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants;
 import team3647.frc2026.constants.VisionConstants;
 import team3647.frc2026.subsystems.Kicker;
-import team3647.frc2026.subsystems.Rollers;
+import team3647.frc2026.subsystems.ShooterOne;
+import team3647.frc2026.subsystems.ShooterTwo;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.SwerveDrive;
 import team3647.lib.GroupPrinter;
@@ -65,7 +66,8 @@ public class RobotContainer {
         CommandScheduler.getInstance()
                 .registerSubsystem(
                         swerve,
-                        rollers,
+                        shooterOne,
+                        shooterTwo,
                         kicker,
                         printer);
     }
@@ -76,7 +78,7 @@ public class RobotContainer {
     } // 0.6324678425924254
 
     private void configureBindings() {
-        mainController.leftBumper.whileTrue(rollersCommands.setVelocity(10));
+        mainController.leftBumper.whileTrue(shooterCommands.setVelocity(10));
         mainController.rightTrigger.whileTrue(superstructure.shoot(20, 1.5));
 
     }
@@ -107,7 +109,8 @@ public class RobotContainer {
                         autoDrive::hasScoringTarget,
                         mainController.rightJoyStickPress,
                         1));
-        rollers.setDefaultCommand(superstructure.rollersCommands.kill());
+        shooterOne.setDefaultCommand(superstructure.shooterCommands.kill());
+        shooterTwo.setDefaultCommand(superstructure.shooterCommands.kill());
         kicker.setDefaultCommand(superstructure.kickerCommands.kill());
     }
 
@@ -128,11 +131,19 @@ public class RobotContainer {
                             TunerConstants.BackLeft,
                             TunerConstants.BackRight);
 
-    public final Rollers rollers =
-                        new Rollers(
-                            RollersConstants.kMaster,
+    public final ShooterOne shooterOne =
+                        new ShooterOne(
+                            ShooterConstants.kShooterOne,
                             0,
+                            1,
+                            GlobalConstants.kNominalVoltage,
+                            GlobalConstants.kDt);
+
+    public final ShooterTwo shooterTwo =
+                        new ShooterTwo(
+                            ShooterConstants.kShooterTwo,
                             0,
+                            1,
                             GlobalConstants.kNominalVoltage,
                             GlobalConstants.kDt);
 
@@ -146,7 +157,8 @@ public class RobotContainer {
 
     public final Superstructure superstructure =
             new Superstructure(
-                    rollers,
+                    shooterOne,
+                    shooterTwo,
                     kicker);
 
     private final LEDTriggers triggers = new LEDTriggers(superstructure);
@@ -160,7 +172,7 @@ public class RobotContainer {
                     SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
                     SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
 
-    public final RollersCommands rollersCommands = new RollersCommands(rollers);
+    public final ShooterCommands shooterCommands = new ShooterCommands(shooterOne, shooterTwo);
 
     public final KickerCommands kickerCommands = new KickerCommands(kicker);
 
