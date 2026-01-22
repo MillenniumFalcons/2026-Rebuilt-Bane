@@ -1,10 +1,5 @@
 package team3647.frc2026.subsystems;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
-
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -16,38 +11,23 @@ import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentric;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveRotation;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveSteerGains;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveTranslation;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
-import java.util.Optional;
 import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.Logger;
-
-import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants.TunerSwerveDrivetrain;
-import team3647.frc2026.subsystems.PeriodicIOAutoLogged;
-import team3647.frc2026.subsystems.SwerveDrive;
-import team3647.lib.ModifiedSignalLogger;
 import team3647.lib.PeriodicSubsystem;
 import team3647.lib.SwerveFOCRequest;
 import team3647.lib.team254.swerve.SwerveKinematicLimits;
@@ -55,9 +35,11 @@ import team3647.lib.team254.swerve.SwerveSetpoint;
 import team3647.lib.team254.swerve.SwerveSetpointGenerator;
 import team3647.lib.team9442.AllianceObserver;
 import team3647.lib.vision.Orientation;
+
 // import team3647.lib.vision.VisionMeasurement;
 
-public class SwerveDrive extends TunerSwerveDrivetrain implements PeriodicSubsystem, AllianceObserver {
+public class SwerveDrive extends TunerSwerveDrivetrain
+        implements PeriodicSubsystem, AllianceObserver {
 
     public final SwerveSetpointGenerator setpointGenerator;
 

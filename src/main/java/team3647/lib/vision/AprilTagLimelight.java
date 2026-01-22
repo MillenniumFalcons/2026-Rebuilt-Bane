@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-
 import team3647.frc2026.constants.FieldConstants;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.vision.LimelightHelpers.PoseEstimate;

@@ -12,10 +12,12 @@ public class GlobalConstants {
     public static final Mass kRobotMass = Units.Kilogram.of(125);
     public static final MomentOfInertia kRobotMoi = Units.KilogramSquareMeters.of(3.20472599);
 
-    public static final String kDriveCanbusName = "drivetrain";
+    public static final String kDriveCanbusName = "drive";
     public static final String kSubsystemCanbusName = "subsystems";
 
     public static double kNominalVoltage = 11.0;
+
+    // every single motor id is wrong at this current moment in time
 
     public class ShooterIds {
         public static final int kShooterOneId = 27;
@@ -24,5 +26,9 @@ public class GlobalConstants {
 
     public class KickerIds {
         public static final int kMasterId = 21;
+    }
+
+    public class HoodIds {
+        public static final int kMasterId = 30;
     }
 }

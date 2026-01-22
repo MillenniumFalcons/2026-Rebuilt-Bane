@@ -11,9 +11,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-
-import team3647.frc2026.Util.AutoDrive.DriveMode;
 import team3647.frc2026.subsystems.SwerveDrive;
+import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.lib.team9442.AllianceObserver;
 
 public class SwerveDriveCommands implements AllianceObserver {
@@ -33,16 +32,14 @@ public class SwerveDriveCommands implements AllianceObserver {
         this.color = color;
     }
 
-    public Command driveVisionTeleop(
+    public Command drive(
             DoubleSupplier x, // X axis on joystick is Left/Right
             DoubleSupplier y, // Y axis on Joystick is Front/Back
             DoubleSupplier rot,
             Supplier<Twist2d> autoDriveVelocities,
             Supplier<DriveMode> getMode,
             BooleanSupplier autoDriveEnabled,
-            BooleanSupplier hasTargets,
-            BooleanSupplier robotRelative,
-            double slow) {
+            BooleanSupplier robotRelative) {
 
         return Commands.run(
                 () -> {
@@ -65,11 +62,11 @@ public class SwerveDriveCommands implements AllianceObserver {
                     double xSquared =
                             Math.pow(x.getAsDouble(), 2) * Math.signum(x.getAsDouble()) * 1.05;
 
-                    double motionXComponent = ySquared * invert * kMaxSpeedMps * slow;
-                    double motionYComponent = -xSquared * invert * kMaxSpeedMps * slow;
+                    double motionXComponent = ySquared * invert * kMaxSpeedMps;
+                    double motionYComponent = -xSquared * invert * kMaxSpeedMps;
                     double motionTurnComponent = rot.getAsDouble() * -1 * kMaxRotRadPs * 0.8;
 
-                    if (!isAutoDrive || getMode.get().equals(DriveMode.NONE)) {
+                    if (!isAutoDrive) {
 
                         if (robotRel && Utils.isSimulation()) {
                             swerve.drive(-motionXComponent, -motionYComponent, motionTurnComponent);
@@ -77,7 +74,13 @@ public class SwerveDriveCommands implements AllianceObserver {
                             swerve.driveFieldOriented(
                                     motionXComponent, motionYComponent, motionTurnComponent);
                         }
-                    } //else if (isAutoDrive
+                    } else if (isAutoDrive) {
+                        if (getMode.get().equals(DriveMode.SHOOT_ON_THE_MOVE)) {
+                            motionTurnComponent = velocities.dtheta;
+                            swerve.drive(motionXComponent, motionYComponent, motionTurnComponent);
+                        }
+                    }
+                    // else if (isAutoDrive
                     //         && (getMode.get().equals(DriveMode.SCORE)
                     //                 || getMode.get().equals(DriveMode.ALGAE_REEF))) {
                     //     motionXComponent = velocities.dx;
@@ -89,7 +92,8 @@ public class SwerveDriveCommands implements AllianceObserver {
                     // } else if (isAutoDrive && getMode.get().equals(DriveMode.BARGE)) {
                     //     motionXComponent = velocities.dx;
                     //     motionYComponent =
-                    //             Math.abs(x.getAsDouble()) < 0.05 ? velocities.dy : -x.getAsDouble();
+                    //             Math.abs(x.getAsDouble()) < 0.05 ? velocities.dy :
+                    // -x.getAsDouble();
                     //     motionTurnComponent = velocities.dtheta;
                     //     swerve.drive(motionXComponent, motionYComponent, motionTurnComponent);
                     // } else if (getMode.get().equals(DriveMode.ROBOT_REL)) {

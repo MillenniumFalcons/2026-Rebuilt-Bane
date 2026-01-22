@@ -21,7 +21,6 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-
 import team3647.frc2026.constants.FieldConstants;
 import team3647.lib.vision.old.AprilTagCamera.AprilTagId;
 

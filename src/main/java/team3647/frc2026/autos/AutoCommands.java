@@ -1,8 +1,5 @@
 package team3647.frc2026.autos;
 
-import static edu.wpi.first.units.Units.Centimeter;
-import static edu.wpi.first.units.Units.Degrees;
-
 import choreo.Choreo;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
@@ -18,21 +15,18 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
-
-import team3647.frc2026.Util.AllianceFlip;
-import team3647.frc2026.Util.AutoDrive;
-import team3647.frc2026.Util.PoseUtils;
 import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.SwerveDrive;
+import team3647.frc2026.util.AllianceFlip;
+import team3647.frc2026.util.AutoDrive;
+import team3647.frc2026.util.PoseUtils;
 import team3647.lib.team9442.AllianceObserver;
 
 public class AutoCommands implements AllianceObserver {
@@ -237,9 +231,7 @@ public class AutoCommands implements AllianceObserver {
                                 Commands.none(),
                                 Pose2d.kZero.rotateBy(Rotation2d.k180deg),
                                 "nothingBlue"));
-        redAutosList =
-                List.of(
-                        new AutoMode(Commands.none(), Pose2d.kZero, "nothingRed"));
+        redAutosList = List.of(new AutoMode(Commands.none(), Pose2d.kZero, "nothingRed"));
     }
 
     public BooleanSupplier hasTarget() {

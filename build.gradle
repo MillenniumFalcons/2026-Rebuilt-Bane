@@ -1,6 +1,7 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2026.1.1"
+    id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id 'com.diffplug.spotless' version '6.20.0'
 }
 
 java {
@@ -112,4 +113,14 @@ tasks.withType(JavaCompile) {
 task(replayWatch, type: JavaExec) {
     mainClass = "org.littletonrobotics.junction.ReplayWatch"
     classpath = sourceSets.main.runtimeClasspath
+}
+
+spotless {
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**build-*/**'
+        }
+        googleJavaFormat().aosp().reflowLongStrings()
+    }
 }

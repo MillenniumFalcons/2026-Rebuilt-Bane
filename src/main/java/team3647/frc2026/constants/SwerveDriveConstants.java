@@ -1,16 +1,11 @@
 package team3647.frc2026.constants;
 
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 // import com.pathplanner.lib.config.ModuleConfig;
 // import com.pathplanner.lib.config.RobotConfig;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import team3647.lib.team254.geometry.Translation2d;
 import team3647.lib.team254.swerve.SwerveDriveKinematics;
 import team3647.lib.team254.swerve.SwerveKinematicLimits;
@@ -97,27 +92,27 @@ public class SwerveDriveConstants {
         kTeleopKinematicLimits.kMaxSteeringVelocity = Units.Degree.of(1500).in(Units.Radians);
     }
 
-//     public static ModuleConfig ppModuleConfig =
-//             new ModuleConfig(
-//                     Meters.of(TunerConstants.BackLeft.WheelRadius),
-//                     TunerConstants.kSpeedAt12Volts,
-//                     COTS.WHEELS.DEFAULT_NEOPRENE_TREAD.cof,
-//                     DCMotor.getKrakenX60Foc(1).withReduction(5.684210526315789),
-//                     Units.Amps.of(90),
-//                     1);
+    //     public static ModuleConfig ppModuleConfig =
+    //             new ModuleConfig(
+    //                     Meters.of(TunerConstants.BackLeft.WheelRadius),
+    //                     TunerConstants.kSpeedAt12Volts,
+    //                     COTS.WHEELS.DEFAULT_NEOPRENE_TREAD.cof,
+    //                     DCMotor.getKrakenX60Foc(1).withReduction(5.684210526315789),
+    //                     Units.Amps.of(90),
+    //                     1);
 
-//     public static RobotConfig ppRobotConfig;
+    //     public static RobotConfig ppRobotConfig;
 
-//     static {
-//         try {
-//             ppRobotConfig = RobotConfig.fromGUISettings();
-//         } catch (Exception e) {
-//             ppRobotConfig = new RobotConfig(74, 6.883, ppModuleConfig, kTrackWidth);
+    //     static {
+    //         try {
+    //             ppRobotConfig = RobotConfig.fromGUISettings();
+    //         } catch (Exception e) {
+    //             ppRobotConfig = new RobotConfig(74, 6.883, ppModuleConfig, kTrackWidth);
 
-//             DriverStation.reportError(
-//                     "problem setting pp robot config from gui", e.getStackTrace());
-//         }
-//     }
+    //             DriverStation.reportError(
+    //                     "problem setting pp robot config from gui", e.getStackTrace());
+    //         }
+    //     }
 
     // NOTE: ALL THESE CONSTANTS ARE WRONG, THEY MEAN FUCKALL
     // config conversion factors here for each module. in meters for postiion and

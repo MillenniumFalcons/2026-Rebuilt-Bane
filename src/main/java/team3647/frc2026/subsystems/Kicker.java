@@ -1,10 +1,9 @@
 package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import team3647.lib.TalonFXSubsystem;
 
-public class Kicker extends TalonFXSubsystem{
+public class Kicker extends TalonFXSubsystem {
 
     public Kicker(
             TalonFX motor,

@@ -26,25 +26,31 @@ public class VisionConstants {
     // public static final String frontLLName = "limelight-front";
 
     // redesign cameras
-    public static final String kRightCam = "limelight-right";
-    public static final String kLeftCam = "limelight-left";
+    public static final String kDriveCam = "limelight-pov";
     public static final String kCrossbarCam = "limelight-intake";
 
     // redesign transforms
 
-    public static final Transform3d rightMount =
+    public static final Transform3d driveMount =
             new Transform3d(
                     Inches.of(6.75),
                     Inches.of(9),
                     Inches.of(15),
                     new Rotation3d(Degrees.of(0), Degrees.of(-19.653), Degrees.of(0)));
 
-    public static final Transform3d leftMount =
-            new Transform3d(
-                    Inches.of(6.75),
-                    Inches.of(-9),
-                    Inches.of(15),
-                    new Rotation3d(Degrees.of(0), Degrees.of(-19.653), Degrees.of(0)));
+    //     public static final Transform3d rightMount =
+    //             new Transform3d(
+    //                     Inches.of(6.75),
+    //                     Inches.of(9),
+    //                     Inches.of(15),
+    //                     new Rotation3d(Degrees.of(0), Degrees.of(-19.653), Degrees.of(0)));
+
+    //     public static final Transform3d leftMount =
+    //             new Transform3d(
+    //                     Inches.of(6.75),
+    //                     Inches.of(-9),
+    //                     Inches.of(15),
+    //                     new Rotation3d(Degrees.of(0), Degrees.of(-19.653), Degrees.of(0)));
 
     // public static final Transform3d LLsideMount =
     //         new Transform3d(

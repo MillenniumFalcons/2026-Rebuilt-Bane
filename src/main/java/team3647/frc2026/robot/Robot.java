@@ -5,14 +5,11 @@
 package team3647.frc2026.robot;
 
 import com.ctre.phoenix6.SignalLogger;
-
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RuntimeType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.AutoLogOutputManager;
@@ -85,13 +82,11 @@ public class Robot extends LoggedRobot {
 
         m_robotContainer.updateRobotPoseForSmartdashboard();
         VirtualSubsystem.periodicAll();
-
     }
 
     @Override
     public void disabledInit() {
-        m_robotContainer.rightCam.setIMUMode(1);
-        m_robotContainer.leftCam.setIMUMode(1);
+        m_robotContainer.drivingCam.setIMUMode(1);
         SignalLogger.stop();
         ModifiedSignalLogger.stop();
     }
@@ -127,8 +122,7 @@ public class Robot extends LoggedRobot {
         }
 
         ModifiedSignalLogger.stop();
-        m_robotContainer.rightCam.setIMUMode(4);
-        m_robotContainer.leftCam.setIMUMode(4);
+        m_robotContainer.drivingCam.setIMUMode(4);
     }
 
     @Override

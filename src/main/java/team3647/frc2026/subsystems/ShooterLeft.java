@@ -1,12 +1,11 @@
 package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import team3647.lib.TalonFXSubsystem;
 
-public class ShooterTwo extends TalonFXSubsystem {
+public class ShooterLeft extends TalonFXSubsystem {
 
-    public ShooterTwo(
+    public ShooterLeft(
             TalonFX motor,
             double velocityConversion,
             double positionConversion,
@@ -29,7 +28,12 @@ public class ShooterTwo extends TalonFXSubsystem {
     }
 
     @Override
+    public void setVoltage(double voltage) {
+        super.setVoltage(voltage);
+    }
+
+    @Override
     public String getName() {
-        return "ShooterTwo";
+        return "ShooterLeft";
     }
 }
