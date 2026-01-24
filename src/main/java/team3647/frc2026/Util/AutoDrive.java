@@ -34,7 +34,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(3, 0, 0.2, new Constraints(10, 10));
+            new ProfiledPIDController(3.5, 0, 0.2, new Constraints(10, 10));
 
     private final PIDController intakeXController, intakeYController, intakeRotController;
 
@@ -127,9 +127,9 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         Logger.recordOutput("wantedAngle", new Pose2d(robotPose.getX(), robotPose.getY(), angleToTarget));
 
-        //profiledRotController.setGoal(angleToTarget.getRadians());
+        profiledRotController.setGoal(angleToTarget.getRadians());
 
-        double rotComp = profiledRotController.calculate(angleToTarget.getRadians(), robotPose.getRotation().getRadians());
+        double rotComp = -profiledRotController.calculate(robotPose.getRotation().getRadians());
 
         return new Twist2d(0, 0, rotComp);
     }
