@@ -1,13 +1,12 @@
 package team3647.frc2026.commands;
 
-import java.util.Set;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import java.util.Set;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Wrist;
 
@@ -17,7 +16,7 @@ public class WristCommands {
     }
 
     public Command setAngle(Supplier<Angle> angle) {
-        return Commands.run(() -> wrist.setAngle(angle.get()), wrist);  
+        return Commands.run(() -> wrist.setAngle(angle.get()), wrist);
     }
 
     public Command setAngleDeg(DoubleSupplier angle) {

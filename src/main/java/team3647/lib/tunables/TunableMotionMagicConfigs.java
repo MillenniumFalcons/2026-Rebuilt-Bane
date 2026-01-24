@@ -3,10 +3,9 @@ package team3647.lib.tunables;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import team3647.lib.team6328.VirtualSubsystem;
 
-public class TunableMotionMagicConfigs extends VirtualSubsystem{
+public class TunableMotionMagicConfigs extends VirtualSubsystem {
     private final TalonFXConfigurator configurator;
     private final MotionMagicConfigs configs;
 
@@ -58,7 +57,7 @@ public class TunableMotionMagicConfigs extends VirtualSubsystem{
                 || acceleration.hasChanged()
                 || jerk.hasChanged();
     }
-    
+
     @Override
     public void periodic() {
         update();

@@ -72,8 +72,6 @@ public class RobotContainer {
         mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.whileTrue(superstructure.shoot(20, 1));
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
-
-        
     }
 
     private void configureSmartDashboardLogging() {
@@ -157,7 +155,15 @@ public class RobotContainer {
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
-    public final Wrist wrist = new Wrist(WristConstants.kMaster, WristConstants.kMaxAngle, WristConstants.kMinAngle, WristConstants.kNativeToDeg, WristConstants.kNativeToDeg, GlobalConstants.kNominalVoltage, GlobalConstants.kDt);
+    public final Wrist wrist =
+            new Wrist(
+                    WristConstants.kMaster,
+                    WristConstants.kMaxAngle,
+                    WristConstants.kMinAngle,
+                    WristConstants.kNativeToDeg,
+                    WristConstants.kNativeToDeg,
+                    GlobalConstants.kNominalVoltage,
+                    GlobalConstants.kDt);
 
     NeuralDetectorLimelight detector = new NeuralDetectorLimelight(VisionConstants.kCrossbarCam);
 
@@ -199,7 +205,13 @@ public class RobotContainer {
                     targetingUtil);
 
     public final Superstructure superstructure =
-            new Superstructure(shooterLeft, shooterRight, kicker, hood, autoDrive::getHoodAngle, autoDrive::getShotSpeed);
+            new Superstructure(
+                    shooterLeft,
+                    shooterRight,
+                    kicker,
+                    hood,
+                    autoDrive::getHoodAngle,
+                    autoDrive::getShotSpeed);
 
     // private final LEDTriggers triggers = new LEDTriggers(superstructure);
     // private final LEDs leds = new LEDs(LEDConstants.m_candle, triggers);

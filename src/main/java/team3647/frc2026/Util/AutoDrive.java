@@ -11,9 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
-
 import team3647.frc2026.constants.FieldConstants;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
@@ -125,7 +123,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
 
-        Logger.recordOutput("wantedAngle", new Pose2d(robotPose.getX(), robotPose.getY(), angleToTarget));
+        Logger.recordOutput(
+                "wantedAngle", new Pose2d(robotPose.getX(), robotPose.getY(), angleToTarget));
 
         profiledRotController.setGoal(angleToTarget.getRadians());
 

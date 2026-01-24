@@ -12,7 +12,7 @@ public class WristConstants {
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
-    public static final Angle kMaxAngle = Degree.of(90); //these need changing
+    public static final Angle kMaxAngle = Degree.of(90); // these need changing
     public static final Angle kMinAngle = Degree.of(0);
 
     public static final double kInitialAngle = kMaxAngle.magnitude();

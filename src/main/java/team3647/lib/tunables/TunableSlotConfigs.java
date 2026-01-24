@@ -3,10 +3,9 @@ package team3647.lib.tunables;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import team3647.lib.team6328.VirtualSubsystem;
 
-public class TunableSlotConfigs extends VirtualSubsystem{
+public class TunableSlotConfigs extends VirtualSubsystem {
 
     private final TalonFXConfigurator configurator;
     private final SlotConfigs configs;
@@ -56,7 +55,7 @@ public class TunableSlotConfigs extends VirtualSubsystem{
                 || kA.hasChanged()
                 || kG.hasChanged();
     }
-    
+
     @Override
     public void periodic() {
         update();

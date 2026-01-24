@@ -3,7 +3,7 @@ package team3647.lib.tunables;
 import edu.wpi.first.math.controller.PIDController;
 import team3647.lib.team6328.VirtualSubsystem;
 
-public class TunablePID extends VirtualSubsystem{
+public class TunablePID extends VirtualSubsystem {
 
     public TunableNumber kP, kI, kD;
     private PIDController controller;
@@ -26,7 +26,7 @@ public class TunablePID extends VirtualSubsystem{
     private boolean hasChanged() {
         return kP.hasChanged() || kI.hasChanged() || kD.hasChanged();
     }
-    
+
     @Override
     public void periodic() {
         update();
