@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.Logger;
+
 import team3647.frc2026.constants.FieldConstants;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
@@ -31,7 +34,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(5, 0, 0, new Constraints(4, 7));
+            new ProfiledPIDController(3, 0, 0.2, new Constraints(10, 10));
 
     private final PIDController intakeXController, intakeYController, intakeRotController;
 
@@ -77,6 +80,10 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         return targeting.shootAtHubOnTheMove().pivot;
     }
 
+    public double getShotSpeed() {
+        return targeting.shootAtHubOnTheMove().shootSpeed;
+    }
+
     public Pose2d getPose() {
         // var inputs = frontLL.QueueToInputs();
         // if (inputs.isPresent()) {
@@ -112,40 +119,17 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         return wantedMode;
     }
 
-    public Twist2d getVelocitiesAuto() {
-        // final Pose2d robotPose = getPose();
-        // Pose2d wantedPose = AllianceFlip.flip(wantedScoringPos.pose, color);
-
-        // Pose2d robotToTarget = wantedPose.relativeTo(robotPose);
-        // Rotation2d angleToTarget = robotToTarget.getTranslation().getAngle();
-        // double pidOutput =
-        //         translationController.calculate(robotToTarget.getTranslation().getNorm());
-        // Translation2d pidTranslation = new Translation2d(pidOutput, angleToTarget);
-
-        // profiledRotController.setGoal(wantedPose.getRotation().getRadians());
-        // translationController.setGoal(0);
-
-        // double xComp = -pidTranslation.getX();
-        // double yComp = -pidTranslation.getY();
-        // double rotComp = profiledRotController.calculate(robotPose.getRotation().getRadians());
-
-        // xComp = translationController.atGoal() ? 0 : xComp;
-        // yComp = translationController.atGoal() ? 0 : yComp;
-        // rotComp = profiledRotController.atGoal() ? 0 : rotComp;
-
-        // return new Twist2d(xComp, yComp, rotComp);
-        return new Twist2d();
-    }
-
     public Twist2d getVelocities() {
 
         final Pose2d robotPose = getPose();
 
         Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
 
-        profiledRotController.setGoal(angleToTarget.getRadians());
+        Logger.recordOutput("wantedAngle", new Pose2d(robotPose.getX(), robotPose.getY(), angleToTarget));
 
-        double rotComp = profiledRotController.calculate(robotPose.getRotation().getRadians());
+        //profiledRotController.setGoal(angleToTarget.getRadians());
+
+        double rotComp = profiledRotController.calculate(angleToTarget.getRadians(), robotPose.getRotation().getRadians());
 
         return new Twist2d(0, 0, rotComp);
     }

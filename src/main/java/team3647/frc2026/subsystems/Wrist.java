@@ -1,0 +1,88 @@
+package team3647.frc2026.subsystems;
+
+import static edu.wpi.first.units.Units.Degree;
+import static edu.wpi.first.units.Units.Radian;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.units.measure.Angle;
+import team3647.lib.TalonFXSubsystem;
+
+public class Wrist extends TalonFXSubsystem {
+
+    private final Angle maxAngle;
+    private final Angle minAngle;
+
+    double kG, angle = 0;
+
+    public Wrist(
+            TalonFX master,
+            Angle maxAngle,
+            Angle minAngle,
+            double positionConversion,
+            double velocityConversion,
+            double nominalVoltage,
+            double kDt) {
+        super(master, velocityConversion, positionConversion, nominalVoltage, kDt);
+
+        this.maxAngle = maxAngle;
+        this.minAngle = minAngle;
+    }
+
+    public void setAngle(Angle angle) {
+        super.setPositionExpoVoltage(angle.in(Degree), 0, false);
+    }
+
+    public void setAngleDegs(double angle) {
+        super.setPositionExpoVoltage(angle, 0);
+    }
+
+    public Angle getAngle() {
+        return Degree.of(getPosition());
+    }
+
+    public void setEncoderAngle(Angle angle) {
+        this.setEncoder(angle.in(Degree));
+    }
+
+    public void setEncoderAngle(double angleRads) {
+        this.setEncoder(angleRads);
+    }
+
+    public double getAngleRads() {
+        return getAngle().in(Radian);
+    }
+
+    public double getAngleDegs() {
+        return getAngle().in(Degree);
+    }
+
+    public void setEncoderNative(double position) {
+        super.setEncoderNative(position);
+    }
+
+    public Angle getMinAngle() {
+        return minAngle;
+    }
+
+    public Angle getMaxAngle() {
+        return maxAngle;
+    }
+
+    public boolean angleWithin(double lowBound, double highBound) {
+        return getAngleRads() > lowBound && getAngleRads() < highBound;
+    }
+
+    public boolean angleReached(Angle angle, Angle tolerance) {
+        return getAngle().minus(angle).abs(Degree) < tolerance.in(Degree);
+    }
+
+    @Override
+    public void readPeriodicInputs() {
+        super.readPeriodicInputs();
+    }
+
+    @Override
+    public String getName() {
+        return "Wrist";
+    }
+}

@@ -1,6 +1,7 @@
 package team3647.frc2026.constants;
 
 import static edu.wpi.first.units.Units.Centimeter;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meter;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,9 +12,9 @@ public class FieldConstants {
 
     public static final Rotation2d kDefaultRot = new Rotation2d();
 
-    public static Distance kFieldLength = Centimeter.of(1755);
+    public static Distance kFieldLength = Inches.of(651.22);
     public static double kFieldLengthM = kFieldLength.in(Meter);
-    public static Distance kFieldWidth = Centimeter.of(805);
+    public static Distance kFieldWidth = Inches.of(317.69);
     public static double kFieldWidthM = kFieldWidth.in(Meter);
 
     public static final Pose2d hubPose =

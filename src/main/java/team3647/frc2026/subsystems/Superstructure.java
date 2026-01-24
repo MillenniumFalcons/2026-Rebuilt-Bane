@@ -19,13 +19,15 @@ public class Superstructure {
     public final HoodCommands hoodCommands;
 
     public final DoubleSupplier hoodAngle;
+    public final DoubleSupplier shotSpeed;
 
     public Superstructure(
             ShooterLeft shooterOne,
             ShooterRight shooterTwo,
             Kicker kicker,
             Hood hood,
-            DoubleSupplier hoodAngle) {
+            DoubleSupplier hoodAngle,
+            DoubleSupplier shotSpeed) {
         this.shooterOne = shooterOne;
         this.shooterTwo = shooterTwo;
         this.hood = hood;
@@ -34,6 +36,7 @@ public class Superstructure {
         this.shooterCommands = new ShooterCommands(this.shooterOne, this.shooterTwo);
         this.kickerCommands = new KickerCommands(this.kicker);
         this.hoodCommands = new HoodCommands(hood);
+        this.shotSpeed = shotSpeed;
     }
 
     public Command prep() {

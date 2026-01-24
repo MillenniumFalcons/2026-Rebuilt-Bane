@@ -39,7 +39,7 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
             Transform2d robotToShooter,
             Supplier<Pose2d> drivePose,
             Supplier<ChassisSpeeds> driveSpeeds) {
-        this.color = Alliance.Red;
+        // this.color = Alliance.Red;
 
         this.hubPose = AllianceFlip.flip(hubPose, this.color);
         this.robotToShooter = robotToShooter;

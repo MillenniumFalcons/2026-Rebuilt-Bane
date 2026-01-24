@@ -25,14 +25,16 @@ import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants;
 import team3647.frc2026.constants.VisionConstants;
+import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Kicker;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.SwerveDrive;
+import team3647.frc2026.subsystems.Wrist;
 import team3647.frc2026.util.AutoDrive;
-import team3647.frc2026.util.LEDTriggers;
+// import team3647.frc2026.util.LEDTriggers;
 import team3647.frc2026.util.RobotTracker;
 import team3647.frc2026.util.TargetingUtil;
 import team3647.lib.GroupPrinter;
@@ -40,7 +42,6 @@ import team3647.lib.inputs.Joysticks;
 import team3647.lib.team9442.AllianceChecker;
 import team3647.lib.team9442.AutoChooser;
 import team3647.lib.vision.AprilTagLimelight;
-// import team3647.lib.vision.AprilTagPhotonVision;
 import team3647.lib.vision.NeuralDetectorLimelight;
 
 public class RobotContainer {
@@ -58,17 +59,21 @@ public class RobotContainer {
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
 
         CommandScheduler.getInstance()
-                .registerSubsystem(swerve, shooterOne, shooterTwo, kicker, hood, printer);
+                .registerSubsystem(swerve, shooterLeft, shooterRight, kicker, hood, wrist, printer);
     }
 
     private void configureAllianceObservers() {
         allianceChecker.registerObservers(
-                swerveCommands, swerve, autoCommands, autoChooser, autoDrive);
-    } // 0.6324678425924254
+                swerveCommands, swerve, autoCommands, autoChooser, autoDrive, robotTracker);
+    }
 
     private void configureBindings() {
-        mainController.leftBumper.whileTrue(shooterCommands.setVelocity(10));
-        mainController.rightTrigger.whileTrue(superstructure.shoot(20, 1.5));
+        // mainController.leftBumper.whileTrue(shooterCommands.setVelocity(10));
+        mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
+        mainController.rightTrigger.whileTrue(superstructure.shoot(20, 1));
+        mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+
+        
     }
 
     private void configureSmartDashboardLogging() {
@@ -95,8 +100,8 @@ public class RobotContainer {
                         autoDrive::getWantedMode,
                         autoDrive::getAutoDriveEnabled,
                         mainController.rightJoyStickPress));
-        shooterOne.setDefaultCommand(superstructure.shooterCommands.kill());
-        shooterTwo.setDefaultCommand(superstructure.shooterCommands.kill());
+        shooterLeft.setDefaultCommand(superstructure.shooterCommands.kill());
+        shooterRight.setDefaultCommand(superstructure.shooterCommands.kill());
         kicker.setDefaultCommand(superstructure.kickerCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
     }
@@ -118,7 +123,7 @@ public class RobotContainer {
                     TunerConstants.BackLeft,
                     TunerConstants.BackRight);
 
-    public final ShooterLeft shooterOne =
+    public final ShooterLeft shooterLeft =
             new ShooterLeft(
                     ShooterConstants.kShooterOne,
                     0,
@@ -126,7 +131,7 @@ public class RobotContainer {
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
-    public final ShooterRight shooterTwo =
+    public final ShooterRight shooterRight =
             new ShooterRight(
                     ShooterConstants.kShooterTwo,
                     0,
@@ -152,6 +157,8 @@ public class RobotContainer {
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
+    public final Wrist wrist = new Wrist(WristConstants.kMaster, WristConstants.kMaxAngle, WristConstants.kMinAngle, WristConstants.kNativeToDeg, WristConstants.kNativeToDeg, GlobalConstants.kNominalVoltage, GlobalConstants.kDt);
+
     NeuralDetectorLimelight detector = new NeuralDetectorLimelight(VisionConstants.kCrossbarCam);
 
     public final SwerveDriveCommands swerveCommands =
@@ -160,7 +167,7 @@ public class RobotContainer {
                     SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
                     SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
 
-    public final ShooterCommands shooterCommands = new ShooterCommands(shooterOne, shooterTwo);
+    public final ShooterCommands shooterCommands = new ShooterCommands(shooterLeft, shooterRight);
 
     public final KickerCommands kickerCommands = new KickerCommands(kicker);
 
@@ -192,9 +199,9 @@ public class RobotContainer {
                     targetingUtil);
 
     public final Superstructure superstructure =
-            new Superstructure(shooterOne, shooterTwo, kicker, hood, autoDrive::getHoodAngle);
+            new Superstructure(shooterLeft, shooterRight, kicker, hood, autoDrive::getHoodAngle, autoDrive::getShotSpeed);
 
-    private final LEDTriggers triggers = new LEDTriggers(superstructure);
+    // private final LEDTriggers triggers = new LEDTriggers(superstructure);
     // private final LEDs leds = new LEDs(LEDConstants.m_candle, triggers);
 
     // cams
@@ -212,8 +219,7 @@ public class RobotContainer {
                     superstructure,
                     autoDrive::getVelocities,
                     detector::hasTarget,
-                    autoDrive,
-                    autoDrive::getVelocitiesAuto);
+                    autoDrive);
 
     public final AutoChooser autoChooser = new AutoChooser(autoCommands, swerve::setRobotPose);
 }

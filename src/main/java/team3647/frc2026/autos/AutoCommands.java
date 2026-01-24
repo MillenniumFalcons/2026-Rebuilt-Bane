@@ -198,7 +198,6 @@ public class AutoCommands implements AllianceObserver {
     SwerveDrive swerve;
     Superstructure superstructure;
     Supplier<Twist2d> autoDriveVelocities;
-    Supplier<Twist2d> autoDriveVelocitiesAuto;
 
     public final AutoDrive autoDrive;
 
@@ -212,14 +211,12 @@ public class AutoCommands implements AllianceObserver {
             Superstructure superstructure,
             Supplier<Twist2d> autoDriveVelocities,
             BooleanSupplier hasTarget,
-            AutoDrive autoDrive,
-            Supplier<Twist2d> autoDriveVelocitiesAuto) {
+            AutoDrive autoDrive) {
         this.superstructure = superstructure;
         color = Alliance.Red;
 
         this.autoDrive = autoDrive;
 
-        this.autoDriveVelocitiesAuto = autoDriveVelocitiesAuto;
         this.swerve = swerve;
         this.autoDriveVelocities = autoDriveVelocities;
 
