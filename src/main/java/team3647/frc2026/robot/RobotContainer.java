@@ -72,6 +72,14 @@ public class RobotContainer {
         mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.whileTrue(superstructure.shoot(20, 1));
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+
+        //sysid
+        mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
+        mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());
+        mainController.dPadLeft.onTrue(swerve.steerRoutineDynamic());
+        mainController.dPadRight.onTrue(swerve.steerRoutineQuasiStatic());
+        mainController.buttonY.onTrue(shooterLeft.getSysIdDynamic());
+        mainController.buttonA.onTrue(shooterLeft.getSysIdQuasiStatic());
     }
 
     private void configureSmartDashboardLogging() {
