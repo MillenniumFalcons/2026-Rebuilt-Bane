@@ -73,7 +73,7 @@ public class RobotContainer {
         mainController.rightTrigger.whileTrue(superstructure.shoot(20, 1));
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
 
-        //sysid
+        // sysid
         mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
         mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());
         mainController.dPadLeft.onTrue(swerve.steerRoutineDynamic());

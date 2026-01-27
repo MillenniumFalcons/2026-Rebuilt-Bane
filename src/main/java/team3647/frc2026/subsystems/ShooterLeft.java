@@ -1,7 +1,6 @@
 package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,19 +13,18 @@ import team3647.lib.TalonFXSubsystem;
 
 public class ShooterLeft extends TalonFXSubsystem {
 
-    SysIdRoutine sysIdRoutine = new SysIdRoutine(
-        new Config(
-            null,
-            null,
-            null,
-            ModifiedSignalLogger.logState("left shooter routine")
-        ), 
-        new Mechanism(
-            (Voltage volts) -> setVoltage(volts.in(Units.Volt)),
-            null,
-            this,
-            "Left Shooter"
-        ));
+    SysIdRoutine sysIdRoutine =
+            new SysIdRoutine(
+                    new Config(
+                            null,
+                            null,
+                            null,
+                            ModifiedSignalLogger.logState("left shooter routine")),
+                    new Mechanism(
+                            (Voltage volts) -> setVoltage(volts.in(Units.Volt)),
+                            null,
+                            this,
+                            "Left Shooter"));
 
     public ShooterLeft(
             TalonFX motor,
@@ -59,12 +57,12 @@ public class ShooterLeft extends TalonFXSubsystem {
     public String getName() {
         return "ShooterLeft";
     }
-    
-    public Command getSysIdDynamic(){
+
+    public Command getSysIdDynamic() {
         return sysIdRoutine.dynamic(Direction.kForward);
     }
 
-    public Command getSysIdQuasiStatic(){
+    public Command getSysIdQuasiStatic() {
         return sysIdRoutine.quasistatic(Direction.kForward);
     }
 }
