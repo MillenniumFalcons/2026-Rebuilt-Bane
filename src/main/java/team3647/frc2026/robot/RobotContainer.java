@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.KickerCommands;
+import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.SwerveDriveCommands;
 import team3647.frc2026.constants.AutoConstants;
@@ -21,6 +22,7 @@ import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.KickerConstants;
+import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants;
@@ -28,6 +30,7 @@ import team3647.frc2026.constants.VisionConstants;
 import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Kicker;
+import team3647.frc2026.subsystems.Rollers;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
 import team3647.frc2026.subsystems.Superstructure;
@@ -59,7 +62,7 @@ public class RobotContainer {
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
 
         CommandScheduler.getInstance()
-                .registerSubsystem(swerve, shooterLeft, shooterRight, kicker, hood, wrist, printer);
+                .registerSubsystem(swerve, shooterLeft, shooterRight, kicker, hood, wrist, printer, rollers);
     }
 
     private void configureAllianceObservers() {
@@ -73,13 +76,15 @@ public class RobotContainer {
         mainController.rightTrigger.whileTrue(superstructure.shoot(20, 1));
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
 
+        mainController.leftBumper.whileTrue(rollerCommands.setOpenLoop(0.5));
+
         // sysid
-        mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
-        mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());
-        mainController.dPadLeft.onTrue(swerve.steerRoutineDynamic());
-        mainController.dPadRight.onTrue(swerve.steerRoutineQuasiStatic());
-        mainController.buttonY.onTrue(shooterLeft.getSysIdDynamic());
-        mainController.buttonA.onTrue(shooterLeft.getSysIdQuasiStatic());
+        // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
+        // mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());
+        // mainController.dPadLeft.onTrue(swerve.steerRoutineDynamic());
+        // mainController.dPadRight.onTrue(swerve.steerRoutineQuasiStatic());
+        // mainController.buttonY.onTrue(shooterLeft.getSysIdDynamic());
+        // mainController.buttonA.onTrue(shooterLeft.getSysIdQuasiStatic());
     }
 
     private void configureSmartDashboardLogging() {
@@ -110,6 +115,7 @@ public class RobotContainer {
         shooterRight.setDefaultCommand(superstructure.shooterCommands.kill());
         kicker.setDefaultCommand(superstructure.kickerCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
+        rollers.setDefaultCommand(rollerCommands.kill());
     }
 
     public Command getAutonomousCommand() {
@@ -148,8 +154,16 @@ public class RobotContainer {
     public final Kicker kicker =
             new Kicker(
                     KickerConstants.kMaster,
-                    0.319185814,
                     0,
+                    1,
+                    GlobalConstants.kNominalVoltage,
+                    GlobalConstants.kDt);
+
+    public final Rollers rollers =
+            new Rollers(
+                    RollerConstants.kMaster,
+                    0,
+                    1,
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
@@ -184,6 +198,8 @@ public class RobotContainer {
     public final ShooterCommands shooterCommands = new ShooterCommands(shooterLeft, shooterRight);
 
     public final KickerCommands kickerCommands = new KickerCommands(kicker);
+
+    public final RollerCommands rollerCommands = new RollerCommands(rollers);
 
     public final HoodCommands hoodCommands = new HoodCommands(hood);
 

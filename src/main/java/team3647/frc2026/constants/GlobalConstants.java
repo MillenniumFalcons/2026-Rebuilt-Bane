@@ -26,13 +26,20 @@ public class GlobalConstants {
 
     public class KickerIds {
         public static final int kMasterId = 21;
+        public static final int kIndexerMasterId = 31; //right indexer
+        public static final int kIndexerSlaveId = 27; //left indexer
     }
 
     public class HoodIds {
-        public static final int kMasterId = 30;
+        public static final int kMasterId = 29;
     }
 
     public class WristIds {
-        public static final int kMasterId = 31;
+        public static final int kMasterId = 32; //right wrist
+        public static final int kSlaveId = 30; //left wrist
+    }
+    
+    public class RollerIds {
+        public static final int kMasterId = 36;
     }
 }

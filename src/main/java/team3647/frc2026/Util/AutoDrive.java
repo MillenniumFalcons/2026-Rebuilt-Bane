@@ -130,6 +130,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         double rotComp = -profiledRotController.calculate(robotPose.getRotation().getRadians());
 
+        
+
         return new Twist2d(0, 0, rotComp);
     }
 
