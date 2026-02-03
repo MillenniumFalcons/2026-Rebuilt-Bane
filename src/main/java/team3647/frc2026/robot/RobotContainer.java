@@ -11,9 +11,13 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import team3647.frc2026.Util.AutoDrive;
+// import team3647.frc2026.util.LEDTriggers;
+import team3647.frc2026.Util.RobotTracker;
+import team3647.frc2026.Util.TargetingUtil;
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.HoodCommands;
-import team3647.frc2026.commands.KickerCommands;
+import team3647.frc2026.commands.IndexerCommands;
 import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.SwerveDriveCommands;
@@ -21,7 +25,7 @@ import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
-import team3647.frc2026.constants.KickerConstants;
+import team3647.frc2026.constants.IndexerConstants;
 import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
@@ -29,17 +33,13 @@ import team3647.frc2026.constants.TunerConstants;
 import team3647.frc2026.constants.VisionConstants;
 import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Hood;
-import team3647.frc2026.subsystems.Kicker;
+import team3647.frc2026.subsystems.Indexer;
 import team3647.frc2026.subsystems.Rollers;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.SwerveDrive;
 import team3647.frc2026.subsystems.Wrist;
-import team3647.frc2026.util.AutoDrive;
-// import team3647.frc2026.util.LEDTriggers;
-import team3647.frc2026.util.RobotTracker;
-import team3647.frc2026.util.TargetingUtil;
 import team3647.lib.GroupPrinter;
 import team3647.lib.inputs.Joysticks;
 import team3647.lib.team9442.AllianceChecker;
@@ -62,7 +62,8 @@ public class RobotContainer {
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
 
         CommandScheduler.getInstance()
-                .registerSubsystem(swerve, shooterLeft, shooterRight, kicker, hood, wrist, printer, rollers);
+                .registerSubsystem(
+                        swerve, shooterLeft, shooterRight, indexer, hood, wrist, printer, rollers);
     }
 
     private void configureAllianceObservers() {
@@ -72,11 +73,14 @@ public class RobotContainer {
 
     private void configureBindings() {
         // mainController.leftBumper.whileTrue(shooterCommands.setVelocity(10));
-        mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
-        mainController.rightTrigger.whileTrue(superstructure.shoot(20, 1));
-        mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        // mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
+        // mainController.rightTrigger.whileTrue(superstructure.shoot(20, 1));
+        // mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
 
-        mainController.leftBumper.whileTrue(rollerCommands.setOpenLoop(0.5));
+        // mainController.leftBumper.whileTrue(rollerCommands.setOpenLoop(0.5));
+        mainController.leftTrigger.whileTrue(superstructure.index(-0.8));
+        mainController.leftBumper.whileTrue(rollerCommands.setOpenLoop(0.8));
+        mainController.rightBumper.whileTrue(rollerCommands.setOpenLoop(-0.8));
 
         // sysid
         // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
@@ -113,7 +117,8 @@ public class RobotContainer {
                         mainController.rightJoyStickPress));
         shooterLeft.setDefaultCommand(superstructure.shooterCommands.kill());
         shooterRight.setDefaultCommand(superstructure.shooterCommands.kill());
-        kicker.setDefaultCommand(superstructure.kickerCommands.kill());
+        indexer.setDefaultCommand(superstructure.indexerCommands.kill());
+
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         rollers.setDefaultCommand(rollerCommands.kill());
     }
@@ -151,14 +156,14 @@ public class RobotContainer {
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
-    public final Kicker kicker =
-            new Kicker(
-                    KickerConstants.kMaster,
+    public final Indexer indexer =
+            new Indexer(
+                    IndexerConstants.kLeftMaster,
+                    IndexerConstants.kRightSlave,
                     0,
                     1,
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
-
     public final Rollers rollers =
             new Rollers(
                     RollerConstants.kMaster,
@@ -196,8 +201,7 @@ public class RobotContainer {
                     SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
 
     public final ShooterCommands shooterCommands = new ShooterCommands(shooterLeft, shooterRight);
-
-    public final KickerCommands kickerCommands = new KickerCommands(kicker);
+    public final IndexerCommands indexerCommands = new IndexerCommands(indexer);
 
     public final RollerCommands rollerCommands = new RollerCommands(rollers);
 
@@ -232,7 +236,7 @@ public class RobotContainer {
             new Superstructure(
                     shooterLeft,
                     shooterRight,
-                    kicker,
+                    indexer,
                     hood,
                     autoDrive::getHoodAngle,
                     autoDrive::getShotSpeed);

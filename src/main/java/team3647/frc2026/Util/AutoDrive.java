@@ -1,4 +1,4 @@
-package team3647.frc2026.util;
+package team3647.frc2026.Util;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -129,8 +129,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         profiledRotController.setGoal(angleToTarget.getRadians());
 
         double rotComp = -profiledRotController.calculate(robotPose.getRotation().getRadians());
-
-        
 
         return new Twist2d(0, 0, rotComp);
     }

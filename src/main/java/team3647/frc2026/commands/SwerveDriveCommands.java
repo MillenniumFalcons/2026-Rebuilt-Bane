@@ -11,8 +11,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
+import team3647.frc2026.Util.AutoDrive.DriveMode;
 import team3647.frc2026.subsystems.SwerveDrive;
-import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.lib.team9442.AllianceObserver;
 
 public class SwerveDriveCommands implements AllianceObserver {
