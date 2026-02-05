@@ -6,12 +6,16 @@ import com.ctre.phoenix6.signals.InvertedValue;
 
 public class IndexerConstants {
     public static final TalonFX kLeftMaster =
-            new TalonFX(GlobalConstants.IndexerIds.kIndexerMasterId, GlobalConstants.kSubsystemCanbusName);
+            new TalonFX(
+                    GlobalConstants.IndexerIds.kIndexerMasterId,
+                    GlobalConstants.kSubsystemCanbusName);
 
     public static final TalonFXConfiguration kLeftMasterConfig = new TalonFXConfiguration();
 
     public static final TalonFX kRightSlave =
-            new TalonFX(GlobalConstants.IndexerIds.kIndexerSlaveId, GlobalConstants.kSubsystemCanbusName);
+            new TalonFX(
+                    GlobalConstants.IndexerIds.kIndexerSlaveId,
+                    GlobalConstants.kSubsystemCanbusName);
 
     public static final TalonFXConfiguration kRightSlaveConfig = new TalonFXConfiguration();
 

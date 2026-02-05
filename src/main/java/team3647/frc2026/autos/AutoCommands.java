@@ -20,13 +20,13 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import team3647.frc2026.Util.AllianceFlip;
-import team3647.frc2026.Util.AutoDrive;
-import team3647.frc2026.Util.PoseUtils;
 import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.SwerveDrive;
+import team3647.frc2026.util.AllianceFlip;
+import team3647.frc2026.util.AutoDrive;
+import team3647.frc2026.util.PoseUtils;
 import team3647.lib.team9442.AllianceObserver;
 
 public class AutoCommands implements AllianceObserver {

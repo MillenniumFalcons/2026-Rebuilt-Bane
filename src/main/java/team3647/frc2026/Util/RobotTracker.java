@@ -1,4 +1,4 @@
-package team3647.frc2026.Util;
+package team3647.frc2026.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;

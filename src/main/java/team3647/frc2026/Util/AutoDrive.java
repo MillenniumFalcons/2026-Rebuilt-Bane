@@ -1,4 +1,4 @@
-package team3647.frc2026.Util;
+package team3647.frc2026.util;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;

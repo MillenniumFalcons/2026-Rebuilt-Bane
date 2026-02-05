@@ -1,4 +1,4 @@
-package team3647.frc2026.Util;
+package team3647.frc2026.util;
 
 import static edu.wpi.first.units.Units.Meter;
 
