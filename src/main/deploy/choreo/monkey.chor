@@ -1,6 +1,6 @@
 {
  "name":"monkey",
- "version":1,
+ "version":2,
  "type":"Swerve",
  "variables":{
   "expressions":{
@@ -216,5 +216,11 @@
    "val":0.5588
   }
  },
- "generationFeatures":[]
+ "generationFeatures":[],
+ "codegen":{
+  "root":null,
+  "genVars":true,
+  "genTrajData":true,
+  "useChoreoLib":true
+ }
 }
