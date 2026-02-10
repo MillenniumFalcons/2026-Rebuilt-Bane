@@ -1,5 +1,6 @@
 package team3647.frc2026.constants;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -15,19 +16,32 @@ public class ShooterConstants {
     // one is left two is right i got too lazy to change
     public static final TalonFX kShooterOne =
             new TalonFX(
-                    GlobalConstants.ShooterIds.kShooterOneId, GlobalConstants.kSubsystemCanbusName);
+                    GlobalConstants.ShooterIds.kShooterOneId,
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
+
+    public static final TalonFX kShooterOneSlave =
+            new TalonFX(
+                    GlobalConstants.ShooterIds.kShooterOneSlaveId,
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
 
     public static final TalonFX kShooterTwo =
             new TalonFX(
-                    GlobalConstants.ShooterIds.kShooterTwoId, GlobalConstants.kSubsystemCanbusName);
+                    GlobalConstants.ShooterIds.kShooterTwoId,
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
+
+    public static final TalonFX kShooterTwoSlave =
+            new TalonFX(
+                    GlobalConstants.ShooterIds.kShooterTwoSlaveId,
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
 
     public static final TalonFXConfiguration kShooterOneConfig = new TalonFXConfiguration();
     public static final TalonFXConfiguration kShooterTwoConfig = new TalonFXConfiguration();
 
     public static final Transform2d robotToBetweenShooter = new Transform2d();
 
-    public static final double kGearboxReduction = 1.25; // CHANGE THIS
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4.5); // CHANGE THIS
+    public static final double kGearboxReduction = 1; // i think this is correct now
+    public static final double kWheelDiameterMeters =
+            Units.inchesToMeters(4); // i think this is also correct now
     public static final double kWheelRotationMeters = kWheelDiameterMeters * Math.PI;
     public static final double kNativeVelToSurfaceMpS =
             kWheelRotationMeters / GlobalConstants.kFalconTicksPerRotation * kGearboxReduction;
@@ -50,7 +64,8 @@ public class ShooterConstants {
 
     static {
         kShooterOneConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        kShooterTwoConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kShooterTwoConfig.MotorOutput.Inverted =
+                InvertedValue.CounterClockwise_Positive; // these should be opposites of each other
 
         MotorOutputConfigs shooterOneMotor = new MotorOutputConfigs();
         MotorOutputConfigs shooterTwoMotor = new MotorOutputConfigs();

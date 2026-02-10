@@ -11,13 +11,8 @@ public class IndexerCommands {
         this.indexer = indexer;
     }
 
-    public Command setOpenLoop(double output) {
-        return Commands.run(
-                () -> {
-                    indexer.setOpenLoop(output);
-                    indexer.setOpenLoop(output);
-                },
-                indexer);
+    public Command index() {
+        return Commands.run(() -> indexer.setOpenLoop(-0.8), indexer);
     }
 
     public boolean currentGreater(double current) {
@@ -25,6 +20,6 @@ public class IndexerCommands {
     }
 
     public Command kill() {
-        return setOpenLoop(0).withTimeout(0.3);
+        return Commands.runOnce(() -> indexer.setOpenLoop(0), indexer);
     }
 }

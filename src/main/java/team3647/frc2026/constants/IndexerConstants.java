@@ -1,5 +1,6 @@
 package team3647.frc2026.constants;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -8,14 +9,14 @@ public class IndexerConstants {
     public static final TalonFX kLeftMaster =
             new TalonFX(
                     GlobalConstants.IndexerIds.kIndexerMasterId,
-                    GlobalConstants.kSubsystemCanbusName);
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
 
     public static final TalonFXConfiguration kLeftMasterConfig = new TalonFXConfiguration();
 
     public static final TalonFX kRightSlave =
             new TalonFX(
                     GlobalConstants.IndexerIds.kIndexerSlaveId,
-                    GlobalConstants.kSubsystemCanbusName);
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
 
     public static final TalonFXConfiguration kRightSlaveConfig = new TalonFXConfiguration();
 

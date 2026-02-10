@@ -33,10 +33,18 @@ public class ShooterCommands {
         return setOpenLoop(0).withTimeout(0.3);
     }
 
+    public Command killLeft() {
+        return Commands.runOnce(() -> shooterOne.setOpenLoop(0), shooterOne).withTimeout(0.3);
+    }
+
+    public Command killRight() {
+        return Commands.runOnce(() -> shooterTwo.setOpenLoop(0), shooterTwo).withTimeout(0.3);
+    }
+
     public Command setVelocity(double vel) {
         return Commands.parallel(
-                Commands.run(() -> shooterOne.setVelocity(vel, 0), shooterOne),
-                Commands.run(() -> shooterTwo.setVelocity(vel, 0), shooterTwo));
+                Commands.run(() -> shooterOne.setVelocity(vel), shooterOne),
+                Commands.run(() -> shooterTwo.setVelocity(vel), shooterTwo));
     }
 
     public boolean isAtVelocity(double velocity, double tolerance) {

@@ -2,13 +2,16 @@ package team3647.frc2026.constants;
 
 import static edu.wpi.first.units.Units.Degree;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 
 public class WristConstants {
     public static final TalonFX kMaster =
-            new TalonFX(GlobalConstants.WristIds.kMasterId, GlobalConstants.kSubsystemCanbusName);
+            new TalonFX(
+                    GlobalConstants.WristIds.kMasterId,
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 

@@ -24,6 +24,8 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.lib.vision.old.AprilTagCamera.AprilTagId;
 
+// pmo deprecated warnings
+@SuppressWarnings({"deprecation", "removal"})
 public class AprilTagPhotonVision extends PhotonCamera implements AprilTagCamera {
 
     AprilTagFieldLayout aprilTagFieldLayout;

@@ -11,17 +11,21 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
+import team3647.frc2026.commands.KickerCommands;
 import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.SwerveDriveCommands;
+import team3647.frc2026.commands.WristCommands;
 import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.IndexerConstants;
+import team3647.frc2026.constants.KickerConstants;
 import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
@@ -30,6 +34,7 @@ import team3647.frc2026.constants.VisionConstants;
 import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
+import team3647.frc2026.subsystems.Kicker;
 import team3647.frc2026.subsystems.Rollers;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
@@ -63,7 +68,15 @@ public class RobotContainer {
 
         CommandScheduler.getInstance()
                 .registerSubsystem(
-                        swerve, shooterLeft, shooterRight, indexer, hood, wrist, printer, rollers);
+                        swerve,
+                        shooterLeft,
+                        shooterRight,
+                        indexer,
+                        hood,
+                        wrist,
+                        printer,
+                        rollers,
+                        kicker);
     }
 
     private void configureAllianceObservers() {
@@ -78,9 +91,9 @@ public class RobotContainer {
         // mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
 
         // mainController.leftBumper.whileTrue(rollerCommands.setOpenLoop(0.5));
-        mainController.leftTrigger.whileTrue(superstructure.index(-0.8));
-        mainController.leftBumper.whileTrue(rollerCommands.setOpenLoop(0.8));
-        mainController.rightBumper.whileTrue(rollerCommands.setOpenLoop(-0.8));
+        mainController.leftTrigger.whileTrue(superstructure.index());
+        mainController.leftBumper.whileTrue(rollerCommands.intake());
+        mainController.rightBumper.whileTrue(rollerCommands.spit());
 
         // sysid
         // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
@@ -99,6 +112,8 @@ public class RobotContainer {
                 "Autos", autoChooser); // , superstructure.score();, superstructure.score();
         SmartDashboard.putData("Field", smartDashboardField);
         printer.addDouble("Match Time", Timer::getMatchTime);
+        Logger.recordOutput("left shooter velocity", shooterLeft.getVelocity());
+        Logger.recordOutput("right shooter velocity", shooterRight.getVelocity());
     }
 
     public void updateRobotPoseForSmartdashboard() {
@@ -115,12 +130,13 @@ public class RobotContainer {
                         autoDrive::getWantedMode,
                         autoDrive::getAutoDriveEnabled,
                         mainController.rightJoyStickPress));
-        shooterLeft.setDefaultCommand(superstructure.shooterCommands.kill());
-        shooterRight.setDefaultCommand(superstructure.shooterCommands.kill());
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-
+        shooterLeft.setDefaultCommand(shooterCommands.killLeft());
+        shooterRight.setDefaultCommand(shooterCommands.killRight());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         rollers.setDefaultCommand(rollerCommands.kill());
+        wrist.setDefaultCommand(wristCommands.holdPositionAtCall());
+        kicker.setDefaultCommand(kickerCommands.kill());
     }
 
     public Command getAutonomousCommand() {
@@ -143,16 +159,18 @@ public class RobotContainer {
     public final ShooterLeft shooterLeft =
             new ShooterLeft(
                     ShooterConstants.kShooterOne,
-                    0,
-                    1,
+                    ShooterConstants.kShooterOneSlave,
+                    ShooterConstants.kNativeVelToSurfaceMpS,
+                    ShooterConstants.kNativeVelToSurfaceMpS,
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
     public final ShooterRight shooterRight =
             new ShooterRight(
                     ShooterConstants.kShooterTwo,
-                    0,
-                    1,
+                    ShooterConstants.kShooterTwoSlave,
+                    ShooterConstants.kNativeVelToSurfaceMpS,
+                    ShooterConstants.kNativeVelToSurfaceMpS,
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
@@ -164,6 +182,15 @@ public class RobotContainer {
                     1,
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
+
+    public final Kicker kicker =
+            new Kicker(
+                    KickerConstants.kMaster,
+                    0,
+                    1,
+                    GlobalConstants.kNominalVoltage,
+                    GlobalConstants.kDt);
+
     public final Rollers rollers =
             new Rollers(
                     RollerConstants.kMaster,
@@ -201,9 +228,14 @@ public class RobotContainer {
                     SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
 
     public final ShooterCommands shooterCommands = new ShooterCommands(shooterLeft, shooterRight);
+
     public final IndexerCommands indexerCommands = new IndexerCommands(indexer);
 
+    public final KickerCommands kickerCommands = new KickerCommands(kicker);
+
     public final RollerCommands rollerCommands = new RollerCommands(rollers);
+
+    public final WristCommands wristCommands = new WristCommands(wrist);
 
     public final HoodCommands hoodCommands = new HoodCommands(hood);
 
@@ -238,6 +270,7 @@ public class RobotContainer {
                     shooterRight,
                     indexer,
                     hood,
+                    kicker,
                     autoDrive::getHoodAngle,
                     autoDrive::getShotSpeed);
 

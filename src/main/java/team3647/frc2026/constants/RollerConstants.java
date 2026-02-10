@@ -1,12 +1,15 @@
 package team3647.frc2026.constants;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 public class RollerConstants {
     public static final TalonFX kMaster =
-            new TalonFX(GlobalConstants.RollerIds.kMasterId, GlobalConstants.kSubsystemCanbusName);
+            new TalonFX(
+                    GlobalConstants.RollerIds.kMasterId,
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 

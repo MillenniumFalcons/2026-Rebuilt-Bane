@@ -11,12 +11,12 @@ public class RollerCommands {
         this.rollers = rollers;
     }
 
-    public Command setOpenLoop(double output) {
-        return Commands.run(
-                () -> {
-                    rollers.setOpenLoop(output);
-                },
-                rollers);
+    public Command intake() {
+        return Commands.run(() -> rollers.setOpenLoop(0.8), rollers);
+    }
+
+    public Command spit() {
+        return Commands.run(() -> rollers.setOpenLoop(-0.8), rollers);
     }
 
     public boolean currentGreater(double current) {
@@ -24,6 +24,6 @@ public class RollerCommands {
     }
 
     public Command kill() {
-        return setOpenLoop(0).withTimeout(0.3);
+        return Commands.runOnce(() -> rollers.setOpenLoop(0), rollers);
     }
 }

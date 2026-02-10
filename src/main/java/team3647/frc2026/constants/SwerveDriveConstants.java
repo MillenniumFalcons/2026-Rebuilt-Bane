@@ -1,8 +1,16 @@
 package team3647.frc2026.constants;
 
+import static edu.wpi.first.units.Units.Inches;
+
+import org.ironmaple.simulation.drivesims.COTS;
+import org.ironmaple.simulation.drivesims.GyroSimulation;
+import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
+
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
+import edu.wpi.first.math.system.plant.DCMotor;
 // import com.pathplanner.lib.config.ModuleConfig;
 // import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.units.Units;
@@ -11,6 +19,25 @@ import team3647.lib.team254.swerve.SwerveDriveKinematics;
 import team3647.lib.team254.swerve.SwerveKinematicLimits;
 
 public class SwerveDriveConstants {
+        // Create and configure a drivetrain simulation configuration
+    public static final DriveTrainSimulationConfig driveTrainSimulationConfig =
+            DriveTrainSimulationConfig.Default()
+                    // Specify gyro type (for realistic gyro drifting and error simulation)
+                    .withGyro(() -> new GyroSimulation(0.01, 0.02))
+                    // Specify swerve module (for realistic swerve dynamics)
+                    .withSwerveModule(
+                            COTS.ofMark4i(
+                                    DCMotor.getKrakenX60(1), // Drive motor is a Kraken X60
+                                    DCMotor.getFalcon500(1), // Steer motor is a Falcon 500
+                                    COTS.WHEELS
+                                            .DEFAULT_NEOPRENE_TREAD
+                                            .cof, // Use the COF for Colson Wheels
+                                    3)) // L3 Gear ratio
+                    // Configures the track length and track width (spacing between swerve modules)
+                    .withTrackLengthTrackWidth(Inches.of(21), Inches.of(23))
+                    // Configures the bumper size (dimensions of the robot bumper)
+                    .withBumperSize(Inches.of(34.25), Inches.of(34.25));
+
     // default falcon rotates counter clockwise (CCW)
     // make sure gyro -CW, +CCW
     public static final SensorDirectionValue canCoderInvert =

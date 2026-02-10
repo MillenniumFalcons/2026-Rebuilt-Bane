@@ -1,6 +1,7 @@
 package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,11 +29,13 @@ public class ShooterLeft extends TalonFXSubsystem {
 
     public ShooterLeft(
             TalonFX motor,
+            TalonFX slave,
             double velocityConversion,
             double positionConversion,
             double nominalVoltage,
             double kDt) {
         super(motor, velocityConversion, positionConversion, nominalVoltage, kDt);
+        this.addFollower(slave, MotorAlignmentValue.Aligned);
     }
 
     public void setOpenLoop(double percent) {
@@ -43,9 +46,8 @@ public class ShooterLeft extends TalonFXSubsystem {
         return super.getMasterCurrent();
     }
 
-    @Override
-    public void setVelocity(double velocity, double feedforward) {
-        super.setVelocity(velocity, feedforward);
+    public void setVelocity(double velocity) {
+        super.setVelocity(velocity, 0);
     }
 
     @Override
