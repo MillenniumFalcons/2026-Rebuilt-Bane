@@ -79,6 +79,7 @@ public class Hood extends TalonFXSubsystem {
     @Override
     public void readPeriodicInputs() {
         super.readPeriodicInputs();
+        
     }
 
     @Override

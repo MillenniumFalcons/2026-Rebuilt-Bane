@@ -2,24 +2,22 @@ package team3647.frc2026.constants;
 
 import static edu.wpi.first.units.Units.Inches;
 
-import org.ironmaple.simulation.drivesims.COTS;
-import org.ironmaple.simulation.drivesims.GyroSimulation;
-import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
-
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
 import edu.wpi.first.math.system.plant.DCMotor;
 // import com.pathplanner.lib.config.ModuleConfig;
 // import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.units.Units;
+import org.ironmaple.simulation.drivesims.COTS;
+import org.ironmaple.simulation.drivesims.GyroSimulation;
+import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import team3647.lib.team254.geometry.Translation2d;
 import team3647.lib.team254.swerve.SwerveDriveKinematics;
 import team3647.lib.team254.swerve.SwerveKinematicLimits;
 
 public class SwerveDriveConstants {
-        // Create and configure a drivetrain simulation configuration
+    // Create and configure a drivetrain simulation configuration
     public static final DriveTrainSimulationConfig driveTrainSimulationConfig =
             DriveTrainSimulationConfig.Default()
                     // Specify gyro type (for realistic gyro drifting and error simulation)
