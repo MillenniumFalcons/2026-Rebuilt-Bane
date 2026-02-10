@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -21,6 +22,7 @@ import team3647.lib.vision.NeuralDetector;
 public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     private final Supplier<Pose2d> odoPoseFunction;
+    private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
 
     private NeuralDetector detector;
     private AprilTagCamera frontLL;
@@ -47,8 +49,11 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     private final TargetingUtil targeting;
 
+    private static final double ff = 0.15;
+
     public AutoDrive(
             Supplier<Pose2d> odoPoseFunction,
+            Supplier<ChassisSpeeds> chassisSpeedsSupplier,
             PIDController xController,
             PIDController yController,
             PIDController rotController,
@@ -56,6 +61,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             TargetingUtil targeting) {
         super();
         this.odoPoseFunction = odoPoseFunction;
+        this.chassisSpeedsSupplier = chassisSpeedsSupplier;
         // this.xController = Utils.isSimulation() ? new PIDController(2.5, 0, 0) : xController;
         // this.yController = Utils.isSimulation() ? new PIDController(2.5, 0, 0) : yController;
         // this.rotController = Utils.isSimulation() ? new PIDController(2, 0, 0) : rotController;
@@ -120,6 +126,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public Twist2d getVelocities() {
 
         final Pose2d robotPose = getPose();
+        final ChassisSpeeds currentSpeeds = chassisSpeedsSupplier.get();
 
         Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
 
@@ -128,7 +135,22 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         profiledRotController.setGoal(angleToTarget.getRadians());
 
-        double rotComp = -profiledRotController.calculate(robotPose.getRotation().getRadians());
+        // Standard PID output
+        double rotFeedback = profiledRotController.calculate(robotPose.getRotation().getRadians());
+
+        // goofy ahh feedforward
+        // Calculate the magnitude of linear velocity from ChassisSpeeds
+        double linearVelocityMag =
+                Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
+
+        // Calculate angular error to help determine direction of FF
+        double angularError = angleToTarget.minus(robotPose.getRotation()).getRadians();
+
+        // FF = (Linear Speed * FF Gain) * sign of the error
+        // This effectively "boosts" the rotation command more when moving fast
+        double customFF = (linearVelocityMag * ff) * Math.signum(angularError);
+
+        double rotComp = -(rotFeedback + customFF);
 
         return new Twist2d(0, 0, rotComp);
     }

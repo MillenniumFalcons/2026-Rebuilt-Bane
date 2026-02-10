@@ -258,6 +258,7 @@ public class RobotContainer {
     public final AutoDrive autoDrive =
             new AutoDrive(
                     swerve::getOdoPose,
+                    swerve::getChassisSpeeds,
                     AutoConstants.autoAlignXController,
                     AutoConstants.autoAlignYController,
                     AutoConstants.rotAlignController,
