@@ -79,12 +79,7 @@ public class AutoCommands implements AllianceObserver {
                             var motionXComponent = speeds.vxMetersPerSecond * 0.5;
                             var motionYComponent = speeds.vyMetersPerSecond * 0.5;
 
-                            var isInPose =
-                                    PoseUtils.inRect(swerve.getOdoPose(), BlueLSource)
-                                            || PoseUtils.inRect(swerve.getOdoPose(), BlueRSource)
-                                            || PoseUtils.inRect(swerve.getOdoPose(), RedLSource)
-                                            || PoseUtils.inRect(swerve.getOdoPose(), RedRSource);
-                            if (this.hasTarget.getAsBoolean() && isInPose) {
+                            if (this.hasTarget.getAsBoolean()) {
                                 motionXComponent = autoDriveVelocities.get().dx;
                                 motionYComponent = autoDriveVelocities.get().dy;
                             }
