@@ -4,6 +4,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class IndexerConstants {
     public static final TalonFX kLeftMaster =
@@ -21,14 +22,16 @@ public class IndexerConstants {
     public static final TalonFXConfiguration kRightSlaveConfig = new TalonFXConfiguration();
 
     static {
-        kLeftMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kLeftMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kLeftMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kLeftMasterConfig.CurrentLimits.StatorCurrentLimit = 40.0;
         kLeftMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         kLeftMaster.getConfigurator().apply(kLeftMasterConfig);
 
-        kRightSlaveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kRightSlaveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kRightSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kRightSlaveConfig.CurrentLimits.StatorCurrentLimit = 40.0;
         kRightSlaveConfig.CurrentLimits.StatorCurrentLimitEnable = true;

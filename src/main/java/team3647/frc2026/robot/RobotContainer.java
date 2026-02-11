@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
@@ -64,6 +63,9 @@ public class RobotContainer {
         configureAllianceObservers();
         configureSmartDashboardLogging();
 
+        wrist.setEncoderAngle(WristConstants.kInitialAngle);
+        hood.setEncoderAngle(HoodConstants.kInitialAngle);
+
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
 
         CommandScheduler.getInstance()
@@ -91,9 +93,13 @@ public class RobotContainer {
         // mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
 
         // mainController.leftBumper.whileTrue(rollerCommands.setOpenLoop(0.5));
-        mainController.leftTrigger.whileTrue(superstructure.index());
-        mainController.leftBumper.whileTrue(rollerCommands.intake());
-        mainController.rightBumper.whileTrue(rollerCommands.spit());
+        // mainController.leftTrigger.whileTrue(superstructure.index());
+        mainController.leftTrigger.whileTrue(rollerCommands.intake());
+        mainController.leftTrigger.onFalse(rollerCommands.kill());
+        mainController.leftBumper.whileTrue(wristCommands.deploy());
+        mainController.leftBumper.onFalse(wristCommands.retract());
+
+        mainController.rightTrigger.whileTrue(superstructure.shoot());
 
         // sysid
         // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
@@ -112,8 +118,9 @@ public class RobotContainer {
                 "Autos", autoChooser); // , superstructure.score();, superstructure.score();
         SmartDashboard.putData("Field", smartDashboardField);
         printer.addDouble("Match Time", Timer::getMatchTime);
-        Logger.recordOutput("left shooter velocity", shooterLeft.getVelocity());
-        Logger.recordOutput("right shooter velocity", shooterRight.getVelocity());
+        printer.addDouble("left shooter velocity", shooterLeft::getVelocity);
+        printer.addDouble("right shooter velocity", shooterRight::getVelocity);
+        printer.addDouble("wantedhoodangle", autoDrive::getHoodAngle);
     }
 
     public void updateRobotPoseForSmartdashboard() {
@@ -278,15 +285,22 @@ public class RobotContainer {
     // private final LEDTriggers triggers = new LEDTriggers(superstructure);
     // private final LEDs leds = new LEDs(LEDConstants.m_candle, triggers);
 
-    // cams
-    AprilTagLimelight drivingCam =
+    // cams (need to change transforms)
+    AprilTagLimelight rightCam =
             new AprilTagLimelight(
-                    VisionConstants.kDriveCam,
+                    VisionConstants.kRightCam,
                     VisionConstants.driveMount,
                     swerve::getPigeonOrientation,
                     VisionConstants.baseStdDevs,
                     autoDrive::getAutoDriveEnabled);
 
+    AprilTagLimelight leftCam =
+            new AprilTagLimelight(
+                    VisionConstants.kLeftCam,
+                    VisionConstants.driveMount,
+                    swerve::getPigeonOrientation,
+                    VisionConstants.baseStdDevs,
+                    autoDrive::getAutoDriveEnabled);
     public final AutoCommands autoCommands =
             new AutoCommands(
                     swerve,

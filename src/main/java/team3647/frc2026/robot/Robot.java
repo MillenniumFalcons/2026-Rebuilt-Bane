@@ -88,7 +88,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledInit() {
-        m_robotContainer.drivingCam.setIMUMode(1);
+        m_robotContainer.rightCam.setIMUMode(1);
+        m_robotContainer.leftCam.setIMUMode(1);
         SignalLogger.stop();
         ModifiedSignalLogger.stop();
     }
@@ -125,7 +126,8 @@ public class Robot extends LoggedRobot {
         }
 
         ModifiedSignalLogger.stop();
-        m_robotContainer.drivingCam.setIMUMode(4);
+        m_robotContainer.rightCam.setIMUMode(4);
+        m_robotContainer.leftCam.setIMUMode(4);
     }
 
     @Override

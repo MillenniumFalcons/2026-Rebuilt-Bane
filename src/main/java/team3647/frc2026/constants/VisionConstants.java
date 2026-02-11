@@ -26,10 +26,12 @@ public class VisionConstants {
     // public static final String frontLLName = "limelight-front";
 
     // redesign cameras
-    public static final String kDriveCam = "limelight-pov";
+    //     public static final String kDriveCam = "limelight-pov";
     public static final String kCrossbarCam = "limelight-intake";
+    public static final String kLeftCam = "limelight-left";
+    public static final String kRightCam = "limelight-right";
 
-    // redesign transforms
+    // camera transforms
 
     public static final Transform3d driveMount =
             new Transform3d(

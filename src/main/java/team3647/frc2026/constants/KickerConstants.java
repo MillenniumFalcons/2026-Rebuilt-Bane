@@ -8,7 +8,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 public class KickerConstants {
     public static final TalonFX kMaster =
             new TalonFX(
-                    GlobalConstants.RollerIds.kMasterId,
+                    GlobalConstants.KickerIds.kMasterId,
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();

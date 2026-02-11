@@ -30,16 +30,16 @@ public class HoodCommands {
 
     public Command holdPositionAtCall() {
         return new Command() {
-            double degreeAtStart = HoodConstants.kInitialAngle;
+            Angle degreeAtStart = HoodConstants.kInitialAngle;
 
             @Override
             public void initialize() {
-                degreeAtStart = hood.getAngleDegs();
+                degreeAtStart = hood.getAngle();
             }
 
             @Override
             public void execute() {
-                hood.setAngleDegs(degreeAtStart);
+                hood.setAngle(degreeAtStart);
             }
 
             @Override

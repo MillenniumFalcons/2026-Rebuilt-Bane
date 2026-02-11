@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import team3647.frc2026.subsystems.Rollers;
 
 public class RollerCommands {
-    Rollers rollers;
+    final Rollers rollers;
 
     public RollerCommands(Rollers rollers) {
         this.rollers = rollers;

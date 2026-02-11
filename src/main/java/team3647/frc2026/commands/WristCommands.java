@@ -11,6 +11,14 @@ import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Wrist;
 
 public class WristCommands {
+    public Command deploy() {
+        return setAngleDeg(60);
+    }
+
+    public Command retract() {
+        return setAngleDeg(0);
+    }
+
     public Command setAngle(Angle angle) {
         return Commands.run(() -> wrist.setAngle(angle), wrist);
     }
@@ -29,16 +37,16 @@ public class WristCommands {
 
     public Command holdPositionAtCall() {
         return new Command() {
-            double degreeAtStart = WristConstants.kInitialAngle;
+            Angle degreeAtStart = WristConstants.kInitialAngle;
 
             @Override
             public void initialize() {
-                degreeAtStart = wrist.getAngleDegs();
+                degreeAtStart = wrist.getAngle();
             }
 
             @Override
             public void execute() {
-                wrist.setAngleDegs(degreeAtStart);
+                wrist.setAngle(degreeAtStart);
             }
 
             @Override

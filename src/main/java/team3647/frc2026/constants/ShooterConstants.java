@@ -50,9 +50,9 @@ public class ShooterConstants {
     public static final double kMaxCurrent = 100.0;
 
     // feedforward
-    public static final double kS = 0.42584; // find all of these when characterizing
-    public static final double kV = 0.13488; //
-    public static final double kA = 0.036548; //
+    public static final double kS = 0.1; // find all of these when characterizing
+    public static final double kV = 0.05; //
+    public static final double kA = 0.01; //
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
@@ -63,7 +63,7 @@ public class ShooterConstants {
     public static final double masterkD = 0;
 
     static {
-        kShooterOneConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kShooterOneConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kShooterTwoConfig.MotorOutput.Inverted =
                 InvertedValue.CounterClockwise_Positive; // these should be opposites of each other
 
@@ -81,7 +81,7 @@ public class ShooterConstants {
         kShooterOneConfig.Slot0.kV = kV;
         kShooterOneConfig.Slot0.kA = kA;
 
-        shooterOneMotor.NeutralMode = NeutralModeValue.Brake;
+        shooterOneMotor.NeutralMode = NeutralModeValue.Coast;
         shooterOneMotor.PeakReverseDutyCycle = 0;
         shooterOneMotor.Inverted =
                 InvertedValue.Clockwise_Positive; // this is a random value CHANGE
@@ -97,10 +97,10 @@ public class ShooterConstants {
         kShooterTwoConfig.Slot0.kV = kV;
         kShooterTwoConfig.Slot0.kA = kA;
 
-        shooterTwoMotor.NeutralMode = NeutralModeValue.Brake;
+        shooterTwoMotor.NeutralMode = NeutralModeValue.Coast;
         shooterTwoMotor.PeakReverseDutyCycle = 0;
         shooterTwoMotor.Inverted =
-                InvertedValue.Clockwise_Positive; // this is a random value CHANGE
+                InvertedValue.CounterClockwise_Positive; // this is a random value CHANGE
 
         shooterTwoCurrent.StatorCurrentLimitEnable = true;
         shooterTwoCurrent.StatorCurrentLimit = kMaxCurrent;

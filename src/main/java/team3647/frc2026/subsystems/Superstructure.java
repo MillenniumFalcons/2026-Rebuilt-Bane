@@ -1,5 +1,8 @@
 package team3647.frc2026.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.DoubleSupplier;
@@ -23,6 +26,7 @@ public class Superstructure {
 
     public final DoubleSupplier hoodAngle;
     public final DoubleSupplier shotSpeed;
+    public Angle wantedIntakeAngle = Degrees.of(70);
 
     public Superstructure(
             ShooterLeft shooterOne,
@@ -45,13 +49,19 @@ public class Superstructure {
         this.shotSpeed = shotSpeed;
     }
 
+    public Angle getIntakeAngle() {
+        return wantedIntakeAngle;
+    }
+
     public Command prep() {
         return hoodCommands.setAngleDeg(hoodAngle);
     }
 
-    public Command shoot(double velocity, double tolerance) {
+    public Command shoot() {
         // fix the wait time thingy
-        return Commands.parallel(shooterCommands.setVelocity(velocity));
+        return Commands.parallel(
+                shooterCommands.setVelocity(15),
+                Commands.sequence(Commands.waitSeconds(1), index()));
     }
 
     public Command index() {
