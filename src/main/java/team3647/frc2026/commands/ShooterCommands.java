@@ -1,22 +1,29 @@
 package team3647.frc2026.commands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.HashMap;
 import java.util.Map;
+
+import dev.doglog.DogLog;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
 import team3647.lib.LinearRegression;
+import team3647.lib.tunables.TunableNumber;
 
 public class ShooterCommands {
     ShooterLeft shooterOne;
     ShooterRight shooterTwo;
+    TunableNumber leftVel, rightVel;
 
     public ShooterCommands(ShooterLeft shooterOne, ShooterRight shooterTwo) {
         this.shooterOne = shooterOne;
         this.shooterTwo = shooterTwo;
+        leftVel = new TunableNumber("Left Shooter Tunable", 0.0);
+        rightVel = new TunableNumber("Right Shooter Tunable", 0.0);
     }
 
     public Command setOpenLoop(double output) {
@@ -45,6 +52,18 @@ public class ShooterCommands {
         return Commands.parallel(
                 Commands.run(() -> shooterOne.setVelocity(vel), shooterOne),
                 Commands.run(() -> shooterTwo.setVelocity(vel), shooterTwo));
+    }
+
+    public Command tunableVelocity(){
+        return Commands.run(
+            ()-> {
+                shooterOne.setVelocity(leftVel.get());
+                DogLog.log("Left Shooter Velocity", shooterOne.getVelocity());
+                DogLog.log("It thinks its here", leftVel.get());
+                shooterTwo.setVelocity(rightVel.get());
+                DogLog.log("Right SHooter Velocity", shooterTwo.getVelocity());
+            }
+            , shooterOne, shooterTwo);
     }
 
     public boolean isAtVelocity(double velocity, double tolerance) {

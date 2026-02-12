@@ -50,20 +50,20 @@ public class ShooterConstants {
     public static final double kMaxCurrent = 100.0;
 
     // feedforward from sysid left shooter
-    public static final double kS = 0.13825; // find all of these when characterizing
-    public static final double kV = 0.11652; //
-    public static final double kA = 0.0059555; //
+    public static final double kS = 0.014214; // find all of these when characterizing
+    public static final double kV = 0.0095; //
+    public static final double kA = 0.0025; //
 
     // sysid right shooter
-    public static final double kSright = 0.012392; // find all of these when characterizing
-    public static final double kVright = 0.11641; //
-    public static final double kAright = 0.007357; //
+    public static final double kSright = 0.014214; // find all of these when characterizing
+    public static final double kVright = 0.0095; //
+    public static final double kAright = 0.0025; //
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
     // pid
-    public static final double shooterOnekP = 0.05;
-    public static final double shooterTwokP = 0.05;
+    public static final double shooterOnekP = 0;
+    public static final double shooterTwokP = 0;
     public static final double masterkI = 0;
     public static final double masterkD = 0;
 
@@ -98,9 +98,9 @@ public class ShooterConstants {
         kShooterTwoConfig.Slot0.kP = shooterTwokP;
         kShooterTwoConfig.Slot0.kI = masterkI;
         kShooterTwoConfig.Slot0.kD = masterkD;
-        kShooterTwoConfig.Slot0.kS = kS;
-        kShooterTwoConfig.Slot0.kV = kV;
-        kShooterTwoConfig.Slot0.kA = kA;
+        kShooterTwoConfig.Slot0.kS = kSright;
+        kShooterTwoConfig.Slot0.kV = kVright;
+        kShooterTwoConfig.Slot0.kA = kAright;
 
         shooterTwoMotor.NeutralMode = NeutralModeValue.Coast;
         shooterTwoMotor.PeakReverseDutyCycle = 0;

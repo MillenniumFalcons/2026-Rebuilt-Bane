@@ -41,7 +41,6 @@ import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.SwerveDrive;
 import team3647.frc2026.subsystems.Wrist;
 import team3647.frc2026.util.AutoDrive;
-// import team3647.frc2026.util.LEDTriggers;
 import team3647.frc2026.util.RobotTracker;
 import team3647.frc2026.util.TargetingUtil;
 import team3647.lib.GroupPrinter;
@@ -94,22 +93,23 @@ public class RobotContainer {
 
         // mainController.leftBumper.whileTrue(rollerCommands.setOpenLoop(0.5));
         // mainController.leftTrigger.whileTrue(superstructure.index());
-        mainController.leftTrigger.whileTrue(rollerCommands.intake());
-        mainController.leftTrigger.onFalse(rollerCommands.kill());
-        mainController.leftBumper.whileTrue(wristCommands.deploy());
-        mainController.leftBumper.onFalse(wristCommands.retract());
+        // mainController.leftTrigger.whileTrue(rollerCommands.intake());
+        // mainController.leftTrigger.onFalse(rollerCommands.kill());
+        // mainController.leftBumper.whileTrue(wristCommands.deploy());
+        // mainController.leftBumper.onFalse(wristCommands.retract());
 
-        mainController.rightTrigger.whileTrue(superstructure.shoot());
+        // mainController.rightTrigger.whileTrue(superstructure.shoot());
+        mainController.rightTrigger.whileTrue(shooterCommands.tunableVelocity());
 
         // sysid
         // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
         // mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());
         // mainController.dPadLeft.onTrue(swerve.steerRoutineDynamic());
         // mainController.dPadRight.onTrue(swerve.steerRoutineQuasiStatic());
-        mainController.buttonY.onTrue(shooterRight.getSysIdDynamic());
-        mainController.buttonA.onTrue(shooterRight.getSysIdQuasiStatic());
-        mainController.buttonX.onTrue(shooterRight.getSysIdDynamicReverse());
-        mainController.buttonB.onTrue(shooterRight.getSysIdQuasistaticReverse());
+        mainController.buttonY.whileTrue(shooterRight.getSysIdDynamic());
+        mainController.buttonA.whileTrue(shooterRight.getSysIdQuasiStatic());
+        mainController.buttonX.whileTrue(shooterRight.getSysIdDynamicReverse());
+        mainController.buttonB.whileTrue(shooterRight.getSysIdQuasistaticReverse());
     }
 
     private void configureSmartDashboardLogging() {

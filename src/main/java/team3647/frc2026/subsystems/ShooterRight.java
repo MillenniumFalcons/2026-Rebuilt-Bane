@@ -1,8 +1,8 @@
 package team3647.frc2026.subsystems;
 
+import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,17 +10,20 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
+import team3647.frc2026.constants.ShooterConstants;
 import team3647.lib.ModifiedSignalLogger;
 import team3647.lib.TalonFXSubsystem;
+import team3647.lib.tunables.TunableSlotConfigs;
 
 public class ShooterRight extends TalonFXSubsystem {
 
+    TunableSlotConfigs configs;
     SysIdRoutine sysIdRoutine =
             new SysIdRoutine(
                     new Config(
                             Units.Volts.of(6).per(Units.Second),
                             Units.Volts.of(30),
-                            Units.Seconds.of(4),
+                            Units.Seconds.of(8),
                             ModifiedSignalLogger.logState("right shooter routine")),
                     new Mechanism(
                             (Voltage volts) -> setVoltage(volts.in(Units.Volt)),
@@ -37,6 +40,8 @@ public class ShooterRight extends TalonFXSubsystem {
             double kDt) {
         super(motor, velocityConversion, positionConversion, nominalVoltage, kDt);
         this.addFollower(slave, MotorAlignmentValue.Aligned);
+                configs = new TunableSlotConfigs(motor, 0, "Right Shooter KV Tunable", SlotConfigs.from(ShooterConstants.kShooterOneConfig.Slot0));
+
     }
 
     public void setOpenLoop(double percent) {
