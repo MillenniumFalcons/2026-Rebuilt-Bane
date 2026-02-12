@@ -11,6 +11,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentric;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveRotation;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveSteerGains;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveTranslation;
+import com.fasterxml.jackson.databind.deser.impl.NullsFailProvider;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -28,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
+
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.Logger;
@@ -72,6 +75,8 @@ public class SwerveDrive extends TunerSwerveDrivetrain
 
     private static final double kSimLoopPeriod = 0.002;
 
+
+
     // real-specific output stuff
     public SwerveRequest masterRequest = new SwerveRequest.Idle();
     public SysIdSwerveRotation spinSysidRequest = new SysIdSwerveRotation();
@@ -92,56 +97,61 @@ public class SwerveDrive extends TunerSwerveDrivetrain
                     new team3647.lib.team254.swerve.ChassisSpeeds(),
                     new team3647.lib.team254.swerve.SwerveModuleState[4]);
 
-    // sysid stuff
-    SysIdRoutine driveRoutine =
-            new SysIdRoutine(
-                    new Config(null, null, null, ModifiedSignalLogger.logState("drive routine")),
-                    new Mechanism(
-                            (Voltage volts) -> setControl(driveVoltageRequest.withVolts(volts)),
-                            null,
-                            this,
-                            "drive routine voltage"));
 
-    SysIdRoutine steerRoutine =
-            new SysIdRoutine(
-                    new Config(null, null, null, ModifiedSignalLogger.logState("steer routine")),
-                    new Mechanism(
-                            (Voltage volts) -> setControl(steerVoltageRequest.withVolts(volts)),
-                            null,
-                            this,
-                            "steer routine voltage"));
-
+        //sysid stuff
+    SysIdRoutine driveRoutine = new SysIdRoutine(
+        new Config(null,
+            null,
+            null,
+            ModifiedSignalLogger.logState("drive routine")),
+        new Mechanism(
+            (Voltage volts) -> setControl(driveVoltageRequest.withVolts(volts)),
+            null, 
+            this, 
+            "drive routine voltage"));
+    
+    SysIdRoutine steerRoutine = new SysIdRoutine(
+        new Config(null,
+            null,
+            null,
+            ModifiedSignalLogger.logState("steer routine")),
+        new Mechanism(
+            (Voltage volts) -> setControl(steerVoltageRequest.withVolts(volts)),
+            null, 
+            this, 
+            "steer routine voltage"));
+    
     SysIdRoutine driveRoutineFOC =
-            new SysIdRoutine(
-                    new SysIdRoutine.Config(
-                            Units.Volts.of(10).per(Units.Second),
-                            Units.Volts.of(30),
-                            Units.Seconds.of(4),
-                            ModifiedSignalLogger.logState("Drive")),
-                    new SysIdRoutine.Mechanism(
-                            (Voltage volts) ->
-                                    setControl(
-                                            this.driveFOCRequest.withVoltage(
-                                                    volts.in(Units.Volts))),
-                            null,
-                            this,
-                            "Drive motor foc"));
+                new SysIdRoutine(
+                        new SysIdRoutine.Config(
+                                Units.Volts.of(10).per(Units.Second),
+                                Units.Volts.of(30),
+                                Units.Seconds.of(4),
+                                ModifiedSignalLogger.logState("Drive")),
+                        new SysIdRoutine.Mechanism(
+                                (Voltage volts) ->
+                                        setControl(
+                                                this.driveFOCRequest.withVoltage(
+                                                        volts.in(Units.Volts))),
+                                null,
+                                this,
+                                "Drive motor foc"));
 
-    SysIdRoutine steerRoutineFOC =
-            new SysIdRoutine(
-                    new SysIdRoutine.Config(
-                            Units.Volts.of(3).per(Units.Second),
-                            Units.Volts.of(10),
-                            Units.Seconds.of(4),
-                            ModifiedSignalLogger.logState("steer routine")),
-                    new SysIdRoutine.Mechanism(
-                            (Voltage volts) ->
-                                    setControl(
-                                            this.steerFOCRequest.withVoltage(
-                                                    volts.in(Units.Volts))),
-                            null,
-                            this,
-                            "steer motor FOC"));
+        SysIdRoutine steerRoutineFOC =
+                new SysIdRoutine(
+                        new SysIdRoutine.Config(
+                                Units.Volts.of(3).per(Units.Second),
+                                Units.Volts.of(10),
+                                Units.Seconds.of(4),
+                                ModifiedSignalLogger.logState("steer routine")),
+                        new SysIdRoutine.Mechanism(
+                                (Voltage volts) ->
+                                        setControl(
+                                                this.steerFOCRequest.withVoltage(
+                                                        volts.in(Units.Volts))),
+                                null,
+                                this,
+                                "steer motor FOC"));
 
     public SwerveDrive(
             SwerveDrivetrainConstants swerveDriveConstants,
@@ -166,6 +176,8 @@ public class SwerveDrive extends TunerSwerveDrivetrain
         this.limits.kMaxDriveVelocity = 5; // TunerConstants.kSpeedAt12VoltsMps;
         this.limits.kMaxDriveAcceleration = 5 / 0.1; // defaultAccel;
         this.limits.kMaxSteeringVelocity = Units.Degree.of(1500).in(Units.Radians);
+
+
     }
 
     @AutoLog
@@ -292,7 +304,6 @@ public class SwerveDrive extends TunerSwerveDrivetrain
     }
 
     public void setRobotPose(Pose2d pose) {
-
         resetPose(pose);
         periodicIO = new PeriodicIOAutoLogged();
     }

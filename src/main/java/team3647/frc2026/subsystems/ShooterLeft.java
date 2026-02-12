@@ -17,9 +17,9 @@ public class ShooterLeft extends TalonFXSubsystem {
     SysIdRoutine sysIdRoutine =
             new SysIdRoutine(
                     new Config(
-                            null,
-                            null,
-                            null,
+                            Units.Volts.of(6).per(Units.Second),
+                            Units.Volts.of(30),
+                            Units.Seconds.of(4),
                             ModifiedSignalLogger.logState("left shooter routine")),
                     new Mechanism(
                             (Voltage volts) -> setVoltage(volts.in(Units.Volt)),
@@ -66,5 +66,13 @@ public class ShooterLeft extends TalonFXSubsystem {
 
     public Command getSysIdQuasiStatic() {
         return sysIdRoutine.quasistatic(Direction.kForward);
+    }
+
+    public Command getSysIdDynamicReverse() {
+        return sysIdRoutine.dynamic(Direction.kReverse);
+    }
+
+    public Command getSysIdQuasistaticReverse() {
+        return sysIdRoutine.quasistatic(Direction.kReverse);
     }
 }

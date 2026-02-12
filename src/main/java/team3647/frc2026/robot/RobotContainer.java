@@ -106,8 +106,10 @@ public class RobotContainer {
         // mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());
         // mainController.dPadLeft.onTrue(swerve.steerRoutineDynamic());
         // mainController.dPadRight.onTrue(swerve.steerRoutineQuasiStatic());
-        // mainController.buttonY.onTrue(shooterLeft.getSysIdDynamic());
-        // mainController.buttonA.onTrue(shooterLeft.getSysIdQuasiStatic());
+        mainController.buttonY.onTrue(shooterRight.getSysIdDynamic());
+        mainController.buttonA.onTrue(shooterRight.getSysIdQuasiStatic());
+        mainController.buttonX.onTrue(shooterRight.getSysIdDynamicReverse());
+        mainController.buttonB.onTrue(shooterRight.getSysIdQuasistaticReverse());
     }
 
     private void configureSmartDashboardLogging() {

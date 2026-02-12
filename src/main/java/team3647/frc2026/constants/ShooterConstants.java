@@ -49,10 +49,15 @@ public class ShooterConstants {
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxCurrent = 100.0;
 
-    // feedforward
-    public static final double kS = 0.1; // find all of these when characterizing
-    public static final double kV = 0.05; //
-    public static final double kA = 0.01; //
+    // feedforward from sysid left shooter
+    public static final double kS = 0.13825; // find all of these when characterizing
+    public static final double kV = 0.11652; //
+    public static final double kA = 0.0059555; //
+
+    // sysid right shooter
+    public static final double kSright = 0.012392; // find all of these when characterizing
+    public static final double kVright = 0.11641; //
+    public static final double kAright = 0.007357; //
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
