@@ -21,23 +21,23 @@ public class WristConstants {
 
     public static final Angle kInitialAngle = kMinAngle;
 
-    // 60 degrees per 4.59 rotations (this was full range of motion)
+    // 60 degrees per 4.4 rotations (this was full range of motion)
     public static final double kNativeToDeg =
-            70 / 4.59; // this converts rotations to degrees so the units should be degrees/rotation
+            70 / 4.4; // this converts rotations to degrees so the units should be degrees/rotation
 
     static {
-        kMasterConfig.Slot0.withKP(10); // change these values
+        kMasterConfig.Slot0.withKP(5); // change these values
         kMasterConfig.Slot0.withKI(0);
         kMasterConfig.Slot0.withKD(0.1);
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        // kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-        //         kMaxAngle.in(Degree) / kNativeToDeg;
-        // kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        // kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
-        //         kMinAngle.in(Degree) / kNativeToDeg;
-        // kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+                kMaxAngle.in(Degree) / kNativeToDeg;
+        kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+                kMinAngle.in(Degree) / kNativeToDeg;
+        kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
         kMaster.getConfigurator().apply(kMasterConfig);
     }

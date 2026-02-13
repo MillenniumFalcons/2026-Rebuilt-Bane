@@ -191,13 +191,13 @@ public class AprilTagLimelight extends VirtualSubsystem implements AprilTagCamer
                         ? LimelightHelpers.getBotPoseEstimate_wpiBlue(name)
                         : LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
         
-        System.out.println(name+ " botpose exists?"+!botPose.isEmpty());
+        //System.out.println(name+ " botpose exists?"+!botPose.isEmpty());
 
         var botPoseRaw = LimelightHelpers.getBotPose3d_wpiBlue(name);
-        DriverStation.reportError("1", false);
+        //DriverStation.reportError("1", false);
 
         if (botPose.isEmpty() || botPoseRaw.isEmpty()) {
-            DriverStation.reportError("2", false);
+            //DriverStation.reportError("2", false);
 
             return Optional.empty();
         }

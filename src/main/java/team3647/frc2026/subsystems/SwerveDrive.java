@@ -428,7 +428,7 @@ public class SwerveDrive extends TunerSwerveDrivetrain
 
     public void addVisionData(VisionMeasurement data) {
         periodicIO.visionPose = data.pose;
-        DriverStation.reportError("is adding data", false);
+        //DriverStation.reportError("is adding data", false);
         // SmartDashboard.putNumber("timestamped viison", data.timestamp);
         // SignalLogger.writeDoubleArray(
         // "vision pose",

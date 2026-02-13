@@ -19,7 +19,7 @@ public class GlobalConstants {
     public static double kNominalVoltage = 11.0;
 
     public class WristIds {
-        public static final int kMasterId = 14;
+        public static final int kMasterId = 30;
     }
 
     public class RollerIds {

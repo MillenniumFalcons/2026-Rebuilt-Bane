@@ -12,7 +12,7 @@ public class KickerCommands {
     }
 
     public Command kick() {
-        return Commands.run(() -> kicker.setOpenLoop(0.5), kicker);
+        return Commands.run(() -> kicker.setOpenLoop(0.8), kicker);
     }
 
     public boolean currentGreater(double current) {

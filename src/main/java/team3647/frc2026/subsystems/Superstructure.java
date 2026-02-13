@@ -60,7 +60,7 @@ public class Superstructure {
     public Command shoot() {
         // fix the wait time thingy
         return Commands.parallel(
-                shooterCommands.setVelocity(15),
+                shooterCommands.setVelocity(30),
                 Commands.sequence(Commands.waitSeconds(1), index()));
     }
 

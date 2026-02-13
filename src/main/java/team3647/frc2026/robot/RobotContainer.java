@@ -94,24 +94,23 @@ public class RobotContainer {
 
         // mainController.leftBumper.whileTrue(rollerCommands.setOpenLoop(0.5));
         // mainController.leftTrigger.whileTrue(superstructure.index());
-        // mainController.leftTrigger.whileTrue(rollerCommands.intake());
-        // mainController.leftTrigger.onFalse(rollerCommands.kill());
-        // mainController.leftBumper.whileTrue(wristCommands.deploy());
-        // mainController.leftBumper.onFalse(wristCommands.retract());
+        mainController.leftTrigger.whileTrue(rollerCommands.intake());
+        mainController.leftTrigger.onFalse(rollerCommands.kill());
+        mainController.leftBumper.whileTrue(wristCommands.deploy());
+        mainController.rightBumper.whileTrue(wristCommands.retract());
 
         mainController.rightTrigger.whileTrue(superstructure.shoot());
-        mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
-        mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        // mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive())
 
         // sysid
         // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
         // mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());
         // mainController.dPadLeft.onTrue(swerve.steerRoutineDynamic());
         // mainController.dPadRight.onTrue(swerve.steerRoutineQuasiStatic());
-        mainController.buttonY.whileTrue(shooterRight.getSysIdDynamic());
-        mainController.buttonA.whileTrue(shooterRight.getSysIdQuasiStatic());
-        mainController.buttonX.whileTrue(shooterRight.getSysIdDynamicReverse());
-        mainController.buttonB.whileTrue(shooterRight.getSysIdQuasistaticReverse());
+        // mainController.buttonY.whileTrue(shooterRight.getSysIdDynamic());
+        // mainController.buttonA.whileTrue(shooterRight.getSysIdQuasiStatic());
+        // mainController.buttonX.whileTrue(shooterRight.getSysIdDynamicReverse());
+        // mainController.buttonB.whileTrue(shooterRight.getSysIdQuasistaticReverse());
     }
 
     private void configureSmartDashboardLogging() {
