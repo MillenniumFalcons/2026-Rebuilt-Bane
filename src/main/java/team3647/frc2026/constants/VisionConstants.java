@@ -40,6 +40,20 @@ public class VisionConstants {
                     Inches.of(15),
                     new Rotation3d(Degrees.of(0), Degrees.of(-19.653), Degrees.of(0)));
 
+        public static final Transform3d leftMount =
+            new Transform3d(
+                    Inches.of(7.110),
+                    Inches.of(-11.201),
+                    Inches.of(19.995),
+                    new Rotation3d(Degrees.of(0), Degrees.of(28.1), Degrees.of(31)));
+
+        public static final Transform3d rightMount =
+            new Transform3d(
+                    Inches.of(6.828),
+                    Inches.of(11.031),
+                    Inches.of(20.612),
+                    new Rotation3d(Degrees.of(0), Degrees.of(28.1), Degrees.of(-31)));
+
     //     public static final Transform3d rightMount =
     //             new Transform3d(
     //                     Inches.of(6.75),

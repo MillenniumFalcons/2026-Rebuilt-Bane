@@ -1,5 +1,6 @@
 package team3647.frc2026.subsystems;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -11,6 +12,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentric;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveRotation;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveSteerGains;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveTranslation;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -19,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -41,6 +45,7 @@ import team3647.lib.team254.swerve.SwerveSetpoint;
 import team3647.lib.team254.swerve.SwerveSetpointGenerator;
 import team3647.lib.team9442.AllianceObserver;
 import team3647.lib.vision.Orientation;
+import team3647.lib.vision.VisionMeasurement;
 
 // import team3647.lib.vision.VisionMeasurement;
 
@@ -237,7 +242,7 @@ public class SwerveDrive extends TunerSwerveDrivetrain
         setisAccel();
         this.setControl(this.masterRequest);
 
-        Logger.recordOutput("Robot/pose", periodicIO.pose);
+        // Logger.recordOutput("Robot/pose", periodicIO.pose);
         // simpleSim.periodic();
 
         // SmartDashboard.putNumber("heading", getRawHeading());
@@ -411,31 +416,34 @@ public class SwerveDrive extends TunerSwerveDrivetrain
         return ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getOdoRot());
     }
 
-    // public boolean shouldAddData(VisionMeasurement measurement) {
-    //     double distance = measurement.pose.minus(getOdoPose()).getTranslation().getNorm();
-    //     double angle =
-    //             measurement.pose.getRotation().minus(getOdoPose().getRotation()).getDegrees();
-    //     return (distance < MathUtil.clamp(getVel(), 0.25, 1) && Math.abs(angle) < 15)
-    //             || DriverStation.isAutonomous();
-    // }
+    public boolean shouldAddData(VisionMeasurement measurement) {
+        double distance = measurement.pose.minus(getOdoPose()).getTranslation().getNorm();
+        double angle =
+                measurement.pose.getRotation().minus(getOdoPose().getRotation()).getDegrees();
+        System.out.println((distance < MathUtil.clamp(getVel(), 0.25, 1) && Math.abs(angle) < 15)
+                || DriverStation.isAutonomous());
+        return (distance < MathUtil.clamp(getVel(), 0.25, 1) && Math.abs(angle) < 15)
+                || DriverStation.isAutonomous();
+    }
 
-    // public void addVisionData(VisionMeasurement data) {
-    //     periodicIO.visionPose = data.pose;
-    //     // SmartDashboard.putNumber("timestamped viison", data.timestamp);
-    //     // SignalLogger.writeDoubleArray(
-    //     // "vision pose",
-    //     // new double[] {
-    //     // data.pose.getX(),
-    //     // data.pose.getY(),
-    //     // data.pose.getRotation().getDegrees(),
-    //     // data.timestamp
-    //     // });
-    //     addVisionMeasurement(data.pose, Utils.fpgaToCurrentTime(data.timestamp), data.stdDevs);
-    //     // if(RobotBase.isSimulation()){
-    //     // simpleSim.addVisionEstimation(data.pose, data.timestamp, data.stdDevs);
+    public void addVisionData(VisionMeasurement data) {
+        periodicIO.visionPose = data.pose;
+        DriverStation.reportError("is adding data", false);
+        // SmartDashboard.putNumber("timestamped viison", data.timestamp);
+        // SignalLogger.writeDoubleArray(
+        // "vision pose",
+        // new double[] {
+        // data.pose.getX(),
+        // data.pose.getY(),
+        // data.pose.getRotation().getDegrees(),
+        // data.timestamp
+        // });
+        addVisionMeasurement(data.pose, Utils.fpgaToCurrentTime(data.timestamp), data.stdDevs);
+        // if(RobotBase.isSimulation()){
+        // simpleSim.addVisionEstimation(data.pose, data.timestamp, data.stdDevs);
 
-    //     // }
-    // }
+        // }
+    }
 
     public void onAllianceFound(Alliance color) {
         periodicIO.color = color;

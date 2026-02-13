@@ -49,6 +49,7 @@ import team3647.lib.team9442.AllianceChecker;
 import team3647.lib.team9442.AutoChooser;
 import team3647.lib.vision.AprilTagLimelight;
 import team3647.lib.vision.NeuralDetectorLimelight;
+import team3647.lib.vision.VisionController;
 
 public class RobotContainer {
     public final Joysticks mainController = new Joysticks(0);
@@ -98,8 +99,9 @@ public class RobotContainer {
         // mainController.leftBumper.whileTrue(wristCommands.deploy());
         // mainController.leftBumper.onFalse(wristCommands.retract());
 
-        // mainController.rightTrigger.whileTrue(superstructure.shoot());
-        mainController.rightTrigger.whileTrue(shooterCommands.tunableVelocity());
+        mainController.rightTrigger.whileTrue(superstructure.shoot());
+        mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
+        mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
 
         // sysid
         // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
@@ -291,7 +293,7 @@ public class RobotContainer {
     AprilTagLimelight rightCam =
             new AprilTagLimelight(
                     VisionConstants.kRightCam,
-                    VisionConstants.driveMount,
+                    VisionConstants.rightMount,
                     swerve::getPigeonOrientation,
                     VisionConstants.baseStdDevs,
                     autoDrive::getAutoDriveEnabled);
@@ -299,10 +301,19 @@ public class RobotContainer {
     AprilTagLimelight leftCam =
             new AprilTagLimelight(
                     VisionConstants.kLeftCam,
-                    VisionConstants.driveMount,
+                    VisionConstants.leftMount,
                     swerve::getPigeonOrientation,
                     VisionConstants.baseStdDevs,
                     autoDrive::getAutoDriveEnabled);
+
+    public final VisionController controller =
+            new VisionController(
+                    swerve::addVisionData,
+                    swerve::shouldAddData,
+                    swerve::resetPose,
+                    rightCam,
+                    leftCam);
+
     public final AutoCommands autoCommands =
             new AutoCommands(
                     swerve,

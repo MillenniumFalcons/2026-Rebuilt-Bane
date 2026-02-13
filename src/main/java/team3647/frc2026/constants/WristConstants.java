@@ -32,12 +32,12 @@ public class WristConstants {
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-                kMaxAngle.in(Degree) / kNativeToDeg;
-        kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
-                kMinAngle.in(Degree) / kNativeToDeg;
-        kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        // kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        //         kMaxAngle.in(Degree) / kNativeToDeg;
+        // kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        // kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        //         kMinAngle.in(Degree) / kNativeToDeg;
+        // kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
         kMaster.getConfigurator().apply(kMasterConfig);
     }
