@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
 public class ShooterConstants {
@@ -50,24 +51,33 @@ public class ShooterConstants {
     public static final double kMaxCurrent = 100.0;
 
     // feedforward from sysid left shooter
-    public static final double kS = 0.014214; // find all of these when characterizing
-    public static final double kV = 0.0095; //
-    public static final double kA = 0.0025; //
+    public static final double kS = 0.089229; // find all of these when characterizing
+    public static final double kV = 0.117; //
+    public static final double kA = 0.0065586; //
 
     // sysid right shooter
-    public static final double kSright = 0.014214; // find all of these when characterizing
-    public static final double kVright = 0.0095; //
-    public static final double kAright = 0.0025; //
+    public static final double kSright = 0.0; // find all of these when characterizing
+    public static final double kVright = 0.11696; //
+    public static final double kAright = 0.0081703; //
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
     // pid
-    public static final double shooterOnekP = 0;
-    public static final double shooterTwokP = 0;
+    public static final double shooterOnekP = 0.0010538;
+    public static final double shooterTwokP = 0.0049532;
     public static final double masterkI = 0;
     public static final double masterkD = 0;
 
+    public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
+
     static {
+        shootSpeedMap.put(1.5, 16.0);
+        shootSpeedMap.put(2.0, 17.25);
+        shootSpeedMap.put(2.5, 18.0);
+        shootSpeedMap.put(3.0, 18.5);
+        shootSpeedMap.put(3.5, 18.75);
+        shootSpeedMap.put(4.0, 19.0);
+
         kShooterOneConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kShooterTwoConfig.MotorOutput.Inverted =
                 InvertedValue.CounterClockwise_Positive; // these should be opposites of each other

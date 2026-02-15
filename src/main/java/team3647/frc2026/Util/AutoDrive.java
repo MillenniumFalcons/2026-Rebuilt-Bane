@@ -34,7 +34,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(3.5, 0, 0.2, new Constraints(10, 10));
+            new ProfiledPIDController(3.7, 0, 0.2, new Constraints(10, 10));
 
     private final PIDController intakeXController, intakeYController, intakeRotController;
 
@@ -49,7 +49,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     private final TargetingUtil targeting;
 
-    private static final double ff = 0.15;
+    private static final double ff = 1.25;
 
     public AutoDrive(
             Supplier<Pose2d> odoPoseFunction,
@@ -148,7 +148,11 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         // FF = (Linear Speed * FF Gain) * sign of the error
         // This effectively "boosts" the rotation command more when moving fast
-        double customFF = (linearVelocityMag * ff) * Math.signum(angularError);
+        double customFF = profiledRotController.getSetpoint().velocity;
+
+        Logger.recordOutput("linear velocity", linearVelocityMag);
+        Logger.recordOutput("angular error", angularError);
+        Logger.recordOutput("ff output", customFF);
 
         double rotComp = -(rotFeedback + customFF);
 

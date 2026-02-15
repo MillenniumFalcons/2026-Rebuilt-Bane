@@ -6,6 +6,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
 import team3647.frc2026.commands.KickerCommands;
@@ -58,9 +59,14 @@ public class Superstructure {
     }
 
     public Command shoot() {
+
         // fix the wait time thingy
+        // return Commands.parallel(
+        //         shooterCommands.shoot(),
+        //         Commands.sequence(Commands.waitSeconds(1), index()));
         return Commands.parallel(
-                shooterCommands.setVelocity(30),
+                shooterCommands.setVelocity(shotSpeed),
+                Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
                 Commands.sequence(Commands.waitSeconds(1), index()));
     }
 

@@ -3,8 +3,6 @@ package team3647.frc2026.subsystems;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-
-import dev.doglog.DogLog;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.lib.ModifiedSignalLogger;
 import team3647.lib.TalonFXSubsystem;
-import team3647.lib.tunables.TunableNumber;
 import team3647.lib.tunables.TunableSlotConfigs;
 
 public class ShooterLeft extends TalonFXSubsystem {
@@ -44,8 +41,12 @@ public class ShooterLeft extends TalonFXSubsystem {
             double kDt) {
         super(motor, velocityConversion, positionConversion, nominalVoltage, kDt);
         this.addFollower(slave, MotorAlignmentValue.Aligned);
-        configs = new TunableSlotConfigs(motor, 0, "Left Shooter KV Tunable", SlotConfigs.from(ShooterConstants.kShooterOneConfig.Slot0));
-
+        configs =
+                new TunableSlotConfigs(
+                        motor,
+                        0,
+                        "Left Shooter KV Tunable",
+                        SlotConfigs.from(ShooterConstants.kShooterOneConfig.Slot0));
     }
 
     public void setOpenLoop(double percent) {
@@ -54,6 +55,10 @@ public class ShooterLeft extends TalonFXSubsystem {
 
     public double getMasterCurrent() {
         return super.getMasterCurrent();
+    }
+
+    public void setVelocityVoltage(double velocity) {
+        super.setVelocityVoltage(velocity, 0);
     }
 
     public void setVelocity(double velocity) {
@@ -85,5 +90,4 @@ public class ShooterLeft extends TalonFXSubsystem {
     public Command getSysIdQuasistaticReverse() {
         return sysIdRoutine.quasistatic(Direction.kReverse);
     }
-
 }

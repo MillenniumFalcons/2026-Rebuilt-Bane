@@ -1,14 +1,12 @@
 package team3647.frc2026.commands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.HashMap;
 import java.util.Map;
-
-import dev.doglog.DogLog;
+import java.util.function.DoubleSupplier;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
 import team3647.lib.LinearRegression;
@@ -18,12 +16,14 @@ public class ShooterCommands {
     ShooterLeft shooterOne;
     ShooterRight shooterTwo;
     TunableNumber leftVel, rightVel;
+    TunableNumber shootSpeed;
 
     public ShooterCommands(ShooterLeft shooterOne, ShooterRight shooterTwo) {
         this.shooterOne = shooterOne;
         this.shooterTwo = shooterTwo;
         leftVel = new TunableNumber("Left Shooter Tunable", 0.0);
         rightVel = new TunableNumber("Right Shooter Tunable", 0.0);
+        shootSpeed = new TunableNumber("shoot speed", 15);
     }
 
     public Command setOpenLoop(double output) {
@@ -48,22 +48,34 @@ public class ShooterCommands {
         return Commands.runOnce(() -> shooterTwo.setOpenLoop(0), shooterTwo).withTimeout(0.3);
     }
 
-    public Command setVelocity(double vel) {
-        return Commands.parallel(
-                Commands.run(() -> shooterOne.setVelocity(vel), shooterOne),
-                Commands.run(() -> shooterTwo.setVelocity(vel), shooterTwo));
+    public Command setVelocity(DoubleSupplier vel) {
+        return Commands.run(
+                () -> {
+                    shooterOne.setVelocityVoltage(vel.getAsDouble());
+                    shooterTwo.setVelocityVoltage(vel.getAsDouble());
+                },
+                shooterOne,
+                shooterTwo);
     }
 
-    public Command tunableVelocity(){
+    public Command shoot() {
         return Commands.run(
-            ()-> {
-                shooterOne.setVelocity(leftVel.get());
-                DogLog.log("Left Shooter Velocity", shooterOne.getVelocity());
-                DogLog.log("It thinks its here", leftVel.get());
-                shooterTwo.setVelocity(rightVel.get());
-                DogLog.log("Right SHooter Velocity", shooterTwo.getVelocity());
-            }
-            , shooterOne, shooterTwo);
+                () -> {
+                    shooterOne.setVelocityVoltage(shootSpeed.get());
+                    shooterTwo.setVelocityVoltage(shootSpeed.get());
+                },
+                shooterOne,
+                shooterTwo);
+    }
+
+    public Command tunableVelocity() {
+        return Commands.run(
+                () -> {
+                    shooterOne.setVelocityVoltage(leftVel.get());
+                    shooterTwo.setVelocityVoltage(rightVel.get());
+                },
+                shooterOne,
+                shooterTwo);
     }
 
     public boolean isAtVelocity(double velocity, double tolerance) {

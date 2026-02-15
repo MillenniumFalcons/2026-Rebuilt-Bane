@@ -7,6 +7,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import team3647.frc2026.constants.HoodConstants;
+import team3647.frc2026.constants.ShooterConstants;
 
 /**
  * Targeting Utility for 2026 FRC Game. Focuses on shooting into a Central Hub with constant
@@ -21,12 +22,13 @@ public class TargetingUtil {
     private double offset = 0.0;
 
     // Constant flywheel speed (Matches the 15 m/s or similar logic in RobotTracker)
-    private static final double kShootSpeed = 15.0;
+    private static double kShootSpeed = 15.0;
 
     // =========================================================================
     // Lookup Maps
     // =========================================================================
     private final InterpolatingDoubleTreeMap hoodAngleMap = HoodConstants.hoodAngleMap;
+    private final InterpolatingDoubleTreeMap shootSpeedMap = ShooterConstants.shootSpeedMap;
 
     public TargetingUtil(RobotTracker robotTracker) {
         this.robotTracker = robotTracker;
@@ -83,6 +85,9 @@ public class TargetingUtil {
         // 5. Calculate Hood Angle
         // We use the distance from the compensated position to the target.
         double hoodAngle = hoodAngleMap.get(compensatedDistance) + offset;
+
+        // 6. Calculate Shoot Speed
+        double kShootSpeed = shootSpeedMap.get(compensatedDistance);
 
         return new AimingParameters(aimHeading, hoodAngle, kShootSpeed, compensatedDistance);
     }

@@ -40,8 +40,12 @@ public class ShooterRight extends TalonFXSubsystem {
             double kDt) {
         super(motor, velocityConversion, positionConversion, nominalVoltage, kDt);
         this.addFollower(slave, MotorAlignmentValue.Aligned);
-                configs = new TunableSlotConfigs(motor, 0, "Right Shooter KV Tunable", SlotConfigs.from(ShooterConstants.kShooterOneConfig.Slot0));
-
+        configs =
+                new TunableSlotConfigs(
+                        motor,
+                        0,
+                        "Right Shooter KV Tunable",
+                        SlotConfigs.from(ShooterConstants.kShooterTwoConfig.Slot0));
     }
 
     public void setOpenLoop(double percent) {
@@ -54,6 +58,10 @@ public class ShooterRight extends TalonFXSubsystem {
 
     public void setVelocity(double velocity) {
         super.setVelocity(velocity, 0);
+    }
+
+    public void setVelocityVoltage(double velocity) {
+        super.setVelocityVoltage(velocity, 0);
     }
 
     @Override

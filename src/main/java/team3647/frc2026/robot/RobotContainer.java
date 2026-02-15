@@ -47,6 +47,7 @@ import team3647.lib.GroupPrinter;
 import team3647.lib.inputs.Joysticks;
 import team3647.lib.team9442.AllianceChecker;
 import team3647.lib.team9442.AutoChooser;
+import team3647.lib.tunables.TunableNumber;
 import team3647.lib.vision.AprilTagLimelight;
 import team3647.lib.vision.NeuralDetectorLimelight;
 import team3647.lib.vision.VisionController;
@@ -56,6 +57,8 @@ public class RobotContainer {
     public final Joysticks coController = new Joysticks(1);
 
     public Field2d smartDashboardField = new Field2d();
+
+    public TunableNumber hoodAngle = new TunableNumber("hood angle", 72);
 
     public RobotContainer() {
         configureBindings();
@@ -76,9 +79,9 @@ public class RobotContainer {
                         indexer,
                         hood,
                         wrist,
-                        printer,
                         rollers,
-                        kicker);
+                        kicker,
+                        printer);
     }
 
     private void configureAllianceObservers() {
@@ -87,20 +90,15 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        // mainController.leftBumper.whileTrue(shooterCommands.setVelocity(10));
-        // mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
-        // mainController.rightTrigger.whileTrue(superstructure.shoot(20, 1));
-        // mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
-
-        // mainController.leftBumper.whileTrue(rollerCommands.setOpenLoop(0.5));
-        // mainController.leftTrigger.whileTrue(superstructure.index());
         mainController.leftTrigger.whileTrue(rollerCommands.intake());
         mainController.leftTrigger.onFalse(rollerCommands.kill());
         mainController.leftBumper.whileTrue(wristCommands.deploy());
-        mainController.rightBumper.whileTrue(wristCommands.retract());
+        mainController.leftBumper.onFalse(wristCommands.retract());
 
         mainController.rightTrigger.whileTrue(superstructure.shoot());
-        // mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive())
+        mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
+        mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        mainController.rightBumper.whileTrue(indexerCommands.reverse());
 
         // sysid
         // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
@@ -111,6 +109,8 @@ public class RobotContainer {
         // mainController.buttonA.whileTrue(shooterRight.getSysIdQuasiStatic());
         // mainController.buttonX.whileTrue(shooterRight.getSysIdDynamicReverse());
         // mainController.buttonB.whileTrue(shooterRight.getSysIdQuasistaticReverse());
+
+        mainController.buttonA.whileTrue(shooterCommands.tunableVelocity());
     }
 
     private void configureSmartDashboardLogging() {
@@ -124,6 +124,7 @@ public class RobotContainer {
         printer.addDouble("left shooter velocity", shooterLeft::getVelocity);
         printer.addDouble("right shooter velocity", shooterRight::getVelocity);
         printer.addDouble("wantedhoodangle", autoDrive::getHoodAngle);
+        printer.addDouble("distance to hub", targetingUtil::getCompensatedDistance);
     }
 
     public void updateRobotPoseForSmartdashboard() {
@@ -144,6 +145,7 @@ public class RobotContainer {
         shooterLeft.setDefaultCommand(shooterCommands.killLeft());
         shooterRight.setDefaultCommand(shooterCommands.killRight());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
+        // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
         wrist.setDefaultCommand(wristCommands.holdPositionAtCall());
         kicker.setDefaultCommand(kickerCommands.kill());

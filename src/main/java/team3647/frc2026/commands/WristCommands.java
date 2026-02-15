@@ -1,12 +1,11 @@
 package team3647.frc2026.commands;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-
-import static edu.wpi.first.units.Units.Degrees;
-
 import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;

@@ -12,7 +12,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentric;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveRotation;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveSteerGains;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveTranslation;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,8 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -420,15 +419,16 @@ public class SwerveDrive extends TunerSwerveDrivetrain
         double distance = measurement.pose.minus(getOdoPose()).getTranslation().getNorm();
         double angle =
                 measurement.pose.getRotation().minus(getOdoPose().getRotation()).getDegrees();
-        System.out.println((distance < MathUtil.clamp(getVel(), 0.25, 1) && Math.abs(angle) < 15)
-                || DriverStation.isAutonomous());
+        // System.out.println(
+        //         (distance < MathUtil.clamp(getVel(), 0.25, 1) && Math.abs(angle) < 15)
+        //                 || DriverStation.isAutonomous());
         return (distance < MathUtil.clamp(getVel(), 0.25, 1) && Math.abs(angle) < 15)
                 || DriverStation.isAutonomous();
     }
 
     public void addVisionData(VisionMeasurement data) {
         periodicIO.visionPose = data.pose;
-        //DriverStation.reportError("is adding data", false);
+        // DriverStation.reportError("is adding data", false);
         // SmartDashboard.putNumber("timestamped viison", data.timestamp);
         // SignalLogger.writeDoubleArray(
         // "vision pose",

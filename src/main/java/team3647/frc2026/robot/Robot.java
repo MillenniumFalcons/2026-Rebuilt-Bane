@@ -5,7 +5,6 @@
 package team3647.frc2026.robot;
 
 import com.ctre.phoenix6.SignalLogger;
-import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotController;
@@ -13,7 +12,6 @@ import edu.wpi.first.wpilibj.RuntimeType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import org.ironmaple.simulation.SimulatedArena;
 import org.littletonrobotics.junction.AutoLogOutputManager;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -73,7 +71,7 @@ public class Robot extends LoggedRobot {
         LiveWindow.setEnabled(false);
         SignalLogger.enableAutoLogging(false);
 
-        SignalLogger.start();
+        SignalLogger.stop();
         m_robotContainer = new RobotContainer();
         RobotController.setBrownoutVoltage(6.0);
     }
@@ -125,7 +123,7 @@ public class Robot extends LoggedRobot {
             m_autonomousCommand.cancel();
         }
 
-        ModifiedSignalLogger.start();
+        ModifiedSignalLogger.stop();
         m_robotContainer.rightCam.setIMUMode(4);
         m_robotContainer.leftCam.setIMUMode(4);
     }
@@ -150,9 +148,9 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationPeriodic() {
         // comment this out when running real robot
-        SimulatedArena.getInstance().simulationPeriodic();
-        DogLog.log(
-                "Simulation/FuelPoses",
-                SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
+        // SimulatedArena.getInstance().simulationPeriodic();
+        // DogLog.log(
+        //         "Simulation/FuelPoses",
+        //         SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
     }
 }

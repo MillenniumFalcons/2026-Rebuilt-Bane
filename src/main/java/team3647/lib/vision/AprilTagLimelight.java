@@ -185,19 +185,19 @@ public class AprilTagLimelight extends VirtualSubsystem implements AprilTagCamer
         //         VisionController.hasReset
         //                 ? LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name)
         //                 : LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-        
+
         var botPose =
                 VisionController.hasReset
                         ? LimelightHelpers.getBotPoseEstimate_wpiBlue(name)
                         : LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-        
-        //System.out.println(name+ " botpose exists?"+!botPose.isEmpty());
+
+        // System.out.println(name+ " botpose exists?"+!botPose.isEmpty());
 
         var botPoseRaw = LimelightHelpers.getBotPose3d_wpiBlue(name);
-        //DriverStation.reportError("1", false);
+        // DriverStation.reportError("1", false);
 
         if (botPose.isEmpty() || botPoseRaw.isEmpty()) {
-            //DriverStation.reportError("2", false);
+            // DriverStation.reportError("2", false);
 
             return Optional.empty();
         }
@@ -224,7 +224,7 @@ public class AprilTagLimelight extends VirtualSubsystem implements AprilTagCamer
         //         && autoDriveEnabled.getAsBoolean()
 
         if ((bestTag.ambiguity > 0.2)) {
-            System.out.println(bestTag.ambiguity);
+            // System.out.println(bestTag.ambiguity);
             // System.out.println(getName() == "limelight-left" && autoDriveEnabled.getAsBoolean());
             // System.out.println(getName());
             return Optional.empty();

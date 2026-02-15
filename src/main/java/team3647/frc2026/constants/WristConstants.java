@@ -6,6 +6,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 
 public class WristConstants {
@@ -26,11 +27,13 @@ public class WristConstants {
             70 / 4.4; // this converts rotations to degrees so the units should be degrees/rotation
 
     static {
-        kMasterConfig.Slot0.withKP(5); // change these values
+        kMasterConfig.Slot0.withKP(10); // change these values
         kMasterConfig.Slot0.withKI(0);
-        kMasterConfig.Slot0.withKD(0.1);
+        kMasterConfig.Slot0.withKD(0);
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+        kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
                 kMaxAngle.in(Degree) / kNativeToDeg;
