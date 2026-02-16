@@ -126,7 +126,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public Twist2d getVelocities() {
 
         final Pose2d robotPose = getPose();
-        final ChassisSpeeds currentSpeeds = chassisSpeedsSupplier.get();
+        // final ChassisSpeeds currentSpeeds = chassisSpeedsSupplier.get();
 
         Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
 
@@ -140,18 +140,18 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         // goofy ahh feedforward
         // Calculate the magnitude of linear velocity from ChassisSpeeds
-        double linearVelocityMag =
-                Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
+        // double linearVelocityMag =
+        //         Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
 
         // Calculate angular error to help determine direction of FF
-        double angularError = angleToTarget.minus(robotPose.getRotation()).getRadians();
+        // double angularError = angleToTarget.minus(robotPose.getRotation()).getRadians();
 
         // FF = (Linear Speed * FF Gain) * sign of the error
         // This effectively "boosts" the rotation command more when moving fast
         double customFF = profiledRotController.getSetpoint().velocity;
 
-        Logger.recordOutput("linear velocity", linearVelocityMag);
-        Logger.recordOutput("angular error", angularError);
+        // Logger.recordOutput("linear velocity", linearVelocityMag);
+        // Logger.recordOutput("angular error", angularError);
         Logger.recordOutput("ff output", customFF);
 
         double rotComp = -(rotFeedback + customFF);

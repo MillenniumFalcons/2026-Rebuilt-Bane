@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.ShooterConstants;
 
+// straight gemini btw
+
 /**
  * Targeting Utility for 2026 FRC Game. Focuses on shooting into a Central Hub with constant
  * flywheel speed but variable hood angle and robot heading. * Uses RobotTracker for physics
@@ -87,7 +89,7 @@ public class TargetingUtil {
         double hoodAngle = hoodAngleMap.get(compensatedDistance) + offset;
 
         // 6. Calculate Shoot Speed
-        double kShootSpeed = shootSpeedMap.get(compensatedDistance);
+        kShootSpeed = shootSpeedMap.get(compensatedDistance);
 
         return new AimingParameters(aimHeading, hoodAngle, kShootSpeed, compensatedDistance);
     }

@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
+import team3647.frc2026.constants.HoodConstants;
+import team3647.frc2026.constants.ShooterConstants;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
 
@@ -69,19 +71,25 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     }
 
     public Pose2d compensate(Pose2d pose) {
-        final double shootSpeed = 20 /* * (1 - periodicIO.distanceFromHub / 40) */;
+        final double distance = getDistanceFromHub(pose);
+        final double rawShotSpeed = ShooterConstants.shootSpeedMap.get(distance);
+        final double hoodAngle = HoodConstants.hoodAngleMap.get(distance);
+        final double shootSpeed = rawShotSpeed * Math.cos(Math.toRadians(hoodAngle));
+        double time = distance / shootSpeed;
 
-        double time = periodicIO.distanceFromHub / shootSpeed;
         var transform =
                 new Twist2d(
                         periodicIO.speeds.vxMetersPerSecond * time,
                         periodicIO.speeds.vyMetersPerSecond * time,
                         0);
-        var middlePose = periodicIO.pose.exp(transform);
+        var middlePose = pose.exp(transform);
         double newDistance = getDistanceFromHub(middlePose);
-        // keep newspeed just in case i make the velocity not constant in the future
-        double newSpeed = 20 /* * (1 - newDistance / 40) */;
+
+        double newRawShotSpeed = ShooterConstants.shootSpeedMap.get(newDistance);
+        double newHoodAngle = HoodConstants.hoodAngleMap.get(newDistance);
+        double newSpeed = newRawShotSpeed * Math.cos(Math.toRadians(newHoodAngle));
         double newTime = newDistance / newSpeed;
+
         var newTransform =
                 new Twist2d(
                         periodicIO.speeds.vxMetersPerSecond * newTime,
