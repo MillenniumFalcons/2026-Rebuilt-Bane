@@ -96,8 +96,8 @@ public class RobotContainer {
         mainController.leftBumper.onFalse(wristCommands.retract());
 
         mainController.rightTrigger.whileTrue(superstructure.shoot());
-        mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
-        mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        // mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
+        // mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         mainController.rightBumper.whileTrue(indexerCommands.reverse());
 
         // sysid

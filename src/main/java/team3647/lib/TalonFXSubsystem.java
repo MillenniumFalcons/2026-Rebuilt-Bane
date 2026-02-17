@@ -28,7 +28,7 @@ import org.littletonrobotics.junction.Logger;
 
 public abstract class TalonFXSubsystem implements PeriodicSubsystem {
 
-    protected final TalonFX master;
+    protected final List<TalonFX> masters = new ArrayList<>();
     protected final List<TalonFX> followers = new ArrayList<>();
     protected final DutyCycleOut dutyCycle = new DutyCycleOut(0);
     protected final PositionDutyCycle positionDutyCycle = new PositionDutyCycle(0);
@@ -56,17 +56,22 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
     private PeriodicIOAutoLogged ioAutoLogged = new PeriodicIOAutoLogged();
 
     protected TalonFXSubsystem(
-            TalonFX master,
+            List<TalonFX> masters,
             double velocityConversion,
             double positionConversion,
             double nominalVoltage,
             double kDt) {
-        this.master = master;
+        if (masters.isEmpty()) {
+            throw new IllegalArgumentException("Must provide at least one master motor");
+        }
+        this.masters.addAll(masters);
         this.velocityConversion = velocityConversion;
         this.positionConversion = positionConversion;
         this.nominalVoltage = nominalVoltage;
         this.kDt = kDt;
-        this.master.clearStickyFaults(kLongStatusTimeMS);
+        for (TalonFX master : this.masters) {
+            master.clearStickyFaults(kLongStatusTimeMS);
+        }
     }
 
     @AutoLog
@@ -86,18 +91,22 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
 
     @Override
     public void readPeriodicInputs() {
-        ioAutoLogged.nativePosition = master.getRotorPosition().getValueAsDouble();
+        TalonFX primaryMaster = masters.get(0);
+        ioAutoLogged.nativePosition = primaryMaster.getRotorPosition().getValueAsDouble();
         ioAutoLogged.position = ioAutoLogged.nativePosition * positionConversion;
-        ioAutoLogged.velocity = master.getRotorVelocity().getValueAsDouble() * velocityConversion;
-        ioAutoLogged.current = master.getStatorCurrent().getValueAsDouble();
+        ioAutoLogged.velocity =
+                primaryMaster.getRotorVelocity().getValueAsDouble() * velocityConversion;
+        ioAutoLogged.current = primaryMaster.getStatorCurrent().getValueAsDouble();
         ioAutoLogged.timestamp = Timer.getFPGATimestamp();
-        ioAutoLogged.masterCurrent = master.getStatorCurrent().getValueAsDouble();
+        ioAutoLogged.masterCurrent = primaryMaster.getStatorCurrent().getValueAsDouble();
         Logger.processInputs(getName(), ioAutoLogged);
     }
 
     @Override
     public void writePeriodicOutputs() {
-        master.setControl(controlMode);
+        for (TalonFX master : masters) {
+            master.setControl(controlMode);
+        }
         // master.setControl(controlMode);
         for (var follower : followers) {
             follower.setControl(masterOutput);
@@ -280,11 +289,13 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
      * @param mode either Brake or Coast
      */
     public void setNeutralMode(NeutralModeValue mode) {
-        TalonFXConfigurator masterConfigurator = master.getConfigurator();
-        TalonFXConfiguration masterConfiguration = new TalonFXConfiguration();
-        masterConfigurator.refresh(masterConfiguration);
-        masterConfiguration.MotorOutput.NeutralMode = mode;
-        masterConfigurator.apply(masterConfiguration);
+        for (TalonFX master : masters) {
+            TalonFXConfigurator masterConfigurator = master.getConfigurator();
+            TalonFXConfiguration masterConfiguration = new TalonFXConfiguration();
+            masterConfigurator.refresh(masterConfiguration);
+            masterConfiguration.MotorOutput.NeutralMode = mode;
+            masterConfigurator.apply(masterConfiguration);
+        }
     }
 
     /** Sets the selected sensor to 0 (default) */
@@ -294,7 +305,9 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
 
     /** Sets the selected sensor to 0 (default) */
     public void resetEncoder(int timeoutMS) {
-        master.setPosition(0, timeoutMS);
+        for (TalonFX master : masters) {
+            master.setPosition(0, timeoutMS);
+        }
     }
 
     /**
@@ -303,11 +316,15 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
      * @param position position in output units
      */
     protected void setEncoder(double position) {
-        master.setPosition(position / positionConversion);
+        for (TalonFX master : masters) {
+            master.setPosition(position / positionConversion);
+        }
     }
 
     protected void setEncoderNative(double position) {
-        master.setPosition(position);
+        for (TalonFX master : masters) {
+            master.setPosition(position);
+        }
     }
 
     /**
@@ -340,7 +357,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
     }
 
     protected void addFollower(TalonFX follower, MotorAlignmentValue opposeMaster) {
-        this.masterOutput = new Follower(this.master.getDeviceID(), opposeMaster);
+        this.masterOutput = new Follower(this.masters.get(0).getDeviceID(), opposeMaster);
         followers.add(follower);
     }
 

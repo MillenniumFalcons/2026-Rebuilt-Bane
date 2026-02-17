@@ -2,6 +2,7 @@ package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import java.util.List;
 import team3647.lib.TalonFXSubsystem;
 
 public class Indexer extends TalonFXSubsystem {
@@ -13,7 +14,7 @@ public class Indexer extends TalonFXSubsystem {
             double positionConversion,
             double nominalVoltage,
             double kDt) {
-        super(master, velocityConversion, positionConversion, nominalVoltage, kDt);
+        super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
         this.addFollower(slave, MotorAlignmentValue.Opposed);
     }
 

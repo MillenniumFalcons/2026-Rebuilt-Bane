@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Radian;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
+import java.util.List;
 import team3647.lib.TalonFXSubsystem;
 
 public class Wrist extends TalonFXSubsystem {
@@ -22,7 +23,7 @@ public class Wrist extends TalonFXSubsystem {
             double velocityConversion,
             double nominalVoltage,
             double kDt) {
-        super(master, velocityConversion, positionConversion, nominalVoltage, kDt);
+        super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
 
         this.maxAngle = maxAngle;
         this.minAngle = minAngle;

@@ -1,17 +1,18 @@
 package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import java.util.List;
 import team3647.lib.TalonFXSubsystem;
 
 public class Rollers extends TalonFXSubsystem {
 
     public Rollers(
-            TalonFX motor,
+            TalonFX master,
             double velocityConversion,
             double positionConversion,
             double nominalVoltage,
             double kDt) {
-        super(motor, velocityConversion, positionConversion, nominalVoltage, kDt);
+        super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
     }
 
     public void setOpenLoop(double percent) {
