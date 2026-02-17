@@ -15,6 +15,10 @@ public class KickerCommands {
         return Commands.run(() -> kicker.setOpenLoop(0.8), kicker);
     }
 
+    public Command reverse() {
+        return Commands.run(() -> kicker.setOpenLoop(-0.5), kicker);
+    }
+
     public boolean currentGreater(double current) {
         return kicker.getMasterCurrent() >= current;
     }

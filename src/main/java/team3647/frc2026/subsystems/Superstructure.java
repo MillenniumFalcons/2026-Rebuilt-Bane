@@ -73,4 +73,8 @@ public class Superstructure {
     public Command index() {
         return Commands.parallel(indexerCommands.index(), kickerCommands.kick());
     }
+
+    public Command reverse() {
+        return Commands.parallel(indexerCommands.reverse(), kickerCommands.reverse());
+    }
 }
