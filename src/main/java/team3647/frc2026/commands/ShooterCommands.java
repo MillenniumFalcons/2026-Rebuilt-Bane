@@ -71,8 +71,8 @@ public class ShooterCommands {
     public Command tunableVelocity() {
         return Commands.run(
                 () -> {
-                    shooterOne.setVelocityVoltage(leftVel.get());
-                    shooterTwo.setVelocityVoltage(rightVel.get());
+                    shooterOne.setVelocityVoltage(shootSpeed.get());
+                    shooterTwo.setVelocityVoltage(shootSpeed.get());
                 },
                 shooterOne,
                 shooterTwo);

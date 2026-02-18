@@ -77,7 +77,8 @@ public class SwerveDriveCommands implements AllianceObserver {
                     } else if (isAutoDrive) {
                         if (getMode.get().equals(DriveMode.SHOOT_ON_THE_MOVE)) {
                             motionTurnComponent = velocities.dtheta;
-                            swerve.drive(motionXComponent, motionYComponent, motionTurnComponent);
+                            swerve.driveFieldOriented(
+                                    motionXComponent, motionYComponent, motionTurnComponent);
                         }
                     }
                     // else if (isAutoDrive

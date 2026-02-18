@@ -20,6 +20,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     private Pose2d feedPose;
     private Alliance color;
 
+    private final double exitSpeedMultiplier = 0.27;
+
     private final Field2d smartDashboardField;
 
     Supplier<Pose2d> drivePose;
@@ -71,11 +73,11 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     }
 
     public Pose2d compensate(Pose2d pose) {
-        final double distance = getDistanceFromHub(pose);
-        final double rawShotSpeed = ShooterConstants.shootSpeedMap.get(distance);
-        final double hoodAngle = HoodConstants.hoodAngleMap.get(distance);
-        final double shootSpeed = rawShotSpeed * Math.cos(Math.toRadians(hoodAngle));
-        double time = distance / shootSpeed;
+        final double rawShotSpeed = ShooterConstants.shootSpeedMap.get(periodicIO.distanceFromHub);
+        final double hoodAngle = HoodConstants.hoodAngleMap.get(periodicIO.distanceFromHub);
+        final double shootSpeed =
+                rawShotSpeed * Math.cos(Math.toRadians(hoodAngle)) * exitSpeedMultiplier;
+        double time = periodicIO.distanceFromHub / shootSpeed;
 
         var transform =
                 new Twist2d(
@@ -83,12 +85,18 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
                         periodicIO.speeds.vyMetersPerSecond * time,
                         0);
         var middlePose = pose.exp(transform);
+
         double newDistance = getDistanceFromHub(middlePose);
 
         double newRawShotSpeed = ShooterConstants.shootSpeedMap.get(newDistance);
         double newHoodAngle = HoodConstants.hoodAngleMap.get(newDistance);
-        double newSpeed = newRawShotSpeed * Math.cos(Math.toRadians(newHoodAngle));
+        double newSpeed =
+                newRawShotSpeed * Math.cos(Math.toRadians(newHoodAngle)) * exitSpeedMultiplier;
         double newTime = newDistance / newSpeed;
+
+        Logger.recordOutput("compensate time", newTime);
+        Logger.recordOutput("compensate distance", newDistance);
+        Logger.recordOutput("compensate speed", newSpeed);
 
         var newTransform =
                 new Twist2d(

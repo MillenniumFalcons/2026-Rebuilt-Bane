@@ -71,12 +71,14 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
 
     static {
-        shootSpeedMap.put(1.5, 16.0);
-        shootSpeedMap.put(2.0, 17.25);
-        shootSpeedMap.put(2.5, 18.0);
-        shootSpeedMap.put(3.0, 18.5);
-        shootSpeedMap.put(3.5, 18.75);
-        shootSpeedMap.put(4.0, 19.0);
+        shootSpeedMap.put(1.0, 16.5);
+        shootSpeedMap.put(1.5, 17.0);
+        shootSpeedMap.put(2.0, 17.5);
+        shootSpeedMap.put(2.5, 18.5);
+        shootSpeedMap.put(3.0, 19.0);
+        shootSpeedMap.put(3.5, 20.0);
+        shootSpeedMap.put(4.0, 21.0);
+        shootSpeedMap.put(4.5, 22.0);
 
         kShooterOneConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kShooterTwoConfig.MotorOutput.Inverted =
