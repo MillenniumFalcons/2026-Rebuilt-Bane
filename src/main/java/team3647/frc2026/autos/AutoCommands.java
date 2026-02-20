@@ -5,9 +5,7 @@ import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -21,34 +19,53 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import team3647.frc2026.constants.AutoConstants;
-import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.SwerveDrive;
-import team3647.frc2026.util.AllianceFlip;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.PoseUtils;
 import team3647.lib.team9442.AllianceObserver;
 
 public class AutoCommands implements AllianceObserver {
 
-    private final Rectangle2d BlueLSource =
-            new Rectangle2d(
-                    new Translation2d(0, FieldConstants.kFieldLengthM), new Translation2d(4, 5.5));
-    private final Rectangle2d BlueRSource =
-            new Rectangle2d(Translation2d.kZero, new Translation2d(4, 2.5));
-    private final Rectangle2d RedLSource =
-            new Rectangle2d(
-                    AllianceFlip.flip(new Translation2d(0, FieldConstants.kFieldLengthM)),
-                    AllianceFlip.flip(new Translation2d(4, 5.5)));
-    private final Rectangle2d RedRSource =
-            new Rectangle2d(
-                    AllianceFlip.flip(Translation2d.kZero),
-                    AllianceFlip.flip(new Translation2d(4, 2.5)));
+    // private final Rectangle2d BlueLSource =
+    //         new Rectangle2d(
+    //                 new Translation2d(0, FieldConstants.kFieldLengthM), new Translation2d(4,
+    // 5.5));
+    // private final Rectangle2d BlueRSource =
+    //         new Rectangle2d(Translation2d.kZero, new Translation2d(4, 2.5));
+    // private final Rectangle2d RedLSource =
+    //         new Rectangle2d(
+    //                 AllianceFlip.flip(new Translation2d(0, FieldConstants.kFieldLengthM)),
+    //                 AllianceFlip.flip(new Translation2d(4, 5.5)));
+    // private final Rectangle2d RedRSource =
+    //         new Rectangle2d(
+    //                 AllianceFlip.flip(Translation2d.kZero),
+    //                 AllianceFlip.flip(new Translation2d(4, 2.5)));
 
     private final PIDController rotController = new PIDController(3, 0, 0);
 
+    // actual autos
+    public Command rightMidRush() {
+        return Commands.sequence(
+                rightMidRushSegmentOne(),
+                rightMidRushSegmentTwo(),
+                Commands.parallel(superstructure.shoot(), autoDrive.enableAutoDrive()));
+    }
+
+    public Command rightMidRushSegmentOne() {
+        return Commands.parallel(
+                followChoreoPath(getTrajSplit("RightMidRush", 0)),
+                Commands.sequence(Commands.waitSeconds(0.5), superstructure.intake()));
+    }
+
+    public Command rightMidRushSegmentTwo() {
+        return Commands.parallel(
+                followChoreoPath(getTrajSplit("RightMidRush", 1)), superstructure.retractIntake());
+    }
+
     // START OF CHOREO PATH FOLLOWING STUFF
 
+    // regular pathfollower
     public Command followChoreoPath(Trajectory<SwerveSample> traj) {
         return customPathFollower(
                 traj,
@@ -65,9 +82,8 @@ public class AutoCommands implements AllianceObserver {
                 swerve::getOdoPose);
     }
 
-    public Command followChoreoPathWithOverrideFast(Trajectory<SwerveSample> traj) {
-
-        // Logger.recordOutput("Autos/current path", path);
+    // pathfollower with autoalign overrides
+    public Command followChoreoPathWithAutoAlignOverride(Trajectory<SwerveSample> traj) {
         return customPathFollower(
                         traj,
                         choreoSwerveController(
@@ -90,21 +106,7 @@ public class AutoCommands implements AllianceObserver {
                 .andThen(Commands.runOnce(() -> swerve.drive(0, 0, 0), swerve));
     }
 
-    public Command followChoreoPathSlow(Trajectory<SwerveSample> traj) {
-        return customPathFollower(
-                traj,
-                choreoSwerveController(
-                        AutoConstants.autoXController,
-                        AutoConstants.autoYController,
-                        rotController),
-                (speeds) -> {
-                    swerve.drive(
-                            speeds.vxMetersPerSecond * 0.5,
-                            speeds.vyMetersPerSecond * 0.5,
-                            speeds.omegaRadiansPerSecond * 0.5);
-                },
-                swerve::getOdoPose);
-    }
+    // HELPERS
 
     public Command customPathFollower(
             Trajectory<SwerveSample> traj,
@@ -156,6 +158,7 @@ public class AutoCommands implements AllianceObserver {
         };
     }
 
+    @SuppressWarnings("unchecked")
     public Trajectory<SwerveSample> getTraj(String path) {
         var trajMaybe = Choreo.loadTrajectory(path);
 
@@ -166,8 +169,22 @@ public class AutoCommands implements AllianceObserver {
         }
     }
 
-    public Pose2d getInitial(Trajectory<SwerveSample> traj, Alliance color) {
+    @SuppressWarnings("unchecked")
+    public Trajectory<SwerveSample> getTrajSplit(String path, int splitIndex) {
+        var trajMaybe = Choreo.loadTrajectory(path);
 
+        if (trajMaybe.isPresent()) {
+            var splitMaybe = trajMaybe.get().getSplit(splitIndex);
+
+            if (splitMaybe.isPresent()) {
+                return (Trajectory<SwerveSample>) splitMaybe.get();
+            }
+        }
+
+        return AutoConstants.kEmptyTraj;
+    }
+
+    public Pose2d getInitial(Trajectory<SwerveSample> traj, Alliance color) {
         return traj.getInitialPose(color == Alliance.Red).orElse(new Pose2d());
     }
 

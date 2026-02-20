@@ -11,7 +11,9 @@ import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
 import team3647.frc2026.commands.KickerCommands;
+import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
+import team3647.frc2026.commands.WristCommands;
 
 public class Superstructure {
 
@@ -20,11 +22,15 @@ public class Superstructure {
     public final Indexer indexer;
     public final Kicker kicker;
     public final Hood hood;
+    public final Wrist wrist;
+    public final Rollers rollers;
 
     public final ShooterCommands shooterCommands;
     public final IndexerCommands indexerCommands;
     public final KickerCommands kickerCommands;
     public final HoodCommands hoodCommands;
+    public final WristCommands wristCommands;
+    public final RollerCommands rollerCommands;
 
     public final DoubleSupplier hoodAngle;
     public final DoubleSupplier shotSpeed;
@@ -37,21 +43,28 @@ public class Superstructure {
             Indexer indexer,
             Hood hood,
             Kicker kicker,
+            Wrist wrist,
+            Rollers rollers,
             DoubleSupplier hoodAngle,
             DoubleSupplier shotSpeed,
             BooleanSupplier isRotAligned) {
         this.shooterOne = shooterOne;
         this.shooterTwo = shooterTwo;
-        this.hood = hood;
         this.indexer = indexer;
+        this.hood = hood;
         this.kicker = kicker;
+        this.wrist = wrist;
+        this.rollers = rollers;
         this.hoodAngle = hoodAngle;
+        this.shotSpeed = shotSpeed;
+        this.isRotAligned = isRotAligned;
+
         this.shooterCommands = new ShooterCommands(this.shooterOne, this.shooterTwo);
         this.indexerCommands = new IndexerCommands(this.indexer);
         this.kickerCommands = new KickerCommands(this.kicker);
-        this.hoodCommands = new HoodCommands(hood);
-        this.shotSpeed = shotSpeed;
-        this.isRotAligned = isRotAligned;
+        this.hoodCommands = new HoodCommands(this.hood);
+        this.wristCommands = new WristCommands(this.wrist);
+        this.rollerCommands = new RollerCommands(this.rollers);
     }
 
     public Angle getIntakeAngle() {
@@ -63,11 +76,6 @@ public class Superstructure {
     }
 
     public Command shoot() {
-
-        // this one is for tuning
-        // return Commands.parallel(
-        //         shooterCommands.shootTunable(),
-        //         Commands.sequence(Commands.waitSeconds(1), index()));
         return Commands.parallel(
                 shooterCommands.setVelocity(shotSpeed),
                 Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
@@ -78,11 +86,6 @@ public class Superstructure {
     }
 
     public Command shotTuning() {
-
-        // fix the wait time thingy
-        // return Commands.parallel(
-        //         shooterCommands.shoot(),
-        //         Commands.sequence(Commands.waitSeconds(1), index()));
         return Commands.parallel(
                 shooterCommands.setVelocity(shotSpeed),
                 Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())));
@@ -94,5 +97,13 @@ public class Superstructure {
 
     public Command reverse() {
         return Commands.parallel(indexerCommands.reverse(), kickerCommands.reverse());
+    }
+
+    public Command intake() {
+        return Commands.parallel(wristCommands.deploy(), rollerCommands.intake());
+    }
+
+    public Command retractIntake() {
+        return Commands.parallel(wristCommands.retract(), rollerCommands.kill());
     }
 }

@@ -62,10 +62,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         super();
         this.odoPoseFunction = odoPoseFunction;
         this.chassisSpeedsSupplier = chassisSpeedsSupplier;
-        // this.xController = Utils.isSimulation() ? new PIDController(2.5, 0, 0) : xController;
-        // this.yController = Utils.isSimulation() ? new PIDController(2.5, 0, 0) : yController;
-        // this.rotController = Utils.isSimulation() ? new PIDController(2, 0, 0) : rotController;
-        // this.rotController.enableContinuousInput(-Math.PI, Math.PI);
         this.targeting = targeting;
 
         profiledRotController.setTolerance(Units.degreesToRadians(3), Units.degreesToRadians(3));
@@ -95,13 +91,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     public Pose2d getPose() {
-        // var inputs = frontLL.QueueToInputs();
-        // if (inputs.isPresent()) {
-        //    return inputs.get().pose;
-        //     // return frontLL.QueueToInputs().get().pose;
-        // }
-        // DriverStation.reportError(
-        //         "@getposeautodrive " + frontLL.QueueToInputs().isPresent(), false);
         return odoPoseFunction.get();
     }
 

@@ -20,6 +20,8 @@ public class SwerveDriveCommands implements AllianceObserver {
     private final SwerveDrive swerve;
     private final double kMaxSpeedMps;
     private final double kMaxRotRadPs;
+
+    @SuppressWarnings("unused")
     private Alliance color = Alliance.Red;
 
     public SwerveDriveCommands(SwerveDrive swerve, double maxSpeedMps, double kMaxRotRadPs) {

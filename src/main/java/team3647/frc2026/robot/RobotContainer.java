@@ -112,23 +112,21 @@ public class RobotContainer {
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         shooterLeft.setDefaultCommand(shooterCommands.killLeft());
         shooterRight.setDefaultCommand(shooterCommands.killRight());
-        // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
-        hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
+        hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
+        // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
         wrist.setDefaultCommand(wristCommands.holdPositionAtCall());
         kicker.setDefaultCommand(kickerCommands.kill());
     }
 
     private void configureBindings() {
-        mainController.leftTrigger.whileTrue(rollerCommands.intake());
-        mainController.leftTrigger.onFalse(rollerCommands.kill());
-        mainController.leftBumper.whileTrue(wristCommands.deploy());
-        mainController.leftBumper.onFalse(wristCommands.retract());
+        mainController.leftBumper.whileTrue(superstructure.intake());
+        mainController.leftBumper.onFalse(superstructure.retractIntake());
 
         mainController.rightTrigger.whileTrue(superstructure.shoot());
         // mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
         // mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
-        mainController.rightBumper.whileTrue(indexerCommands.reverse());
+        mainController.rightBumper.whileTrue(superstructure.reverse());
 
         // sysid
         // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
@@ -278,6 +276,8 @@ public class RobotContainer {
                     indexer,
                     hood,
                     kicker,
+                    wrist,
+                    rollers,
                     autoDrive::getHoodAngle,
                     autoDrive::getShotSpeed,
                     autoDrive::rotAligned);
