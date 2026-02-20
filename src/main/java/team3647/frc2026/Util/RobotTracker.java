@@ -20,7 +20,7 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     private Pose2d feedPose;
     private Alliance color;
 
-    private final double exitSpeedMultiplier = 0.27;
+    private final double exitSpeedMultiplier = 0.33;
 
     private final Field2d smartDashboardField;
 

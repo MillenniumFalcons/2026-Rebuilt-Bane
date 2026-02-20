@@ -172,6 +172,12 @@ public class SwerveDrive extends TunerSwerveDrivetrain
         this.limits.kMaxSteeringVelocity = Units.Degree.of(1500).in(Units.Radians);
     }
 
+    public void applyKinematicLimits(SwerveKinematicLimits newLimits) {
+        this.limits.kMaxDriveVelocity = newLimits.kMaxDriveVelocity;
+        this.limits.kMaxDriveAcceleration = newLimits.kMaxDriveAcceleration;
+        this.limits.kMaxSteeringVelocity = newLimits.kMaxSteeringVelocity;
+    }
+
     @AutoLog
     public static class PeriodicIO {
         // inputs

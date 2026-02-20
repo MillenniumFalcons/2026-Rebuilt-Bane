@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.commands.HoodCommands;
@@ -28,6 +29,7 @@ public class Superstructure {
     public final DoubleSupplier hoodAngle;
     public final DoubleSupplier shotSpeed;
     public Angle wantedIntakeAngle = Degrees.of(70);
+    public final BooleanSupplier isRotAligned;
 
     public Superstructure(
             ShooterLeft shooterOne,
@@ -36,7 +38,8 @@ public class Superstructure {
             Hood hood,
             Kicker kicker,
             DoubleSupplier hoodAngle,
-            DoubleSupplier shotSpeed) {
+            DoubleSupplier shotSpeed,
+            BooleanSupplier isRotAligned) {
         this.shooterOne = shooterOne;
         this.shooterTwo = shooterTwo;
         this.hood = hood;
@@ -48,6 +51,7 @@ public class Superstructure {
         this.kickerCommands = new KickerCommands(this.kicker);
         this.hoodCommands = new HoodCommands(hood);
         this.shotSpeed = shotSpeed;
+        this.isRotAligned = isRotAligned;
     }
 
     public Angle getIntakeAngle() {
@@ -60,14 +64,28 @@ public class Superstructure {
 
     public Command shoot() {
 
+        // this one is for tuning
+        // return Commands.parallel(
+        //         shooterCommands.shootTunable(),
+        //         Commands.sequence(Commands.waitSeconds(1), index()));
+        return Commands.parallel(
+                shooterCommands.setVelocity(shotSpeed),
+                Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
+                Commands.sequence(
+                        shooterCommands.waitUntilAtVelocity(shotSpeed, 0.5),
+                        Commands.waitUntil(isRotAligned),
+                        index()));
+    }
+
+    public Command shotTuning() {
+
         // fix the wait time thingy
         // return Commands.parallel(
         //         shooterCommands.shoot(),
         //         Commands.sequence(Commands.waitSeconds(1), index()));
         return Commands.parallel(
                 shooterCommands.setVelocity(shotSpeed),
-                Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
-                Commands.sequence(Commands.waitSeconds(1), index()));
+                Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())));
     }
 
     public Command index() {

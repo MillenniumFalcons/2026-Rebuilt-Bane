@@ -1,6 +1,5 @@
 package team3647.frc2026.util;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,7 +34,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(3.7, 0, 0.2, new Constraints(10, 10));
+            new ProfiledPIDController(3.5, 0, 0.2, new Constraints(10, 10));
 
     private final PIDController intakeXController, intakeYController, intakeRotController;
 
@@ -79,6 +78,12 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     public enum DriveMode {
         SHOOT_ON_THE_MOVE
+    }
+
+    public boolean rotAligned() {
+        final Pose2d robotPose = getPose();
+        Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 5.0;
     }
 
     public double getHoodAngle() {
@@ -149,12 +154,11 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         // FF = (Linear Speed * FF Gain) * sign of the error
         // This effectively "boosts" the rotation command more when moving fast
-        double customFF =
-                profiledRotController.getSetpoint().velocity
-                        * MathUtil.clamp(
-                                Math.abs(chassisSpeedsSupplier.get().vyMetersPerSecond / 1.5),
-                                1,
-                                100);
+        double customFF = profiledRotController.getSetpoint().velocity;
+        // * MathUtil.clamp(
+        //         Math.abs(chassisSpeedsSupplier.get().vyMetersPerSecond / 1.5),
+        //         1,
+        //         100);
 
         // Logger.recordOutput("linear velocity", linearVelocityMag);
         // Logger.recordOutput("angular error", angularError);

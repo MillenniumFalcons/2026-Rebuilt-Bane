@@ -89,46 +89,14 @@ public class RobotContainer {
                 swerveCommands, swerve, autoCommands, autoChooser, autoDrive, robotTracker);
     }
 
-    private void configureBindings() {
-        mainController.leftTrigger.whileTrue(rollerCommands.intake());
-        mainController.leftTrigger.onFalse(rollerCommands.kill());
-        mainController.leftBumper.whileTrue(wristCommands.deploy());
-        mainController.leftBumper.onFalse(wristCommands.retract());
-
-        mainController.rightTrigger.whileTrue(superstructure.shoot());
-        mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
-        mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
-        mainController.rightBumper.whileTrue(indexerCommands.reverse());
-
-        // sysid
-        // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
-        // mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());
-        // mainController.dPadLeft.onTrue(swerve.steerRoutineDynamic());
-        // mainController.dPadRight.onTrue(swerve.steerRoutineQuasiStatic());
-        // mainController.buttonY.whileTrue(shooterRight.getSysIdDynamic());
-        // mainController.buttonA.whileTrue(shooterRight.getSysIdQuasiStatic());
-        // mainController.buttonX.whileTrue(shooterRight.getSysIdDynamicReverse());
-        // mainController.buttonB.whileTrue(shooterRight.getSysIdQuasistaticReverse());
-
-        mainController.buttonA.whileTrue(shooterCommands.tunableVelocity());
-    }
-
     private void configureSmartDashboardLogging() {
-        // Logger.recordOutput("right cam transform", VisionConstants.rightMount);
-        // Logger.recordOutput("left cam transform", VisionConstants.leftMount);
-
-        SmartDashboard.putData(
-                "Autos", autoChooser); // , superstructure.score();, superstructure.score();
+        SmartDashboard.putData("Autos", autoChooser);
         SmartDashboard.putData("Field", smartDashboardField);
         printer.addDouble("Match Time", Timer::getMatchTime);
         printer.addDouble("left shooter velocity", shooterLeft::getVelocity);
         printer.addDouble("right shooter velocity", shooterRight::getVelocity);
         printer.addDouble("wantedhoodangle", autoDrive::getHoodAngle);
         printer.addDouble("distance to hub", targetingUtil::getCompensatedDistance);
-    }
-
-    public void updateRobotPoseForSmartdashboard() {
-        smartDashboardField.setRobotPose(swerve.getOdoPose());
     }
 
     private void configureDefaultCommands() {
@@ -144,11 +112,37 @@ public class RobotContainer {
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         shooterLeft.setDefaultCommand(shooterCommands.killLeft());
         shooterRight.setDefaultCommand(shooterCommands.killRight());
-        hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
-        // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
+        // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
+        hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
         wrist.setDefaultCommand(wristCommands.holdPositionAtCall());
         kicker.setDefaultCommand(kickerCommands.kill());
+    }
+
+    private void configureBindings() {
+        mainController.leftTrigger.whileTrue(rollerCommands.intake());
+        mainController.leftTrigger.onFalse(rollerCommands.kill());
+        mainController.leftBumper.whileTrue(wristCommands.deploy());
+        mainController.leftBumper.onFalse(wristCommands.retract());
+
+        mainController.rightTrigger.whileTrue(superstructure.shoot());
+        // mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
+        // mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        mainController.rightBumper.whileTrue(indexerCommands.reverse());
+
+        // sysid
+        // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
+        // mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());
+        // mainController.dPadLeft.onTrue(swerve.steerRoutineDynamic());
+        // mainController.dPadRight.onTrue(swerve.steerRoutineQuasiStatic());
+        // mainController.buttonY.whileTrue(shooterRight.getSysIdDynamic());
+        // mainController.buttonA.whileTrue(shooterRight.getSysIdQuasiStatic());
+        // mainController.buttonX.whileTrue(shooterRight.getSysIdDynamicReverse());
+        // mainController.buttonB.whileTrue(shooterRight.getSysIdQuasistaticReverse());
+    }
+
+    public void updateRobotPoseForSmartdashboard() {
+        smartDashboardField.setRobotPose(swerve.getOdoPose());
     }
 
     public Command getAutonomousCommand() {
@@ -285,7 +279,8 @@ public class RobotContainer {
                     hood,
                     kicker,
                     autoDrive::getHoodAngle,
-                    autoDrive::getShotSpeed);
+                    autoDrive::getShotSpeed,
+                    autoDrive::rotAligned);
 
     // private final LEDTriggers triggers = new LEDTriggers(superstructure);
     // private final LEDs leds = new LEDs(LEDConstants.m_candle, triggers);

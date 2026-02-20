@@ -63,10 +63,10 @@ public class ShooterConstants {
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
     // pid
-    public static final double shooterOnekP = 0.0010538;
-    public static final double shooterTwokP = 0.0049532;
+    public static final double shooterOnekP = 0.5;
+    public static final double shooterTwokP = 0.6;
     public static final double masterkI = 0;
-    public static final double masterkD = 0;
+    public static final double masterkD = 0.0025;
 
     public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
 
@@ -75,10 +75,11 @@ public class ShooterConstants {
         shootSpeedMap.put(1.5, 17.0);
         shootSpeedMap.put(2.0, 17.5);
         shootSpeedMap.put(2.5, 18.5);
-        shootSpeedMap.put(3.0, 19.0);
+        shootSpeedMap.put(3.0, 19.25);
         shootSpeedMap.put(3.5, 20.0);
-        shootSpeedMap.put(4.0, 21.0);
+        shootSpeedMap.put(4.0, 21.5);
         shootSpeedMap.put(4.5, 22.0);
+        shootSpeedMap.put(5.0, 23.0);
 
         kShooterOneConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kShooterTwoConfig.MotorOutput.Inverted =
@@ -126,12 +127,21 @@ public class ShooterConstants {
         final TalonFXConfigurator kShooterOneConfigurator = kShooterOne.getConfigurator();
         final TalonFXConfigurator kShooterTwoConfigurator = kShooterTwo.getConfigurator();
         kShooterOneConfigurator.apply(kShooterOneConfig);
-        kShooterTwoConfigurator.apply(kShooterTwoConfig);
-
         kShooterOneConfigurator.apply(shooterOneCurrent);
         kShooterOneConfigurator.apply(shooterOneMotor);
 
+        kShooterTwoConfigurator.apply(kShooterTwoConfig);
         kShooterTwoConfigurator.apply(shooterTwoCurrent);
         kShooterTwoConfigurator.apply(shooterTwoMotor);
+
+        final TalonFXConfigurator kShooterOneSlaveConfigurator = kShooterOneSlave.getConfigurator();
+        final TalonFXConfigurator kShooterTwoSlaveConfigurator = kShooterTwoSlave.getConfigurator();
+        kShooterOneSlaveConfigurator.apply(kShooterOneConfig);
+        kShooterOneSlaveConfigurator.apply(shooterOneCurrent);
+        kShooterOneSlaveConfigurator.apply(shooterOneMotor);
+
+        kShooterTwoSlaveConfigurator.apply(kShooterTwoConfig);
+        kShooterTwoSlaveConfigurator.apply(shooterTwoCurrent);
+        kShooterTwoSlaveConfigurator.apply(shooterTwoMotor);
     }
 }

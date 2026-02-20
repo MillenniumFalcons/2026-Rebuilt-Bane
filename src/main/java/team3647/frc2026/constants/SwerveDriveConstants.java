@@ -109,12 +109,19 @@ public class SwerveDriveConstants {
 
     // public static final double defaultAccel = TunerConstants.kSpeedAt12VoltsMps /
     // 0.1;
-    public static final double shootingAccel = 13;
+    // public static final double shootingAccel = 13;
+
+    public static final SwerveKinematicLimits kSOTMKinematicLimits = new SwerveKinematicLimits();
 
     static {
-        kTeleopKinematicLimits.kMaxDriveVelocity = 5.6; // TunerConstants.kSpeedAt12VoltsMps;
-        kTeleopKinematicLimits.kMaxDriveAcceleration = 5.6 / 0.1; // defaultAccel;
+        kTeleopKinematicLimits.kMaxDriveVelocity = 5.0; // TunerConstants.kSpeedAt12VoltsMps;
+        kTeleopKinematicLimits.kMaxDriveAcceleration = 5.0 / 0.1; // defaultAccel;
         kTeleopKinematicLimits.kMaxSteeringVelocity = Units.Degree.of(1500).in(Units.Radians);
+
+        // SOTM Limits (Lowered Accel and slight Velocity cap)
+        kSOTMKinematicLimits.kMaxDriveVelocity = 2.0;
+        kSOTMKinematicLimits.kMaxDriveAcceleration = 13.0;
+        kSOTMKinematicLimits.kMaxSteeringVelocity = Units.Degree.of(1500).in(Units.Radians);
     }
 
     //     public static ModuleConfig ppModuleConfig =
