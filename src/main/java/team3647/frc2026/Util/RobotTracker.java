@@ -3,6 +3,7 @@ package team3647.frc2026.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -30,6 +31,13 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     private final Transform2d robotToShooter;
 
     private PeriodicIO periodicIO = new PeriodicIO();
+
+    private static final InterpolatingDoubleTreeMap timeOfFlightMap =
+            new InterpolatingDoubleTreeMap();
+
+    static {
+        timeOfFlightMap.put(null, null);
+    }
 
     public static class PeriodicIO {
         private double distanceFromHub = 0;
@@ -106,16 +114,57 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         return pose.exp(newTransform);
     }
 
-    // public Pose2d compensateFeed(Pose2d pose) {
+    // public Pose2d compensate(Pose2d pose) {
+    //     // Start with the current actual distance
+    //     double currentDistance = periodicIO.distanceFromHub;
+    //     double time = 0.0;
+    //     double speed = 0.0;
+    //     Pose2d lookaheadPose = pose;
 
-    //     double time = 0.3;
-    //     var transform =
-    //             new Twist2d(
-    //                     periodicIO.speeds.vxMetersPerSecond * time,
-    //                     periodicIO.speeds.vyMetersPerSecond * time,
-    //                     0);
-    //     return pose.exp(transform);
+    //     // Iterate 5 times to converge on the accurate lookahead pose
+    //     for (int i = 0; i < 5; i++) {
+    //         double rawShotSpeed = ShooterConstants.shootSpeedMap.get(currentDistance);
+    //         double hoodAngle = HoodConstants.hoodAngleMap.get(currentDistance);
+
+    //         // Calculate the horizontal exit speed
+    //         speed = rawShotSpeed * Math.cos(Math.toRadians(hoodAngle)) * exitSpeedMultiplier;
+
+    //         // Calculate estimated Time of Flight
+    //         time = currentDistance / speed;
+
+    //         // time = timeOfFlightMap.get(currentDistance);
+
+    //         // Calculate how far the robot will travel during that Time of Flight
+    //         var transform = new Twist2d(
+    //                 periodicIO.speeds.vxMetersPerSecond * time,
+    //                 periodicIO.speeds.vyMetersPerSecond * time,
+    //                 0);
+
+    //         // Apply the offset to get the predicted position
+    //         lookaheadPose = pose.exp(transform);
+
+    //         // Update the distance based on this new position for the next loop
+    //         currentDistance = getDistanceFromHub(lookaheadPose);
+    //     }
+
+    //     // Log the final converged values
+    //     Logger.recordOutput("compensate time", time);
+    //     Logger.recordOutput("compensate distance", currentDistance);
+    //     Logger.recordOutput("compensate speed", speed);
+
+    //     return lookaheadPose;
     // }
+
+    public Pose2d compensateFeed(Pose2d pose) {
+
+        double time = 0.3;
+        var transform =
+                new Twist2d(
+                        periodicIO.speeds.vxMetersPerSecond * time,
+                        periodicIO.speeds.vyMetersPerSecond * time,
+                        0);
+        return pose.exp(transform);
+    }
 
     public void setDistanceFromHub() {
         var currentPose = periodicIO.pose;
