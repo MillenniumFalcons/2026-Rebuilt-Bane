@@ -124,8 +124,8 @@ public class RobotContainer {
         mainController.leftBumper.onFalse(superstructure.retractIntake());
 
         mainController.rightTrigger.whileTrue(superstructure.shoot());
-        // mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
-        // mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
+        mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         mainController.rightBumper.whileTrue(superstructure.reverse());
 
         // sysid
@@ -260,14 +260,7 @@ public class RobotContainer {
     public final TargetingUtil targetingUtil = new TargetingUtil(robotTracker);
 
     public final AutoDrive autoDrive =
-            new AutoDrive(
-                    swerve::getOdoPose,
-                    swerve::getChassisSpeeds,
-                    AutoConstants.autoAlignXController,
-                    AutoConstants.autoAlignYController,
-                    AutoConstants.rotAlignController,
-                    detector,
-                    targetingUtil);
+            new AutoDrive(swerve::getOdoPose, swerve::getChassisSpeeds, detector, targetingUtil);
 
     public final Superstructure superstructure =
             new Superstructure(

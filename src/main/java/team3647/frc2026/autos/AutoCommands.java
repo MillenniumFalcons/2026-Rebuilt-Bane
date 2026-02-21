@@ -42,28 +42,46 @@ public class AutoCommands implements AllianceObserver {
     //                 AllianceFlip.flip(Translation2d.kZero),
     //                 AllianceFlip.flip(new Translation2d(4, 2.5)));
 
-    private final PIDController rotController = new PIDController(3, 0, 0);
+    private final PIDController rotController = new PIDController(1.5, 0, 0);
 
     // actual autos
-    public Command rightMidRush() {
+
+    // mid rushes
+    private final String rightMidRush = "RightMidRush";
+    private final String leftMidRush = "LeftMidRush";
+
+    public Command midRushAuto(String pathname) {
         return Commands.sequence(
-                rightMidRushSegmentOne(),
-                rightMidRushSegmentTwo(),
+                midRushSegmentOne(pathname),
+                midRushSegmentTwo(pathname),
                 Commands.parallel(superstructure.shoot(), autoDrive.enableAutoDrive()));
     }
 
-    public Command rightMidRushSegmentOne() {
+    public Command midRushSegmentOne(String pathname) {
         return Commands.parallel(
-                followChoreoPath(getTrajSplit("RightMidRush", 0)),
+                followChoreoPath(getTrajSplit(pathname, 0)),
                 Commands.sequence(Commands.waitSeconds(0.5), superstructure.intake()));
     }
 
-    public Command rightMidRushSegmentTwo() {
+    public Command midRushSegmentTwo(String pathname) {
         return Commands.parallel(
-                followChoreoPath(getTrajSplit("RightMidRush", 1)), superstructure.retractIntake());
+                followChoreoPath(getTrajSplit(pathname, 1)), superstructure.retractIntake());
     }
 
-    // START OF CHOREO PATH FOLLOWING STUFF
+    // outpost
+    private final String outpost = "Outpost_copy1";
+
+    public Command outpostAuto() {
+        return Commands.sequence(
+                followChoreoPath(getTrajSplit(outpost, 0)),
+                Commands.waitSeconds(1.5),
+                // followChoreoPath(getTrajSplit(outpost, 1)),
+                Commands.parallel(superstructure.shoot(), autoAlign()));
+    }
+
+    public Command autoAlign() {
+        return Commands.run(() -> swerve.drive(0, 0, autoDriveVelocities.get().dtheta), swerve);
+    }
 
     // regular pathfollower
     public Command followChoreoPath(Trajectory<SwerveSample> traj) {
@@ -207,9 +225,9 @@ public class AutoCommands implements AllianceObserver {
 
     Alliance color;
     boolean isRed = true;
-    SwerveDrive swerve;
-    Superstructure superstructure;
-    Supplier<Twist2d> autoDriveVelocities;
+    final SwerveDrive swerve;
+    final Superstructure superstructure;
+    final Supplier<Twist2d> autoDriveVelocities;
 
     public final AutoDrive autoDrive;
 
@@ -217,6 +235,16 @@ public class AutoCommands implements AllianceObserver {
 
     public List<AutoMode> redAutosList;
     public List<AutoMode> blueAutosList;
+
+    public final AutoMode blueEmpty;
+    public final AutoMode rightMidRushBlue;
+    public final AutoMode leftMidRushBlue;
+    public final AutoMode outpostBlue;
+
+    public final AutoMode redEmpty;
+    public final AutoMode rightMidRushRed;
+    public final AutoMode leftMidRushRed;
+    public final AutoMode outpostRed;
 
     public AutoCommands(
             SwerveDrive swerve,
@@ -234,13 +262,38 @@ public class AutoCommands implements AllianceObserver {
 
         this.hasTarget = hasTarget;
 
-        blueAutosList =
-                List.of(
-                        new AutoMode(
-                                Commands.none(),
-                                Pose2d.kZero.rotateBy(Rotation2d.k180deg),
-                                "nothingBlue"));
-        redAutosList = List.of(new AutoMode(Commands.none(), Pose2d.kZero, "nothingRed"));
+        this.blueEmpty =
+                new AutoMode(
+                        Commands.none(), Pose2d.kZero.rotateBy(Rotation2d.k180deg), "blue empty");
+        this.rightMidRushBlue =
+                new AutoMode(
+                        midRushAuto(rightMidRush),
+                        getInitial(getTraj(rightMidRush), Alliance.Blue),
+                        rightMidRush);
+        this.leftMidRushBlue =
+                new AutoMode(
+                        midRushAuto(leftMidRush),
+                        getInitial(getTraj(leftMidRush), Alliance.Blue),
+                        leftMidRush);
+        this.outpostBlue =
+                new AutoMode(outpostAuto(), getInitial(getTraj(outpost), Alliance.Blue), outpost);
+
+        this.redEmpty = new AutoMode(Commands.none(), Pose2d.kZero, "red empty");
+        this.rightMidRushRed =
+                new AutoMode(
+                        midRushAuto(rightMidRush),
+                        getInitial(getTraj(rightMidRush), Alliance.Red),
+                        rightMidRush);
+        this.leftMidRushRed =
+                new AutoMode(
+                        midRushAuto(leftMidRush),
+                        getInitial(getTraj(leftMidRush), Alliance.Red),
+                        leftMidRush);
+        this.outpostRed =
+                new AutoMode(outpostAuto(), getInitial(getTraj(outpost), Alliance.Red), outpost);
+
+        blueAutosList = List.of(blueEmpty, rightMidRushBlue, leftMidRushBlue, outpostBlue);
+        redAutosList = List.of(redEmpty, rightMidRushRed, leftMidRushRed, outpostRed);
     }
 
     public BooleanSupplier hasTarget() {

@@ -1,6 +1,5 @@
 package team3647.frc2026.util;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,8 +35,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public final ProfiledPIDController profiledRotController =
             new ProfiledPIDController(3.5, 0, 0.2, new Constraints(10, 10));
 
-    private final PIDController intakeXController, intakeYController, intakeRotController;
-
     private Alliance color = Alliance.Red;
 
     private DriveMode wantedMode = DriveMode.SHOOT_ON_THE_MOVE;
@@ -54,9 +51,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public AutoDrive(
             Supplier<Pose2d> odoPoseFunction,
             Supplier<ChassisSpeeds> chassisSpeedsSupplier,
-            PIDController xController,
-            PIDController yController,
-            PIDController rotController,
             NeuralDetector detector,
             TargetingUtil targeting) {
         super();
@@ -66,10 +60,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         profiledRotController.setTolerance(Units.degreesToRadians(3), Units.degreesToRadians(3));
         profiledRotController.enableContinuousInput(-Math.PI, Math.PI);
-
-        this.intakeXController = new PIDController(4, 0, 0);
-        this.intakeYController = new PIDController(4, 0, 0);
-        this.intakeRotController = new PIDController(2, 0, 0);
     }
 
     public enum DriveMode {

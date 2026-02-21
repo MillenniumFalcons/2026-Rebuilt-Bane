@@ -87,8 +87,9 @@ public class Superstructure {
 
     public Command shotTuning() {
         return Commands.parallel(
-                shooterCommands.setVelocity(shotSpeed),
-                Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())));
+                shooterCommands.shootTunable(),
+                Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
+                Commands.sequence(Commands.waitSeconds(1), index()));
     }
 
     public Command index() {

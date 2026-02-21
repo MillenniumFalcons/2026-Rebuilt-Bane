@@ -25,8 +25,4 @@ public class AutoConstants {
     public static final PIDController rotController = new PIDController(1.25, 0, 0);
     public static final PIDController autoXController = new PIDController(2, 0, 0);
     public static final PIDController autoYController = new PIDController(2, 0, 0);
-
-    public static final PIDController rotAlignController = new PIDController(5, 0, 0);
-    public static final PIDController autoAlignXController = new PIDController(2.5, 0, 0);
-    public static final PIDController autoAlignYController = new PIDController(2.5, 0, 0);
 }
