@@ -1,5 +1,6 @@
 package team3647.frc2026.util;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,7 +34,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(3.5, 0, 0.2, new Constraints(10, 10));
+            new ProfiledPIDController(4.0, 0, 0.2
+            , new Constraints(10, 10));
 
     private Alliance color = Alliance.Red;
 
@@ -133,15 +135,18 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         // FF = (Linear Speed * FF Gain) * sign of the error
         // This effectively "boosts" the rotation command more when moving fast
-        double customFF = profiledRotController.getSetpoint().velocity;
-        // * MathUtil.clamp(
-        //         Math.abs(chassisSpeedsSupplier.get().vyMetersPerSecond / 1.5),
-        //         1,
-        //         100);
+        double angleROC = targeting.getHubAngleROC();
+        double customFF = profiledRotController.getSetpoint().velocity 
+            * MathUtil.clamp(
+                Math.abs(chassisSpeedsSupplier.get().vyMetersPerSecond*2),
+                1,
+                3) - angleROC;
 
         // Logger.recordOutput("linear velocity", linearVelocityMag);
         // Logger.recordOutput("angular error", angularError);
         Logger.recordOutput("ff output", customFF);
+        Logger.recordOutput("rotSetpointVel", profiledRotController.getSetpoint().velocity);
+        Logger.recordOutput("rotSetpointPos", profiledRotController.getSetpoint().position);
 
         double rotComp = -(rotFeedback + customFF);
 

@@ -3,7 +3,9 @@ package team3647.frc2026.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import team3647.frc2026.constants.HoodConstants;
@@ -110,6 +112,30 @@ public class TargetingUtil {
 
     public double getCompensatedDistance() {
         return robotTracker.getDistanceFromHub(robotTracker.compensate(robotTracker.getPose()));
+    }
+
+    public double getHubAngleROC(){
+        Pose2d currentPose = robotTracker.getPose();
+        Pose2d hubPose = robotTracker.getHub();
+
+        Translation2d robotToTarget = hubPose.getTranslation().minus(currentPose.getTranslation());
+        double heading = robotToTarget.getAngle().getRadians();
+        double vx = robotTracker.getChassisSpeeds().vyMetersPerSecond;
+        double vy = robotTracker.getChassisSpeeds().vxMetersPerSecond;
+        
+        Translation2d chassisSpeeds = new Translation2d(vx, vy);
+        double robotHeading = chassisSpeeds.getAngle().getRadians();
+        double robotVelocity = chassisSpeeds.getNorm();
+        double headingDiff = heading - robotHeading;
+        Double angleROC = robotVelocity * Math.sin(headingDiff) / robotTracker.getDistanceFromHub();
+
+        SmartDashboard.putNumber("headingDiff", headingDiff);
+        SmartDashboard.putNumber("angleROC", angleROC);
+        if (angleROC.isNaN()) {
+            return 0;
+        } else {
+            return angleROC;
+        }
     }
 
     // =========================================================================

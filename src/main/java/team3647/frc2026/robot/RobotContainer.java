@@ -128,6 +128,10 @@ public class RobotContainer {
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         mainController.rightBumper.whileTrue(superstructure.reverse());
 
+        mainController.leftTrigger.whileTrue(superstructure.shotTuning());
+        mainController.leftTrigger.whileTrue(autoDrive.enableAutoDrive());
+        mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
+
         // sysid
         // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
         // mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());

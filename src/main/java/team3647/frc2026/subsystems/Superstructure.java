@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
@@ -81,8 +83,7 @@ public class Superstructure {
                 Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
                 Commands.sequence(
                         shooterCommands.waitUntilAtVelocity(shotSpeed, 0.5),
-                        Commands.waitUntil(isRotAligned),
-                        index()));
+                        index().onlyWhile(isRotAligned)));
     }
 
     public Command shotTuning() {
