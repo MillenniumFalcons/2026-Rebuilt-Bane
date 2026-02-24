@@ -3,7 +3,6 @@ package team3647.frc2026.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -93,7 +92,8 @@ public class TargetingUtil {
         // 6. Calculate Shoot Speed
         kShootSpeed = shootSpeedMap.get(compensatedDistance);
 
-        return new AimingParameters(aimHeading, hoodAngle, kShootSpeed, compensatedDistance);
+        return new AimingParameters(
+                aimHeading, hoodAngle, kShootSpeed, compensatedDistance, robotToTargetTranslation);
     }
 
     /** Calculates aiming parameters assuming the robot is stationary. */
@@ -107,14 +107,14 @@ public class TargetingUtil {
 
         double hoodAngle = hoodAngleMap.get(distance) + offset;
 
-        return new AimingParameters(heading, hoodAngle, kShootSpeed, distance);
+        return new AimingParameters(heading, hoodAngle, kShootSpeed, distance, robotToTarget);
     }
 
     public double getCompensatedDistance() {
         return robotTracker.getDistanceFromHub(robotTracker.compensate(robotTracker.getPose()));
     }
 
-    public double getHubAngleROC(){
+    public double getHubAngleROC() {
         Pose2d currentPose = robotTracker.getPose();
         Pose2d hubPose = robotTracker.getHub();
 
@@ -122,7 +122,7 @@ public class TargetingUtil {
         double heading = robotToTarget.getAngle().getRadians();
         double vx = robotTracker.getChassisSpeeds().vyMetersPerSecond;
         double vy = robotTracker.getChassisSpeeds().vxMetersPerSecond;
-        
+
         Translation2d chassisSpeeds = new Translation2d(vx, vy);
         double robotHeading = chassisSpeeds.getAngle().getRadians();
         double robotVelocity = chassisSpeeds.getNorm();
@@ -147,26 +147,38 @@ public class TargetingUtil {
         public final double pivot; // Hood angle in degrees
         public final double shootSpeed; // Flywheel speed (m/s)
         public final double effectiveDistance; // Distance used for calculation
+        public final Translation2d robotToTarget;
 
         public AimingParameters(
-                Rotation2d rotation, double pivot, double shootSpeed, double effectiveDistance) {
+                Rotation2d rotation,
+                double pivot,
+                double shootSpeed,
+                double effectiveDistance,
+                Translation2d robotToTarget) {
             this.rotation = rotation;
             this.pivot = pivot;
             this.shootSpeed = shootSpeed;
             this.effectiveDistance = effectiveDistance;
+            this.robotToTarget = robotToTarget;
         }
 
         public AimingParameters withShootSpeed(double speed) {
-            return new AimingParameters(this.rotation, this.pivot, speed, this.effectiveDistance);
+            return new AimingParameters(
+                    this.rotation, this.pivot, speed, this.effectiveDistance, this.robotToTarget);
         }
 
         public AimingParameters withRotation(Rotation2d rot) {
-            return new AimingParameters(rot, this.pivot, this.shootSpeed, this.effectiveDistance);
+            return new AimingParameters(
+                    rot, this.pivot, this.shootSpeed, this.effectiveDistance, this.robotToTarget);
         }
 
         public AimingParameters withPivot(double pivot) {
             return new AimingParameters(
-                    this.rotation, pivot, this.shootSpeed, this.effectiveDistance);
+                    this.rotation,
+                    pivot,
+                    this.shootSpeed,
+                    this.effectiveDistance,
+                    this.robotToTarget);
         }
 
         @Override

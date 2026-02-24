@@ -34,8 +34,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(4.0, 0, 0.2
-            , new Constraints(10, 10));
+            new ProfiledPIDController(4.0, 0, 0.2, new Constraints(10, 10));
 
     private Alliance color = Alliance.Red;
 
@@ -71,7 +70,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public boolean rotAligned() {
         final Pose2d robotPose = getPose();
         Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
-        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 5.0;
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 2.0;
     }
 
     public double getHoodAngle() {
@@ -113,7 +112,9 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public Twist2d getVelocities() {
 
         final Pose2d robotPose = getPose();
-        // final ChassisSpeeds currentSpeeds = chassisSpeedsSupplier.get();
+        final ChassisSpeeds currentSpeeds = chassisSpeedsSupplier.get();
+        final ChassisSpeeds fieldSpeeds =
+                ChassisSpeeds.fromFieldRelativeSpeeds(currentSpeeds, getOdoRot());
 
         Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
 
@@ -135,16 +136,52 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         // FF = (Linear Speed * FF Gain) * sign of the error
         // This effectively "boosts" the rotation command more when moving fast
-        double angleROC = targeting.getHubAngleROC();
-        double customFF = profiledRotController.getSetpoint().velocity 
-            * MathUtil.clamp(
-                Math.abs(chassisSpeedsSupplier.get().vyMetersPerSecond*2),
-                1,
-                3) - angleROC;
+        // double angleROC = targeting.getHubAngleROC();
+        double k = profiledRotController.getSetpoint().velocity;
+        double customFF =
+                Math.signum(rotFeedback) == Math.signum(k)
+                        ? k
+                                * MathUtil.clamp(
+                                        Math.abs(
+                                                fieldSpeeds.vyMetersPerSecond
+                                                        * Math.pow(
+                                                                Math.abs(
+                                                                        Math.sin(
+                                                                                MathUtil.clamp(
+                                                                                        angleToTarget
+                                                                                                .getRadians(),
+                                                                                        -Math.PI
+                                                                                                / 2,
+                                                                                        Math.PI
+                                                                                                / 2))),
+                                                                2.7)
+                                                        * 2.5),
+                                        1,
+                                        50)
+                        : -1
+                                * k
+                                * MathUtil.clamp(
+                                        Math.abs(
+                                                fieldSpeeds.vyMetersPerSecond
+                                                        * Math.pow(
+                                                                Math.abs(
+                                                                        Math.sin(
+                                                                                MathUtil.clamp(
+                                                                                        angleToTarget
+                                                                                                .getRadians(),
+                                                                                        -Math.PI
+                                                                                                / 2,
+                                                                                        Math.PI
+                                                                                                / 2))),
+                                                                2.7)
+                                                        * 2.5),
+                                        1,
+                                        50);
 
         // Logger.recordOutput("linear velocity", linearVelocityMag);
         // Logger.recordOutput("angular error", angularError);
         Logger.recordOutput("ff output", customFF);
+        Logger.recordOutput("pid output", rotFeedback);
         Logger.recordOutput("rotSetpointVel", profiledRotController.getSetpoint().velocity);
         Logger.recordOutput("rotSetpointPos", profiledRotController.getSetpoint().position);
 

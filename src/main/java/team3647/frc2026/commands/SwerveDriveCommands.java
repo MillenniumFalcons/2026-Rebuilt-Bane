@@ -11,7 +11,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.subsystems.SwerveDrive;
 import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.lib.team9442.AllianceObserver;
@@ -70,9 +69,6 @@ public class SwerveDriveCommands implements AllianceObserver {
                     double motionTurnComponent = rot.getAsDouble() * kMaxRotRadPs * 0.8;
 
                     if (!isAutoDrive) {
-                        // Apply standard limits when driving normally
-                        swerve.applyKinematicLimits(SwerveDriveConstants.kTeleopKinematicLimits);
-
                         if (robotRel && Utils.isSimulation()) {
                             swerve.drive(-motionXComponent, -motionYComponent, motionTurnComponent);
                         } else {
@@ -81,12 +77,12 @@ public class SwerveDriveCommands implements AllianceObserver {
                         }
                     } else if (isAutoDrive) {
                         if (getMode.get().equals(DriveMode.SHOOT_ON_THE_MOVE)) {
-                            // Apply SOTM limits to flatten the chassis while shooting
-                            swerve.applyKinematicLimits(SwerveDriveConstants.kSOTMKinematicLimits);
 
                             motionTurnComponent = velocities.dtheta;
                             swerve.driveFieldOriented(
-                                    motionXComponent, motionYComponent, motionTurnComponent);
+                                    motionXComponent * 0.25,
+                                    motionYComponent * 0.25,
+                                    motionTurnComponent);
                         }
                     }
                     // else if (isAutoDrive

@@ -28,6 +28,6 @@ public class Indexer extends TalonFXSubsystem {
 
     @Override
     public String getName() {
-        return "kicker";
+        return "Indexer";
     }
 }

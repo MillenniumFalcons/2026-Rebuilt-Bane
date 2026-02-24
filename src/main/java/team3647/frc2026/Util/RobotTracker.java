@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import team3647.frc2026.constants.HoodConstants;
-import team3647.frc2026.constants.ShooterConstants;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
 
@@ -85,7 +83,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     }
 
     // public Pose2d compensate(Pose2d pose) {
-    //     final double rawShotSpeed = ShooterConstants.shootSpeedMap.get(periodicIO.distanceFromHub);
+    //     final double rawShotSpeed =
+    // ShooterConstants.shootSpeedMap.get(periodicIO.distanceFromHub);
     //     final double hoodAngle = HoodConstants.hoodAngleMap.get(periodicIO.distanceFromHub);
     //     final double shootSpeed =
     //             rawShotSpeed * Math.cos(Math.toRadians(hoodAngle)) * exitSpeedMultiplier;
@@ -134,15 +133,16 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
             // speed = rawShotSpeed * Math.cos(Math.toRadians(hoodAngle)) * exitSpeedMultiplier;
 
             // Calculate estimated Time of Flight
-            //time = currentDistance / speed;
+            // time = currentDistance / speed;
 
             time = timeOfFlightMap.get(currentDistance);
 
             // Calculate how far the robot will travel during that Time of Flight
-            var transform = new Twist2d(
-                    periodicIO.speeds.vxMetersPerSecond * time,
-                    periodicIO.speeds.vyMetersPerSecond * time,
-                    0);
+            var transform =
+                    new Twist2d(
+                            periodicIO.speeds.vxMetersPerSecond * time,
+                            periodicIO.speeds.vyMetersPerSecond * time,
+                            0);
 
             // Apply the offset to get the predicted position
             lookaheadPose = pose.exp(transform);
