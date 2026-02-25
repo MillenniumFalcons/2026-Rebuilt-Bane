@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
@@ -37,6 +38,10 @@ public class Superstructure {
     public Angle wantedIntakeAngle = Degrees.of(70);
     public final BooleanSupplier isRotAligned;
 
+    public final BooleanSupplier atShotVel;
+    public final BooleanSupplier atHoodAngle;
+    public final Trigger readyToShoot;
+
     public Superstructure(
             ShooterLeft shooterOne,
             ShooterRight shooterTwo,
@@ -65,6 +70,11 @@ public class Superstructure {
         this.hoodCommands = new HoodCommands(this.hood);
         this.wristCommands = new WristCommands(this.wrist);
         this.rollerCommands = new RollerCommands(this.rollers);
+
+        this.atShotVel = () -> shooterCommands.isAtVelocity(this.shotSpeed, 0.5);
+        this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 0.5);
+        this.readyToShoot =
+                new Trigger(this.isRotAligned).and(atShotVel).and(atHoodAngle).debounce(0.25);
     }
 
     public Angle getIntakeAngle() {
@@ -79,9 +89,10 @@ public class Superstructure {
         return Commands.parallel(
                 shooterCommands.setVelocity(shotSpeed),
                 Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
+                Commands.run(
+                        () -> Logger.recordOutput("ready to shoot", readyToShoot.getAsBoolean())),
                 Commands.sequence(
-                        shooterCommands.waitUntilAtVelocity(shotSpeed, 0.5),
-                        index().onlyWhile(isRotAligned)));
+                        Commands.waitUntil(readyToShoot), index().onlyWhile(readyToShoot)));
     }
 
     public Command shotTuning() {

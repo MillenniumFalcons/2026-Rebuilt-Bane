@@ -69,13 +69,13 @@ public class AutoCommands implements AllianceObserver {
     }
 
     // outpost
-    private final String outpost = "Outpost_copy1";
+    private final String outpost = "Outpost";
 
     public Command outpostAuto() {
         return Commands.sequence(
                 followChoreoPath(getTrajSplit(outpost, 0)),
                 Commands.waitSeconds(1.5),
-                // followChoreoPath(getTrajSplit(outpost, 1)),
+                followChoreoPath(getTrajSplit(outpost, 1)),
                 Commands.parallel(superstructure.shoot(), autoAlign()));
     }
 

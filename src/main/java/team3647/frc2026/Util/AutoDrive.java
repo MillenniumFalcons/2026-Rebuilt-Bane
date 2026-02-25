@@ -1,9 +1,9 @@
 package team3647.frc2026.util;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.constants.FieldConstants;
+import team3647.frc2026.util.TargetingUtil.AimingParameters;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
 import team3647.lib.vision.AprilTagCamera;
@@ -59,7 +60,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         this.chassisSpeedsSupplier = chassisSpeedsSupplier;
         this.targeting = targeting;
 
-        profiledRotController.setTolerance(Units.degreesToRadians(3), Units.degreesToRadians(3));
+        profiledRotController.setTolerance(
+                Units.degreesToRadians(1.5), Units.degreesToRadians(1.5));
         profiledRotController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
@@ -70,7 +72,9 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public boolean rotAligned() {
         final Pose2d robotPose = getPose();
         Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
-        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 2.0;
+        Logger.recordOutput("robot rotation", robotPose.getRotation().getDegrees());
+        Logger.recordOutput("wnated rotation", angleToTarget.getDegrees());
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 5.5;
     }
 
     public double getHoodAngle() {
@@ -114,9 +118,13 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         final Pose2d robotPose = getPose();
         final ChassisSpeeds currentSpeeds = chassisSpeedsSupplier.get();
         final ChassisSpeeds fieldSpeeds =
-                ChassisSpeeds.fromFieldRelativeSpeeds(currentSpeeds, getOdoRot());
+                ChassisSpeeds.fromRobotRelativeSpeeds(currentSpeeds, getOdoRot());
 
-        Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
+        final AimingParameters targetData = targeting.shootAtHubOnTheMove();
+
+        Translation2d robotToTarget = targetData.robotToTarget;
+        double distanceToTarget = targetData.effectiveDistance;
+        Rotation2d angleToTarget = targetData.rotation;
 
         Logger.recordOutput(
                 "wantedAngle", new Pose2d(robotPose.getX(), robotPose.getY(), angleToTarget));
@@ -137,46 +145,10 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         // FF = (Linear Speed * FF Gain) * sign of the error
         // This effectively "boosts" the rotation command more when moving fast
         // double angleROC = targeting.getHubAngleROC();
-        double k = profiledRotController.getSetpoint().velocity;
         double customFF =
-                Math.signum(rotFeedback) == Math.signum(k)
-                        ? k
-                                * MathUtil.clamp(
-                                        Math.abs(
-                                                fieldSpeeds.vyMetersPerSecond
-                                                        * Math.pow(
-                                                                Math.abs(
-                                                                        Math.sin(
-                                                                                MathUtil.clamp(
-                                                                                        angleToTarget
-                                                                                                .getRadians(),
-                                                                                        -Math.PI
-                                                                                                / 2,
-                                                                                        Math.PI
-                                                                                                / 2))),
-                                                                2.7)
-                                                        * 2.5),
-                                        1,
-                                        50)
-                        : -1
-                                * k
-                                * MathUtil.clamp(
-                                        Math.abs(
-                                                fieldSpeeds.vyMetersPerSecond
-                                                        * Math.pow(
-                                                                Math.abs(
-                                                                        Math.sin(
-                                                                                MathUtil.clamp(
-                                                                                        angleToTarget
-                                                                                                .getRadians(),
-                                                                                        -Math.PI
-                                                                                                / 2,
-                                                                                        Math.PI
-                                                                                                / 2))),
-                                                                2.7)
-                                                        * 2.5),
-                                        1,
-                                        50);
+                (robotToTarget.getY() * fieldSpeeds.vxMetersPerSecond
+                                - robotToTarget.getX() * fieldSpeeds.vyMetersPerSecond)
+                        / (distanceToTarget * distanceToTarget);
 
         // Logger.recordOutput("linear velocity", linearVelocityMag);
         // Logger.recordOutput("angular error", angularError);

@@ -28,6 +28,10 @@ public class HoodCommands {
         return Commands.run(() -> hood.setAngleDegs(angle), hood);
     }
 
+    public boolean angleReached(DoubleSupplier angle, double tolerance) {
+        return Math.abs(hood.getAngleDegs() - angle.getAsDouble()) < tolerance;
+    }
+
     public Command holdPositionAtCall() {
         return new Command() {
             Angle degreeAtStart = HoodConstants.kInitialAngle;
