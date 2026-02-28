@@ -49,7 +49,6 @@ import team3647.lib.team9442.AllianceChecker;
 import team3647.lib.team9442.AutoChooser;
 import team3647.lib.tunables.TunableNumber;
 import team3647.lib.vision.AprilTagLimelight;
-import team3647.lib.vision.NeuralDetectorLimelight;
 import team3647.lib.vision.VisionController;
 
 public class RobotContainer {
@@ -128,19 +127,19 @@ public class RobotContainer {
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         mainController.rightBumper.whileTrue(superstructure.reverse());
 
-        mainController.leftTrigger.whileTrue(superstructure.shotTuning());
-        mainController.leftTrigger.whileTrue(autoDrive.enableAutoDrive());
-        mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
+        // mainController.leftTrigger.whileTrue(superstructure.shotTuning());
+        // mainController.leftTrigger.whileTrue(autoDrive.enableAutoDrive());
+        // mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
 
         // sysid
-        // mainController.dPadUp.onTrue(swerve.driveRoutineDynamic());
-        // mainController.dPadDown.onTrue(swerve.driveRoutineQuasiStatic());
-        // mainController.dPadLeft.onTrue(swerve.steerRoutineDynamic());
-        // mainController.dPadRight.onTrue(swerve.steerRoutineQuasiStatic());
-        // mainController.buttonY.whileTrue(shooterRight.getSysIdDynamic());
-        // mainController.buttonA.whileTrue(shooterRight.getSysIdQuasiStatic());
-        // mainController.buttonX.whileTrue(shooterRight.getSysIdDynamicReverse());
-        // mainController.buttonB.whileTrue(shooterRight.getSysIdQuasistaticReverse());
+        mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
+        mainController.dPadDown.whileTrue(swerve.driveRoutineQuasiStatic());
+        mainController.dPadLeft.whileTrue(swerve.driveRoutineDynamicReverse());
+        mainController.dPadRight.whileTrue(swerve.driveRoutineQuasiStaticReverse());
+        // mainController.buttonY.whileTrue(shooterLeft.getSysIdDynamic());
+        // mainController.buttonA.whileTrue(shooterLeft.getSysIdQuasiStatic());
+        // mainController.buttonX.whileTrue(shooterLeft.getSysIdDynamicReverse());
+        // mainController.buttonB.whileTrue(shooterLeft.getSysIdQuasistaticReverse());
     }
 
     public void updateRobotPoseForSmartdashboard() {
@@ -227,7 +226,8 @@ public class RobotContainer {
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
-    NeuralDetectorLimelight detector = new NeuralDetectorLimelight(VisionConstants.kCrossbarCam);
+    //     NeuralDetectorLimelight detector = new
+    // NeuralDetectorLimelight(VisionConstants.kShooterCam);
 
     public final SwerveDriveCommands swerveCommands =
             new SwerveDriveCommands(
@@ -264,7 +264,7 @@ public class RobotContainer {
     public final TargetingUtil targetingUtil = new TargetingUtil(robotTracker);
 
     public final AutoDrive autoDrive =
-            new AutoDrive(swerve::getOdoPose, swerve::getChassisSpeeds, detector, targetingUtil);
+            new AutoDrive(swerve::getOdoPose, swerve::getChassisSpeeds, targetingUtil);
 
     public final Superstructure superstructure =
             new Superstructure(
@@ -299,21 +299,26 @@ public class RobotContainer {
                     VisionConstants.baseStdDevs,
                     autoDrive::getAutoDriveEnabled);
 
+    AprilTagLimelight midCam =
+            new AprilTagLimelight(
+                    VisionConstants.kShooterCam,
+                    VisionConstants.midMount,
+                    swerve::getPigeonOrientation,
+                    VisionConstants.baseStdDevs,
+                    autoDrive::getAutoDriveEnabled);
+
     public final VisionController controller =
             new VisionController(
                     swerve::addVisionData,
                     swerve::shouldAddData,
                     swerve::resetPose,
                     rightCam,
-                    leftCam);
+                    leftCam,
+                    midCam);
 
     public final AutoCommands autoCommands =
             new AutoCommands(
-                    swerve,
-                    superstructure,
-                    autoDrive::getVelocities,
-                    detector::hasTarget,
-                    autoDrive);
+                    swerve, superstructure, autoDrive::getVelocities, () -> false, autoDrive);
 
     public final AutoChooser autoChooser = new AutoChooser(autoCommands, swerve::setRobotPose);
 }

@@ -42,7 +42,7 @@ public class AutoCommands implements AllianceObserver {
     //                 AllianceFlip.flip(Translation2d.kZero),
     //                 AllianceFlip.flip(new Translation2d(4, 2.5)));
 
-    private final PIDController rotController = new PIDController(1.5, 0, 0);
+    private final PIDController rotController = new PIDController(2, 0, 0);
 
     // actual autos
 
@@ -74,6 +74,7 @@ public class AutoCommands implements AllianceObserver {
     public Command outpostAuto() {
         return Commands.sequence(
                 followChoreoPath(getTrajSplit(outpost, 0)),
+                Commands.run(() -> swerve.drive(0, 0, 0)).withTimeout(1.5),
                 Commands.waitSeconds(1.5),
                 followChoreoPath(getTrajSplit(outpost, 1)),
                 Commands.parallel(superstructure.shoot(), autoAlign()));
@@ -164,7 +165,7 @@ public class AutoCommands implements AllianceObserver {
             double xFeedback = xController.calculate(pose.getX(), referenceState.getPose().getX());
             double yFeedback = yController.calculate(pose.getY(), referenceState.getPose().getY());
             double rotationFeedback =
-                    rotationController.calculate(
+                    -rotationController.calculate(
                             pose.getRotation().getRadians(),
                             referenceState.getPose().getRotation().getRadians());
 

@@ -74,7 +74,7 @@ public class Superstructure {
         this.atShotVel = () -> shooterCommands.isAtVelocity(this.shotSpeed, 0.5);
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 0.5);
         this.readyToShoot =
-                new Trigger(this.isRotAligned).and(atShotVel).and(atHoodAngle).debounce(0.25);
+                new Trigger(this.isRotAligned).and(atShotVel).and(atHoodAngle).debounce(0.1);
     }
 
     public Angle getIntakeAngle() {

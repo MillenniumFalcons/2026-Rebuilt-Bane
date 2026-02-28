@@ -24,7 +24,7 @@ public class HoodConstants {
     public static final Angle kInitialAngle = kMaxAngle;
 
     public static final double kNativeToDeg =
-            22 / 30.34; // this converts rotations to degrees so the units should be
+            22 / 6; // this converts rotations to degrees so the units should be
     // degrees/rotation
 
     public static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap();

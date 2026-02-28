@@ -27,13 +27,13 @@ public class VisionConstants {
 
     // redesign cameras
     //     public static final String kDriveCam = "limelight-pov";
-    public static final String kCrossbarCam = "limelight-intake";
+    public static final String kShooterCam = "limelight-mid";
     public static final String kLeftCam = "limelight-left";
     public static final String kRightCam = "limelight-right";
 
     // camera transforms
 
-    public static final Transform3d driveMount =
+    public static final Transform3d midMount =
             new Transform3d(
                     Inches.of(6.75),
                     Inches.of(9),

@@ -206,14 +206,14 @@ public class AprilTagLimelight extends VirtualSubsystem implements AprilTagCamer
             return Optional.empty();
         }
 
-        if (botPoseRaw.get().getZ() > 0.2) {
+        if (Math.abs(botPoseRaw.get().getZ()) > 0.2) {
             return Optional.empty();
         }
         var bestTag = getBestTag(result.rawFiducials);
 
-        if (bestTag.distToCamera > 3.5) {
-            return Optional.empty();
-        }
+        // if (bestTag.distToCamera > 3.5) {
+        //     return Optional.empty();
+        // }
 
         // || (bestTag.ambiguity > 0.7 && getName().equals("limelight-left") &&
         // autoDriveEnabled.getAsBoolean())

@@ -59,6 +59,8 @@ public class SwerveDrive extends TunerSwerveDrivetrain
 
     private boolean drivePerspectiveGood = false;
 
+    private boolean isChar = false;
+
     private final double maxSpeedMpS;
     private final double maxRotRadPerSec;
 
@@ -99,7 +101,11 @@ public class SwerveDrive extends TunerSwerveDrivetrain
     // sysid stuff
     SysIdRoutine driveRoutine =
             new SysIdRoutine(
-                    new Config(null, null, null, ModifiedSignalLogger.logState("drive routine")),
+                    new Config(
+                            null,
+                            null,
+                            Units.Second.of(4),
+                            ModifiedSignalLogger.logState("drive routine")),
                     new Mechanism(
                             (Voltage volts) -> setControl(driveVoltageRequest.withVolts(volts)),
                             null,
@@ -245,7 +251,9 @@ public class SwerveDrive extends TunerSwerveDrivetrain
 
     public void writePeriodicOutputs() {
         setisAccel();
-        this.setControl(this.masterRequest);
+        if (!isChar) {
+            this.setControl(this.masterRequest);
+        }
 
         // Logger.recordOutput("Robot/pose", periodicIO.pose);
         // simpleSim.periodic();
@@ -574,11 +582,31 @@ public class SwerveDrive extends TunerSwerveDrivetrain
     }
 
     public Command driveRoutineQuasiStatic() {
-        return driveRoutine.quasistatic(Direction.kForward);
+        return driveRoutine
+                .quasistatic(Direction.kForward)
+                .beforeStarting(() -> this.isChar = true)
+                .finallyDo(() -> this.isChar = false);
     }
 
     public Command driveRoutineDynamic() {
-        return driveRoutine.dynamic(Direction.kForward);
+        return driveRoutine
+                .dynamic(Direction.kForward)
+                .beforeStarting(() -> this.isChar = true)
+                .finallyDo(() -> this.isChar = false);
+    }
+
+    public Command driveRoutineQuasiStaticReverse() {
+        return driveRoutine
+                .quasistatic(Direction.kReverse)
+                .beforeStarting(() -> this.isChar = true)
+                .finallyDo(() -> this.isChar = false);
+    }
+
+    public Command driveRoutineDynamicReverse() {
+        return driveRoutine
+                .dynamic(Direction.kReverse)
+                .beforeStarting(() -> this.isChar = true)
+                .finallyDo(() -> this.isChar = false);
     }
 
     public Command steerRoutineQuasiStatic() {

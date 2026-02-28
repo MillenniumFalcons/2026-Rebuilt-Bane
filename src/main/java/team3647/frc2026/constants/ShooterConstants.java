@@ -51,14 +51,14 @@ public class ShooterConstants {
     public static final double kMaxCurrent = 100.0;
 
     // feedforward from sysid left shooter
-    public static final double kS = 0.089229; // find all of these when characterizing
-    public static final double kV = 0.117; //
-    public static final double kA = 0.0065586; //
+    public static final double kS = 0.0;
+    public static final double kV = 0.11762;
+    public static final double kA = 0.0098105;
 
     // sysid right shooter
-    public static final double kSright = 0.0; // find all of these when characterizing
-    public static final double kVright = 0.11696; //
-    public static final double kAright = 0.0081703; //
+    public static final double kSright = 0.0;
+    public static final double kVright = 0.1194;
+    public static final double kAright = 0.0098557;
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
@@ -70,18 +70,18 @@ public class ShooterConstants {
 
     public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
 
-    public static double tempOffset = 0.5;
+    public static double tempOffset = -1.5;
 
     static {
-        shootSpeedMap.put(1.0, 15.0 - tempOffset);
-        shootSpeedMap.put(1.5, 15.5 - tempOffset);
-        shootSpeedMap.put(2.0, 16.5 - tempOffset);
-        shootSpeedMap.put(2.5, 17.0 - tempOffset);
-        shootSpeedMap.put(3.0, 17.5 - tempOffset);
-        shootSpeedMap.put(3.5, 18.5 - tempOffset);
-        shootSpeedMap.put(4.0, 19.25 - tempOffset);
-        shootSpeedMap.put(4.5, 20.0 - tempOffset);
-        shootSpeedMap.put(5.0, 21.25 - tempOffset);
+        shootSpeedMap.put(1.0, 15.0 + tempOffset);
+        shootSpeedMap.put(1.5, 15.5 + tempOffset);
+        shootSpeedMap.put(2.0, 16.5 + tempOffset);
+        shootSpeedMap.put(2.5, 17.0 + tempOffset);
+        shootSpeedMap.put(3.0, 17.5 + tempOffset);
+        shootSpeedMap.put(3.5, 18.5 + tempOffset);
+        shootSpeedMap.put(4.0, 19.25 + tempOffset);
+        shootSpeedMap.put(4.5, 20.0 + tempOffset);
+        shootSpeedMap.put(5.0, 21.25 + tempOffset);
 
         kShooterOneConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kShooterTwoConfig.MotorOutput.Inverted =
