@@ -103,7 +103,7 @@ public class Superstructure {
     }
 
     public Command index() {
-        return Commands.parallel(indexerCommands.index(), kickerCommands.kick());
+        return Commands.parallel(indexerCommands.index(), kickerCommands.kick(), rollerCommands.intake());
     }
 
     public Command reverse() {

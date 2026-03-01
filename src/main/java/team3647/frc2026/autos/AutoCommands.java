@@ -18,12 +18,16 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.Logger;
+
 import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.SwerveDrive;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.PoseUtils;
 import team3647.lib.team9442.AllianceObserver;
+import team3647.lib.tunables.TunablePID;
 
 public class AutoCommands implements AllianceObserver {
 
@@ -42,7 +46,8 @@ public class AutoCommands implements AllianceObserver {
     //                 AllianceFlip.flip(Translation2d.kZero),
     //                 AllianceFlip.flip(new Translation2d(4, 2.5)));
 
-    private final PIDController rotController = new PIDController(2, 0, 0);
+    private final PIDController rotController = new PIDController(2.5, 0.05, 0);
+    TunablePID tunableRotController = new TunablePID("Auto/rot", rotController);
 
     // actual autos
 
@@ -58,13 +63,13 @@ public class AutoCommands implements AllianceObserver {
     }
 
     public Command midRushSegmentOne(String pathname) {
-        return Commands.parallel(
+        return Commands.deadline(
                 followChoreoPath(getTrajSplit(pathname, 0)),
                 Commands.sequence(Commands.waitSeconds(0.5), superstructure.intake()));
     }
 
     public Command midRushSegmentTwo(String pathname) {
-        return Commands.parallel(
+        return Commands.deadline(
                 followChoreoPath(getTrajSplit(pathname, 1)), superstructure.retractIntake());
     }
 
@@ -73,7 +78,7 @@ public class AutoCommands implements AllianceObserver {
 
     public Command outpostAuto() {
         return Commands.sequence(
-                followChoreoPath(getTrajSplit(outpost, 0)),
+                Commands.deadline(followChoreoPath(getTrajSplit(outpost, 0)),superstructure.wristCommands.deploy()),
                 Commands.run(() -> swerve.drive(0, 0, 0)).withTimeout(1.5),
                 Commands.waitSeconds(1.5),
                 followChoreoPath(getTrajSplit(outpost, 1)),
@@ -168,6 +173,11 @@ public class AutoCommands implements AllianceObserver {
                     -rotationController.calculate(
                             pose.getRotation().getRadians(),
                             referenceState.getPose().getRotation().getRadians());
+
+            Logger.recordOutput("xFF", xFF);
+            Logger.recordOutput("referenceX", referenceState.getPose().getX());
+            Logger.recordOutput("yFF", yFF);
+            Logger.recordOutput("referenceY", referenceState.getPose().getY());
 
             return ChassisSpeeds.fromFieldRelativeSpeeds(
                     xFF + xFeedback,

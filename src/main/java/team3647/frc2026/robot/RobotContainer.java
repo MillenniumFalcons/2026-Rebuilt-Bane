@@ -66,7 +66,7 @@ public class RobotContainer {
         configureSmartDashboardLogging();
 
         wrist.setEncoderAngle(WristConstants.kInitialAngle);
-        hood.setEncoderAngle(HoodConstants.kInitialAngle);
+        hood.setEncoderAngleCANcoder();
 
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
 
@@ -209,6 +209,7 @@ public class RobotContainer {
     public final Hood hood =
             new Hood(
                     HoodConstants.kMaster,
+                    HoodConstants.kCanCoder,
                     HoodConstants.kMaxAngle,
                     HoodConstants.kMinAngle,
                     HoodConstants.kNativeToDeg,

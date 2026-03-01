@@ -3,11 +3,16 @@ package team3647.frc2026.constants;
 import static edu.wpi.first.units.Units.Degree;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.CAN;
 
 public class HoodConstants {
     public static final TalonFX kMaster =
@@ -16,6 +21,13 @@ public class HoodConstants {
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
+
+    public static final CANcoder kCanCoder =
+            new CANcoder(
+                    GlobalConstants.HoodIds.kCanCoderId,
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
+
+    public static final CANcoderConfiguration kCanCoderConfig = new CANcoderConfiguration();
 
     public static final Angle kMaxAngle =
             Degree.of(72); // 90-16 (except a little less to make sure it doesnt overdo it)
@@ -55,5 +67,9 @@ public class HoodConstants {
         kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
         kMaster.getConfigurator().apply(kMasterConfig);
+
+        //cancoder configs
+        kCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        kCanCoder.getConfigurator().apply(kCanCoderConfig);
     }
 }
