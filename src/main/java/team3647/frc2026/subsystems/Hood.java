@@ -55,7 +55,7 @@ public class Hood extends TalonFXSubsystem {
     }
 
     public void setEncoderAngleCANcoder() {
-        this.setEncoder(canCoder.getPosition().getValueAsDouble()*(360)+72);
+        this.setEncoder(canCoder.getPosition().getValueAsDouble() * (360) + 72);
     }
 
     public double getAngleRads() {

@@ -18,9 +18,7 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
-
 import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.SwerveDrive;
@@ -46,10 +44,23 @@ public class AutoCommands implements AllianceObserver {
     //                 AllianceFlip.flip(Translation2d.kZero),
     //                 AllianceFlip.flip(new Translation2d(4, 2.5)));
 
-    private final PIDController rotController = new PIDController(2.5, 0.05, 0);
+    private final PIDController rotController = new PIDController(4.0, 0, 0.2);
     TunablePID tunableRotController = new TunablePID("Auto/rot", rotController);
 
     // actual autos
+
+    // mid rush outpost
+
+    private final String midRushOutpost = "MidRushOutpost";
+
+    public Command midRushOutpostAuto() {
+        return Commands.sequence(
+                midRushSegmentOne(midRushOutpost),
+                midRushSegmentTwo(midRushOutpost),
+                Commands.parallel(superstructure.shoot(), autoAlign()).withTimeout(6),
+                followChoreoPath(getTrajSplit(midRushOutpost, 2)),
+                outpostAuto());
+    }
 
     // mid rushes
     private final String rightMidRush = "RightMidRush";
@@ -59,7 +70,7 @@ public class AutoCommands implements AllianceObserver {
         return Commands.sequence(
                 midRushSegmentOne(pathname),
                 midRushSegmentTwo(pathname),
-                Commands.parallel(superstructure.shoot(), autoDrive.enableAutoDrive()));
+                Commands.parallel(superstructure.shoot(), autoAlign()));
     }
 
     public Command midRushSegmentOne(String pathname) {
@@ -78,11 +89,14 @@ public class AutoCommands implements AllianceObserver {
 
     public Command outpostAuto() {
         return Commands.sequence(
-                Commands.deadline(followChoreoPath(getTrajSplit(outpost, 0)),superstructure.wristCommands.deploy()),
+                Commands.deadline(
+                                followChoreoPath(getTrajSplit(outpost, 0)),
+                                superstructure.wristCommands.deploy())
+                        .withTimeout(3),
                 Commands.run(() -> swerve.drive(0, 0, 0)).withTimeout(1.5),
-                Commands.waitSeconds(1.5),
                 followChoreoPath(getTrajSplit(outpost, 1)),
-                Commands.parallel(superstructure.shoot(), autoAlign()));
+                Commands.parallel(
+                        superstructure.shoot(), autoAlign(), superstructure.retractIntake()));
     }
 
     public Command autoAlign() {
@@ -248,11 +262,13 @@ public class AutoCommands implements AllianceObserver {
     public List<AutoMode> blueAutosList;
 
     public final AutoMode blueEmpty;
+    public final AutoMode midRushOutpostBlue;
     public final AutoMode rightMidRushBlue;
     public final AutoMode leftMidRushBlue;
     public final AutoMode outpostBlue;
 
     public final AutoMode redEmpty;
+    public final AutoMode midRushOutpostRed;
     public final AutoMode rightMidRushRed;
     public final AutoMode leftMidRushRed;
     public final AutoMode outpostRed;
@@ -276,6 +292,11 @@ public class AutoCommands implements AllianceObserver {
         this.blueEmpty =
                 new AutoMode(
                         Commands.none(), Pose2d.kZero.rotateBy(Rotation2d.k180deg), "blue empty");
+        this.midRushOutpostBlue =
+                new AutoMode(
+                        midRushOutpostAuto(),
+                        getInitial(getTraj(midRushOutpost), Alliance.Blue),
+                        midRushOutpost);
         this.rightMidRushBlue =
                 new AutoMode(
                         midRushAuto(rightMidRush),
@@ -290,6 +311,11 @@ public class AutoCommands implements AllianceObserver {
                 new AutoMode(outpostAuto(), getInitial(getTraj(outpost), Alliance.Blue), outpost);
 
         this.redEmpty = new AutoMode(Commands.none(), Pose2d.kZero, "red empty");
+        this.midRushOutpostRed =
+                new AutoMode(
+                        midRushOutpostAuto(),
+                        getInitial(getTraj(midRushOutpost), Alliance.Red),
+                        midRushOutpost);
         this.rightMidRushRed =
                 new AutoMode(
                         midRushAuto(rightMidRush),

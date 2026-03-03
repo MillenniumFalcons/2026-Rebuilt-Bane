@@ -44,7 +44,7 @@ public class GlobalConstants {
 
     public class HoodIds {
         public static final int kMasterId = 23;
-        public static int kCanCoderId;
+        public static final int kCanCoderId = 26;
     }
 
     public class ClimbIds {

@@ -223,7 +223,7 @@ public class AprilTagLimelight extends VirtualSubsystem implements AprilTagCamer
         //         && getName().equals("limelight-left")
         //         && autoDriveEnabled.getAsBoolean()
 
-        if ((bestTag.ambiguity > 0.2)) {
+        if ((bestTag.ambiguity > 0.4)) {
             // System.out.println(bestTag.ambiguity);
             // System.out.println(getName() == "limelight-left" && autoDriveEnabled.getAsBoolean());
             // System.out.println(getName());

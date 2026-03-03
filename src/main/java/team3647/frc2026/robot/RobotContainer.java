@@ -66,7 +66,7 @@ public class RobotContainer {
         configureSmartDashboardLogging();
 
         wrist.setEncoderAngle(WristConstants.kInitialAngle);
-        hood.setEncoderAngleCANcoder();
+        hood.setEncoderAngle(HoodConstants.kInitialAngle);
 
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
 
@@ -123,6 +123,7 @@ public class RobotContainer {
         mainController.leftBumper.onFalse(superstructure.retractIntake());
 
         mainController.rightTrigger.whileTrue(superstructure.shoot());
+        // mainController.rightTrigger.whileTrue(superstructure.shotTuning());
         mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         mainController.rightBumper.whileTrue(superstructure.reverse());

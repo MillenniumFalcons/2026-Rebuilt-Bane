@@ -70,7 +70,7 @@ public class ShooterConstants {
 
     public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
 
-    public static double tempOffset = -1.67;
+    public static double tempOffset = -2.5;
 
     static {
         shootSpeedMap.put(1.0, 15.0 + tempOffset);
