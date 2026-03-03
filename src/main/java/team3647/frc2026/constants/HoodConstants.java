@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -63,6 +64,13 @@ public class HoodConstants {
         kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
                 kMinAngle.in(Degree) / kNativeToDeg;
         kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+        kMasterConfig.Feedback.FeedbackRemoteSensorID = kCanCoder.getDeviceID();
+        kMasterConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        kMasterConfig.Feedback.SensorToMechanismRatio =
+                1.0; // Adjust if there is gearing between CANcoder and Hood
+        kMasterConfig.Feedback.RotorToSensorRatio =
+                (1.0 / kNativeToDeg) * 360; // Converts motor rotations to encoder units
 
         kMaster.getConfigurator().apply(kMasterConfig);
 
