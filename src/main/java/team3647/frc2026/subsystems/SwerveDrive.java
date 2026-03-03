@@ -86,10 +86,10 @@ public class SwerveDrive extends TunerSwerveDrivetrain
     public SwerveFOCRequest driveFOCRequest = new SwerveFOCRequest(true);
     public SwerveFOCRequest steerFOCRequest = new SwerveFOCRequest(false);
     public FieldCentric fieldCentric =
-            new FieldCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+            new FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
     public RobotCentric robotCentric =
             new RobotCentric()
-                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                    .withDriveRequestType(DriveRequestType.Velocity)
                     .withSteerRequestType(
                             com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType.MotionMagicExpo);
 
