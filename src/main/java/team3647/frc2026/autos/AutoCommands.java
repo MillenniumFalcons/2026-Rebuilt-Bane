@@ -57,8 +57,10 @@ public class AutoCommands implements AllianceObserver {
         return Commands.sequence(
                 midRushSegmentOne(midRushOutpost),
                 midRushSegmentTwo(midRushOutpost),
-                Commands.parallel(superstructure.shoot(), autoAlign()).withTimeout(6),
+                Commands.parallel(superstructure.shoot(), autoAlign()).withTimeout(3),
                 followChoreoPath(getTrajSplit(midRushOutpost, 2)),
+                superstructure.shooterCommands.kill(),
+                superstructure.indexerCommands.kill(),
                 outpostAuto());
     }
 
@@ -329,8 +331,15 @@ public class AutoCommands implements AllianceObserver {
         this.outpostRed =
                 new AutoMode(outpostAuto(), getInitial(getTraj(outpost), Alliance.Red), outpost);
 
-        blueAutosList = List.of(blueEmpty, rightMidRushBlue, leftMidRushBlue, outpostBlue);
-        redAutosList = List.of(redEmpty, rightMidRushRed, leftMidRushRed, outpostRed);
+        blueAutosList =
+                List.of(
+                        blueEmpty,
+                        midRushOutpostBlue,
+                        rightMidRushBlue,
+                        leftMidRushBlue,
+                        outpostBlue);
+        redAutosList =
+                List.of(redEmpty, midRushOutpostRed, rightMidRushRed, leftMidRushRed, outpostRed);
     }
 
     public BooleanSupplier hasTarget() {

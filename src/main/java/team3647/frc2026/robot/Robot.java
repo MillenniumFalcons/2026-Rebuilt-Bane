@@ -82,6 +82,7 @@ public class Robot extends LoggedRobot {
         CommandScheduler.getInstance().run();
 
         m_robotContainer.updateRobotPoseForSmartdashboard();
+        m_robotContainer.setHoodEncoder();
         VirtualSubsystem.periodicAll();
     }
 
