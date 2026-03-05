@@ -17,6 +17,14 @@ public class FieldConstants {
 
     public static final Pose2d hubPose =
             new Pose2d(kFieldLengthM - 4.624, kFieldWidthM - 4.034, new Rotation2d());
-    public static final Pose2d feedPose =
-            new Pose2d(1.9182995557785034, 3.905377149581909, new Rotation2d());
+    public static final Pose2d feedPoseRight =
+            new Pose2d(
+                    kFieldLengthM - 2.225435972213745,
+                    kFieldWidthM - 2.17506742477417,
+                    new Rotation2d());
+    public static final Pose2d feedPoseLeft =
+            new Pose2d(
+                    kFieldLengthM - 2.0832128524780273,
+                    kFieldWidthM - 6.238598823547363,
+                    new Rotation2d());
 }

@@ -25,7 +25,7 @@ public class IndexerConstants {
         kLeftMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         kLeftMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-        kLeftMasterConfig.CurrentLimits.StatorCurrentLimit = 40.0;
+        kLeftMasterConfig.CurrentLimits.StatorCurrentLimit = 70.0;
         kLeftMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         kLeftMaster.getConfigurator().apply(kLeftMasterConfig);

@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.util.TargetingUtil.AimingParameters;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
@@ -33,7 +32,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(4.0, 0, 0.2, new Constraints(10, 10));
+            new ProfiledPIDController(4.0, 0, 0.1, new Constraints(10, 10));
 
     private Alliance color = Alliance.Red;
 
@@ -41,8 +40,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     public boolean enabled = false;
     public boolean isRotAligned = false;
-
-    public final Pose2d hubPose = FieldConstants.hubPose;
 
     private final TargetingUtil targeting;
 
@@ -63,23 +60,29 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     public enum DriveMode {
-        SHOOT_ON_THE_MOVE
+        SHOOT_ON_THE_MOVE,
+        FEED
     }
 
     public boolean rotAligned() {
         final Pose2d robotPose = getPose();
-        Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
-        Logger.recordOutput("robot rotation", robotPose.getRotation().getDegrees());
-        Logger.recordOutput("wnated rotation", angleToTarget.getDegrees());
-        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 5.5;
+        Rotation2d angleToTarget =
+                wantedMode == DriveMode.SHOOT_ON_THE_MOVE
+                        ? targeting.shootAtHubOnTheMove().rotation
+                        : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 10.0;
     }
 
     public double getHoodAngle() {
-        return targeting.shootAtHubOnTheMove().pivot;
+        return wantedMode == DriveMode.SHOOT_ON_THE_MOVE
+                ? targeting.shootAtHubOnTheMove().pivot
+                : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
     }
 
     public double getShotSpeed() {
-        return targeting.shootAtHubOnTheMove().shootSpeed;
+        return wantedMode == DriveMode.SHOOT_ON_THE_MOVE
+                ? targeting.shootAtHubOnTheMove().shootSpeed
+                : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).shootSpeed;
     }
 
     public Pose2d getPose() {
@@ -117,7 +120,10 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         final ChassisSpeeds fieldSpeeds =
                 ChassisSpeeds.fromRobotRelativeSpeeds(currentSpeeds, getOdoRot());
 
-        final AimingParameters targetData = targeting.shootAtHubOnTheMove();
+        final AimingParameters targetData =
+                wantedMode == DriveMode.SHOOT_ON_THE_MOVE
+                        ? targeting.shootAtHubOnTheMove()
+                        : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed());
 
         Translation2d robotToTarget = targetData.robotToTarget;
         double distanceToTarget = targetData.effectiveDistance;

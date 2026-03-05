@@ -41,6 +41,7 @@ import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.SwerveDrive;
 import team3647.frc2026.subsystems.Wrist;
 import team3647.frc2026.util.AutoDrive;
+import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.RobotTracker;
 import team3647.frc2026.util.TargetingUtil;
 import team3647.lib.GroupPrinter;
@@ -84,10 +85,6 @@ public class RobotContainer {
                         printer);
     }
 
-    public void setHoodEncoder() {
-        hood.setEncoderAngleCANcoder();
-    }
-
     private void configureAllianceObservers() {
         allianceChecker.registerObservers(
                 swerveCommands, swerve, autoCommands, autoChooser, autoDrive, robotTracker);
@@ -125,6 +122,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         mainController.leftBumper.whileTrue(superstructure.intake());
+        mainController.leftTrigger.whileTrue(superstructure.intakeFast());
         mainController.leftBumper.onFalse(superstructure.retractIntake());
 
         mainController.rightTrigger.whileTrue(superstructure.shoot());
@@ -132,6 +130,8 @@ public class RobotContainer {
         mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         mainController.rightBumper.whileTrue(superstructure.reverse());
+        mainController.buttonA.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
+        mainController.buttonY.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
 
         // mainController.leftTrigger.whileTrue(superstructure.shotTuning());
         // mainController.leftTrigger.whileTrue(autoDrive.enableAutoDrive());
@@ -263,7 +263,8 @@ public class RobotContainer {
     public final RobotTracker robotTracker =
             new RobotTracker(
                     FieldConstants.hubPose,
-                    FieldConstants.feedPose,
+                    FieldConstants.feedPoseRight,
+                    FieldConstants.feedPoseLeft,
                     ShooterConstants.robotToBetweenShooter,
                     swerve::getOdoPose,
                     swerve::getChassisSpeeds);

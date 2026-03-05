@@ -71,8 +71,8 @@ public class Superstructure {
         this.wristCommands = new WristCommands(this.wrist);
         this.rollerCommands = new RollerCommands(this.rollers);
 
-        this.atShotVel = () -> shooterCommands.isAtVelocity(this.shotSpeed, 0.5);
-        this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 0.5);
+        this.atShotVel = () -> shooterCommands.isAtVelocity(this.shotSpeed, 0.75);
+        this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot =
                 new Trigger(this.isRotAligned).and(atShotVel).and(atHoodAngle).debounce(0.1);
     }
@@ -91,6 +91,8 @@ public class Superstructure {
                 Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
                 Commands.run(
                         () -> Logger.recordOutput("ready to shoot", readyToShoot.getAsBoolean())),
+                Commands.run(() -> Logger.recordOutput("athoodangle", atHoodAngle.getAsBoolean())),
+                Commands.run(() -> Logger.recordOutput("atshotvel", atShotVel.getAsBoolean())),
                 Commands.sequence(
                         Commands.waitUntil(readyToShoot), index().onlyWhile(readyToShoot)));
     }
@@ -108,11 +110,16 @@ public class Superstructure {
     }
 
     public Command reverse() {
-        return Commands.parallel(indexerCommands.reverse(), kickerCommands.reverse());
+        return Commands.parallel(
+                indexerCommands.reverse(), kickerCommands.reverse(), rollerCommands.spit());
     }
 
     public Command intake() {
         return Commands.parallel(wristCommands.deploy(), rollerCommands.intake());
+    }
+
+    public Command intakeFast() {
+        return Commands.parallel(wristCommands.deploy(), rollerCommands.intakeFast());
     }
 
     public Command retractIntake() {

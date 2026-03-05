@@ -19,7 +19,7 @@ import team3647.frc2026.constants.ShooterConstants;
  */
 public class TargetingUtil {
 
-    private final RobotTracker robotTracker;
+    public final RobotTracker robotTracker;
 
     // Manual offset for the hood angle (in degrees), adjustable by driver
     private double offset = 0.0;

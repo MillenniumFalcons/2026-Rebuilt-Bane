@@ -92,7 +92,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
     @Override
     public void readPeriodicInputs() {
         TalonFX primaryMaster = masters.get(0);
-        ioAutoLogged.nativePosition = primaryMaster.getRotorPosition().getValueAsDouble();
+        ioAutoLogged.nativePosition = primaryMaster.getPosition().getValueAsDouble();
         ioAutoLogged.position = ioAutoLogged.nativePosition * positionConversion;
         ioAutoLogged.velocity =
                 primaryMaster.getRotorVelocity().getValueAsDouble() * velocityConversion;

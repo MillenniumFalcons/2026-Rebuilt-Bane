@@ -11,12 +11,16 @@ public class RollerCommands {
         this.rollers = rollers;
     }
 
+    public Command intakeFast() {
+        return Commands.run(() -> rollers.setOpenLoop(0.85), rollers);
+    }
+
     public Command intake() {
-        return Commands.run(() -> rollers.setOpenLoop(0.9), rollers);
+        return Commands.run(() -> rollers.setOpenLoop(0.67), rollers);
     }
 
     public Command spit() {
-        return Commands.run(() -> rollers.setOpenLoop(-0.9), rollers);
+        return Commands.run(() -> rollers.setOpenLoop(-0.85), rollers);
     }
 
     public boolean currentGreater(double current) {

@@ -27,7 +27,7 @@ public class WristConstants {
             70 / 4.4; // this converts rotations to degrees so the units should be degrees/rotation
 
     static {
-        kMasterConfig.Slot0.withKP(5); // change these values
+        kMasterConfig.Slot0.withKP(10); // change these values
         kMasterConfig.Slot0.withKI(0);
         kMasterConfig.Slot0.withKD(0);
 
@@ -35,7 +35,7 @@ public class WristConstants {
 
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 30.0;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = 50.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =

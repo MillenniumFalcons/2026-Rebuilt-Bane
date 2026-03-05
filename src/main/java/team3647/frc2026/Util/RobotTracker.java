@@ -16,6 +16,8 @@ import team3647.lib.team9442.AllianceObserver;
 public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
     private Pose2d hubPose;
+    private Pose2d feedPoseRight;
+    private Pose2d feedPoseLeft;
     private Pose2d feedPose;
     private Alliance color;
 
@@ -49,7 +51,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
     public RobotTracker(
             Pose2d hubPose,
-            Pose2d feedPose,
+            Pose2d feedPoseRight,
+            Pose2d feedPoseLeft,
             Transform2d robotToShooter,
             Supplier<Pose2d> drivePose,
             Supplier<ChassisSpeeds> driveSpeeds) {
@@ -57,7 +60,9 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
         this.hubPose = AllianceFlip.flip(hubPose, this.color);
         this.robotToShooter = robotToShooter;
-        this.feedPose = AllianceFlip.flip(feedPose, this.color);
+        this.feedPoseRight = AllianceFlip.flip(feedPoseRight, this.color);
+        this.feedPoseLeft = AllianceFlip.flip(feedPoseLeft, this.color);
+        this.feedPose = feedPoseRight;
         this.drivePose = drivePose;
         this.driveSpeeds = driveSpeeds;
 
@@ -206,6 +211,7 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     }
 
     public Pose2d getFeed() {
+        feedPose = getPose().getY() < 4 ? feedPoseRight : feedPoseLeft;
         return this.feedPose;
     }
 
@@ -218,5 +224,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         hubPose = AllianceFlip.flip(hubPose, color);
 
         feedPose = AllianceFlip.flip(feedPose, color);
+
+        feedPoseLeft = AllianceFlip.flip(feedPoseLeft, color);
+        feedPoseRight = AllianceFlip.flip(feedPoseRight, color);
     }
 }
