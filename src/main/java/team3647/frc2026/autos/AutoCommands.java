@@ -89,7 +89,8 @@ public class AutoCommands implements AllianceObserver {
 
     // double mid rushes
     public Command doubleMidRushAuto(String pathname) {
-        return Commands.sequence(midRushAuto(pathname).withTimeout(8.5), midRushAuto(pathname+"Close"));
+        return Commands.sequence(
+                midRushAuto(pathname).withTimeout(8.5), midRushAuto(pathname + "Close"));
     }
 
     // outpost
