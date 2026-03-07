@@ -57,16 +57,12 @@ public class SwerveDrive extends TunerSwerveDrivetrain
 
     public final Field2d field = new Field2d();
 
-    private boolean drivePerspectiveGood = false;
-
     private boolean isChar = false;
 
     private final double maxSpeedMpS;
     private final double maxRotRadPerSec;
 
     private PeriodicIOAutoLogged periodicIO = new PeriodicIOAutoLogged();
-
-    private final Pose2d zeroPose2d = new Pose2d();
 
     private final double kDt;
 
@@ -76,7 +72,7 @@ public class SwerveDrive extends TunerSwerveDrivetrain
 
     Notifier m_simNotifier;
 
-    private static final double kSimLoopPeriod = 0.002;
+    // private static final double kSimLoopPeriod = 0.002;
 
     // real-specific output stuff
     public SwerveRequest masterRequest = new SwerveRequest.Idle();
@@ -153,6 +149,7 @@ public class SwerveDrive extends TunerSwerveDrivetrain
                             this,
                             "steer motor FOC"));
 
+    @SuppressWarnings("unchecked")
     public SwerveDrive(
             SwerveDrivetrainConstants swerveDriveConstants,
             double maxSpeedMpS,
@@ -340,20 +337,20 @@ public class SwerveDrive extends TunerSwerveDrivetrain
         return periodicIO.pitch;
     }
 
-    private void reduceCancoderStatusframes() {
+    // private void reduceCancoderStatusframes() {
 
-        // this.backLeft.getCanCoderObject().setStatusFramePeriod(CANCoderStatusFrame.SensorData,
-        // 255);
-        // this.backRight
-        // .getCanCoderObject()
-        // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
-        // this.frontLeft
-        // .getCanCoderObject()
-        // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
-        // this.frontRight
-        // .getCanCoderObject()
-        // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
-    }
+    // this.backLeft.getCanCoderObject().setStatusFramePeriod(CANCoderStatusFrame.SensorData,
+    // 255);
+    // this.backRight
+    // .getCanCoderObject()
+    // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
+    // this.frontLeft
+    // .getCanCoderObject()
+    // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
+    // this.frontRight
+    // .getCanCoderObject()
+    // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
+    // }
 
     // // Probably want to moving average filter pitch and roll.
     // public boolean isBalanced(double thresholdDeg) {

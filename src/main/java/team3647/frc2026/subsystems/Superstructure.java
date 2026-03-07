@@ -73,8 +73,7 @@ public class Superstructure {
 
         this.atShotVel = () -> shooterCommands.isAtVelocity(this.shotSpeed, 0.75);
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
-        this.readyToShoot =
-                new Trigger(this.isRotAligned).and(atShotVel).and(atHoodAngle).debounce(0.1);
+        this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
     }
 
     public Angle getIntakeAngle() {
@@ -82,19 +81,20 @@ public class Superstructure {
     }
 
     public Command prep() {
-        return hoodCommands.setAngleDeg(hoodAngle);
+        return shooterCommands.setVelocity(shotSpeed);
     }
 
     public Command shoot() {
         return Commands.parallel(
-                shooterCommands.setVelocity(shotSpeed),
+                prep(),
                 Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
                 Commands.run(
                         () -> Logger.recordOutput("ready to shoot", readyToShoot.getAsBoolean())),
                 Commands.run(() -> Logger.recordOutput("athoodangle", atHoodAngle.getAsBoolean())),
                 Commands.run(() -> Logger.recordOutput("atshotvel", atShotVel.getAsBoolean())),
                 Commands.sequence(
-                        Commands.waitUntil(readyToShoot), index().onlyWhile(readyToShoot)));
+                        Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
+                        index().onlyWhile(readyToShoot).repeatedly()));
     }
 
     public Command shotTuning() {

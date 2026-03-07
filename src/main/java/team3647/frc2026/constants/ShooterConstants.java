@@ -81,7 +81,7 @@ public class ShooterConstants {
         shootSpeedMap.put(3.5, 18.5 + tempOffset);
         shootSpeedMap.put(4.0, 19.25 + tempOffset);
         shootSpeedMap.put(4.5, 20.0 + tempOffset);
-        shootSpeedMap.put(5.0, 21.25 + tempOffset);
+        shootSpeedMap.put(5.0, 20.75 + tempOffset);
 
         kShooterOneConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kShooterTwoConfig.MotorOutput.Inverted =

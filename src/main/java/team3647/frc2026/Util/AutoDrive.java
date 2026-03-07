@@ -16,14 +16,11 @@ import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.util.TargetingUtil.AimingParameters;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
-import team3647.lib.vision.AprilTagCamera;
 
 public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     private final Supplier<Pose2d> odoPoseFunction;
     private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
-
-    private AprilTagCamera frontLL;
 
     // these are for sim
     // public final PIDController xController;
@@ -32,7 +29,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(4.0, 0, 0.1, new Constraints(10, 10));
+            new ProfiledPIDController(4.5, 0, 0.1, new Constraints(10, 10));
 
     private Alliance color = Alliance.Red;
 
@@ -42,8 +39,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public boolean isRotAligned = false;
 
     private final TargetingUtil targeting;
-
-    private static final double ff = 1.25;
 
     public AutoDrive(
             Supplier<Pose2d> odoPoseFunction,

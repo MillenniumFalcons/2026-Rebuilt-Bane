@@ -12,11 +12,13 @@ public class RollerCommands {
     }
 
     public Command intakeFast() {
-        return Commands.run(() -> rollers.setOpenLoop(0.85), rollers);
+        return Commands.runEnd(
+                () -> rollers.setOpenLoop(0.85), () -> rollers.setOpenLoop(0), rollers);
     }
 
     public Command intake() {
-        return Commands.run(() -> rollers.setOpenLoop(0.67), rollers);
+        return Commands.runEnd(
+                () -> rollers.setOpenLoop(0.67), () -> rollers.setOpenLoop(0), rollers);
     }
 
     public Command spit() {

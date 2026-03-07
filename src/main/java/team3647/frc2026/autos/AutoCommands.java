@@ -61,6 +61,7 @@ public class AutoCommands implements AllianceObserver {
                 followChoreoPath(getTrajSplit(midRushOutpost, 2)),
                 superstructure.shooterCommands.kill(),
                 superstructure.indexerCommands.kill(),
+                Commands.run(() -> swerve.drive(0, 0, 0)).withTimeout(0.5),
                 outpostAuto());
     }
 
@@ -84,6 +85,11 @@ public class AutoCommands implements AllianceObserver {
     public Command midRushSegmentTwo(String pathname) {
         return Commands.deadline(
                 followChoreoPath(getTrajSplit(pathname, 1)), superstructure.retractIntake());
+    }
+
+    // double mid rushes
+    public Command doubleMidRushAuto(String pathname) {
+        return Commands.sequence(midRushAuto(pathname).withTimeout(8.5), midRushAuto(pathname+"Close"));
     }
 
     // outpost
@@ -267,12 +273,16 @@ public class AutoCommands implements AllianceObserver {
     public final AutoMode midRushOutpostBlue;
     public final AutoMode rightMidRushBlue;
     public final AutoMode leftMidRushBlue;
+    public final AutoMode rightDoubleMidRushBlue;
+    public final AutoMode leftDoubleMidRushBlue;
     public final AutoMode outpostBlue;
 
     public final AutoMode redEmpty;
     public final AutoMode midRushOutpostRed;
     public final AutoMode rightMidRushRed;
     public final AutoMode leftMidRushRed;
+    public final AutoMode rightDoubleMidRushRed;
+    public final AutoMode leftDoubleMidRushRed;
     public final AutoMode outpostRed;
 
     public AutoCommands(
@@ -309,6 +319,16 @@ public class AutoCommands implements AllianceObserver {
                         midRushAuto(leftMidRush),
                         getInitial(getTraj(leftMidRush), Alliance.Blue),
                         leftMidRush);
+        this.rightDoubleMidRushBlue =
+                new AutoMode(
+                        doubleMidRushAuto(rightMidRush),
+                        getInitial(getTraj(rightMidRush), Alliance.Blue),
+                        "double" + rightMidRush);
+        this.leftDoubleMidRushBlue =
+                new AutoMode(
+                        doubleMidRushAuto(leftMidRush),
+                        getInitial(getTraj(leftMidRush), Alliance.Blue),
+                        "double" + leftMidRush);
         this.outpostBlue =
                 new AutoMode(outpostAuto(), getInitial(getTraj(outpost), Alliance.Blue), outpost);
 
@@ -328,6 +348,16 @@ public class AutoCommands implements AllianceObserver {
                         midRushAuto(leftMidRush),
                         getInitial(getTraj(leftMidRush), Alliance.Red),
                         leftMidRush);
+        this.rightDoubleMidRushRed =
+                new AutoMode(
+                        doubleMidRushAuto(rightMidRush),
+                        getInitial(getTraj(rightMidRush), Alliance.Red),
+                        "double" + rightMidRush);
+        this.leftDoubleMidRushRed =
+                new AutoMode(
+                        doubleMidRushAuto(leftMidRush),
+                        getInitial(getTraj(leftMidRush), Alliance.Red),
+                        "double" + leftMidRush);
         this.outpostRed =
                 new AutoMode(outpostAuto(), getInitial(getTraj(outpost), Alliance.Red), outpost);
 
@@ -337,9 +367,18 @@ public class AutoCommands implements AllianceObserver {
                         midRushOutpostBlue,
                         rightMidRushBlue,
                         leftMidRushBlue,
+                        rightDoubleMidRushBlue,
+                        leftDoubleMidRushBlue,
                         outpostBlue);
         redAutosList =
-                List.of(redEmpty, midRushOutpostRed, rightMidRushRed, leftMidRushRed, outpostRed);
+                List.of(
+                        redEmpty,
+                        midRushOutpostRed,
+                        rightMidRushRed,
+                        leftMidRushRed,
+                        rightDoubleMidRushRed,
+                        leftDoubleMidRushRed,
+                        outpostRed);
     }
 
     public BooleanSupplier hasTarget() {

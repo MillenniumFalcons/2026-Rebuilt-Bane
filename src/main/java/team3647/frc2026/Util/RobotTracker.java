@@ -21,8 +21,6 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     private Pose2d feedPose;
     private Alliance color;
 
-    private final double exitSpeedMultiplier = 0.33;
-
     private final Field2d smartDashboardField;
 
     Supplier<Pose2d> drivePose;
@@ -211,7 +209,11 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     }
 
     public Pose2d getFeed() {
-        feedPose = getPose().getY() < 4 ? feedPoseRight : feedPoseLeft;
+        if (this.color == Alliance.Blue) {
+            feedPose = getPose().getY() < 4 ? feedPoseRight : feedPoseLeft;
+        } else {
+            feedPose = getPose().getY() > 4 ? feedPoseRight : feedPoseLeft;
+        }
         return this.feedPose;
     }
 

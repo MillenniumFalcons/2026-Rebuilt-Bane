@@ -121,10 +121,12 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftTrigger.whileTrue(superstructure.intakeFast());
-        mainController.leftBumper.onFalse(superstructure.retractIntake());
+        // mainController.leftBumper.onFalse(superstructure.retractIntake());
 
+        // shooting
         mainController.rightTrigger.whileTrue(superstructure.shoot());
         // mainController.rightTrigger.whileTrue(superstructure.shotTuning());
         mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
@@ -133,15 +135,20 @@ public class RobotContainer {
         mainController.buttonA.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
         mainController.buttonY.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
 
+        // cocontroller
+        coController.rightTrigger.whileTrue(superstructure.prep());
+        coController.buttonB.onTrue(autoDrive.disableAutoDrive());
+        // coController.buttonA.onTrue(hood.setEncoderAngleCANcoder());
+
         // mainController.leftTrigger.whileTrue(superstructure.shotTuning());
         // mainController.leftTrigger.whileTrue(autoDrive.enableAutoDrive());
         // mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
 
         // sysid
-        mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
-        mainController.dPadDown.whileTrue(swerve.driveRoutineQuasiStatic());
-        mainController.dPadLeft.whileTrue(swerve.driveRoutineDynamicReverse());
-        mainController.dPadRight.whileTrue(swerve.driveRoutineQuasiStaticReverse());
+        // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
+        // mainController.dPadDown.whileTrue(swerve.driveRoutineQuasiStatic());
+        // mainController.dPadLeft.whileTrue(swerve.driveRoutineDynamicReverse());
+        // mainController.dPadRight.whileTrue(swerve.driveRoutineQuasiStaticReverse());
         // mainController.buttonY.whileTrue(shooterLeft.getSysIdDynamic());
         // mainController.buttonA.whileTrue(shooterLeft.getSysIdQuasiStatic());
         // mainController.buttonX.whileTrue(shooterLeft.getSysIdDynamicReverse());
