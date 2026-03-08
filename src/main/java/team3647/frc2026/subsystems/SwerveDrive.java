@@ -222,6 +222,15 @@ public class SwerveDrive extends TunerSwerveDrivetrain
 
         public Pose2d pose = new Pose2d();
         public ChassisSpeeds measuredSpeeds = new ChassisSpeeds();
+
+        public double frontLeftDriveCurrent = 0;
+        public double frontLeftSteerCurrent = 0;
+        public double frontRightDriveCurrent = 0;
+        public double frontRightSteerCurrent = 0;
+        public double backLeftDriveCurrent = 0;
+        public double backLeftSteerCurrent = 0;
+        public double backRightDriveCurrent = 0;
+        public double backRightSteerCurrent = 0;
     }
 
     public void zeroPitch() {
@@ -239,6 +248,22 @@ public class SwerveDrive extends TunerSwerveDrivetrain
         periodicIO.states[3] = this.getModules()[3].getCurrentState();
         periodicIO.gyroRotation = Rotation2d.fromDegrees(periodicIO.heading);
         periodicIO.timestamp = Timer.getFPGATimestamp();
+        periodicIO.frontLeftDriveCurrent =
+                this.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.frontLeftSteerCurrent =
+                this.getModules()[0].getSteerMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.frontRightDriveCurrent =
+                this.getModules()[1].getDriveMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.frontRightSteerCurrent =
+                this.getModules()[1].getSteerMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.backLeftDriveCurrent =
+                this.getModules()[2].getDriveMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.backLeftSteerCurrent =
+                this.getModules()[2].getSteerMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.backRightDriveCurrent =
+                this.getModules()[3].getDriveMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.backRightSteerCurrent =
+                this.getModules()[3].getSteerMotor().getStatorCurrent().getValueAsDouble();
         Logger.processInputs(getName(), periodicIO);
         // SmartDashboard.putBoolean("good", periodicIO.good);
 

@@ -71,7 +71,7 @@ public class Superstructure {
         this.wristCommands = new WristCommands(this.wrist);
         this.rollerCommands = new RollerCommands(this.rollers);
 
-        this.atShotVel = () -> shooterCommands.isAtVelocity(this.shotSpeed, 0.75);
+        this.atShotVel = () -> shooterCommands.isAtVelocity(this.shotSpeed, 1.0);
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
     }
@@ -87,6 +87,7 @@ public class Superstructure {
     public Command shoot() {
         return Commands.parallel(
                 prep(),
+                retractIntake(),
                 Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
                 Commands.run(
                         () -> Logger.recordOutput("ready to shoot", readyToShoot.getAsBoolean())),
@@ -115,7 +116,18 @@ public class Superstructure {
     }
 
     public Command intake() {
-        return Commands.parallel(wristCommands.deploy(), rollerCommands.intake());
+        return Commands.parallel(
+                wristCommands.deploy(), rollerCommands.intake(), indexerCommands.index());
+    }
+
+    public Command intakeWithDelay() {
+        return Commands.parallel(
+                wristCommands
+                        .jerk()
+                        .withTimeout(0.2)
+                        .andThen(wristCommands.retract().withTimeout(0.1))
+                        .andThen(wristCommands.deploy()),
+                rollerCommands.intake());
     }
 
     public Command intakeFast() {

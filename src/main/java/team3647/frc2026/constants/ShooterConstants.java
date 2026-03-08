@@ -52,12 +52,12 @@ public class ShooterConstants {
 
     // feedforward from sysid left shooter
     public static final double kS = 0.0;
-    public static final double kV = 0.11762;
+    public static final double kV = 0.12;
     public static final double kA = 0.0098105;
 
     // sysid right shooter
     public static final double kSright = 0.0;
-    public static final double kVright = 0.1194;
+    public static final double kVright = 0.123;
     public static final double kAright = 0.0098557;
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
@@ -92,6 +92,11 @@ public class ShooterConstants {
 
         CurrentLimitsConfigs shooterOneCurrent = new CurrentLimitsConfigs();
         CurrentLimitsConfigs shooterTwoCurrent = new CurrentLimitsConfigs();
+
+        shooterOneCurrent.StatorCurrentLimit = 70.0;
+        shooterOneCurrent.StatorCurrentLimitEnable = true;
+        shooterTwoCurrent.StatorCurrentLimit = 70.0;
+        shooterTwoCurrent.StatorCurrentLimitEnable = true;
 
         // shooter one
         kShooterOneConfig.Slot0.kP = shooterOnekP;

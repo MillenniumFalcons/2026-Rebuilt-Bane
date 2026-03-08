@@ -16,7 +16,7 @@ public class RollerConstants {
     static {
         kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 80.0;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = 55.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         kMaster.getConfigurator().apply(kMasterConfig);

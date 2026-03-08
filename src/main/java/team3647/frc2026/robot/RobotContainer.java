@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team3647.frc2026.autos.AutoCommands;
+import team3647.frc2026.commands.ClimbCommands;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
 import team3647.frc2026.commands.KickerCommands;
@@ -20,6 +21,7 @@ import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.SwerveDriveCommands;
 import team3647.frc2026.commands.WristCommands;
 import team3647.frc2026.constants.AutoConstants;
+import team3647.frc2026.constants.ClimbConstants;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
@@ -31,6 +33,7 @@ import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants;
 import team3647.frc2026.constants.VisionConstants;
 import team3647.frc2026.constants.WristConstants;
+import team3647.frc2026.subsystems.Climb;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
 import team3647.frc2026.subsystems.Kicker;
@@ -82,6 +85,7 @@ public class RobotContainer {
                         wrist,
                         rollers,
                         kicker,
+                        climb,
                         printer);
     }
 
@@ -118,13 +122,14 @@ public class RobotContainer {
         rollers.setDefaultCommand(rollerCommands.kill());
         wrist.setDefaultCommand(wristCommands.holdPositionAtCall());
         kicker.setDefaultCommand(kickerCommands.kill());
+        climb.setDefaultCommand(climbCommands.kill());
     }
 
     private void configureBindings() {
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftTrigger.whileTrue(superstructure.intakeFast());
-        // mainController.leftBumper.onFalse(superstructure.retractIntake());
+        mainController.leftBumper.onFalse(superstructure.retractIntake());
 
         // shooting
         mainController.rightTrigger.whileTrue(superstructure.shoot());
@@ -135,9 +140,13 @@ public class RobotContainer {
         mainController.buttonA.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
         mainController.buttonY.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
 
+        mainController.dPadRight.whileTrue(climbCommands.up());
+        mainController.dPadLeft.whileTrue(climbCommands.down());
+
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
+        coController.leftBumper.whileTrue(superstructure.intakeWithDelay());
         // coController.buttonA.onTrue(hood.setEncoderAngleCANcoder());
 
         // mainController.leftTrigger.whileTrue(superstructure.shotTuning());
@@ -240,6 +249,13 @@ public class RobotContainer {
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
+    public final Climb climb =
+            new Climb(
+                    ClimbConstants.kMaster,
+                    0,
+                    1,
+                    GlobalConstants.kNominalVoltage,
+                    GlobalConstants.kDt);
     //     NeuralDetectorLimelight detector = new
     // NeuralDetectorLimelight(VisionConstants.kShooterCam);
 
@@ -260,6 +276,8 @@ public class RobotContainer {
     public final WristCommands wristCommands = new WristCommands(wrist);
 
     public final HoodCommands hoodCommands = new HoodCommands(hood);
+
+    public final ClimbCommands climbCommands = new ClimbCommands(climb);
 
     public final AllianceChecker allianceChecker = new AllianceChecker();
 

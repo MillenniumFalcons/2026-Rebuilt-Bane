@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -79,6 +80,29 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         Logger.recordOutput("field/hubPose", this.hubPose);
         Logger.recordOutput("field/feedpose", this.feedPose);
         smartDashboardField.setRobotPose(periodicIO.pose);
+
+        boolean wonAuto = false;
+        String gameData = DriverStation.getGameSpecificMessage();
+        if (gameData.length() > 0) {
+            switch (gameData.charAt(0)) {
+                case 'B':
+                    //
+                    if (this.color == Alliance.Blue) {
+                        wonAuto = true;
+                    }
+                    break;
+                case 'R':
+                    //
+                    if (this.color == Alliance.Red) {
+                        wonAuto = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        SmartDashboard.putBoolean("won auto", wonAuto);
     }
 
     public void setPose() {

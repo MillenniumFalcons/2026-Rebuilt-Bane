@@ -29,7 +29,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(4.5, 0, 0.1, new Constraints(10, 10));
+            new ProfiledPIDController(5.0, 0, 0.05, new Constraints(10, 10));
 
     private Alliance color = Alliance.Red;
 
@@ -52,6 +52,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         profiledRotController.setTolerance(
                 Units.degreesToRadians(1.5), Units.degreesToRadians(1.5));
         profiledRotController.enableContinuousInput(-Math.PI, Math.PI);
+        this.wantedMode = DriveMode.SHOOT_ON_THE_MOVE;
     }
 
     public enum DriveMode {
@@ -65,7 +66,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                 wantedMode == DriveMode.SHOOT_ON_THE_MOVE
                         ? targeting.shootAtHubOnTheMove().rotation
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
-        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 10.0;
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 17.5;
     }
 
     public double getHoodAngle() {
@@ -101,7 +102,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     public Command setDriveMode(DriveMode mode) {
-        return Commands.runOnce(() -> this.wantedMode = mode).ignoringDisable(true);
+        return Commands.runOnce(() -> this.wantedMode = mode).ignoringDisable(false);
     }
 
     public DriveMode getWantedMode() {

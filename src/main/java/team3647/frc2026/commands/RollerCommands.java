@@ -18,7 +18,7 @@ public class RollerCommands {
 
     public Command intake() {
         return Commands.runEnd(
-                () -> rollers.setOpenLoop(0.67), () -> rollers.setOpenLoop(0), rollers);
+                () -> rollers.setOpenLoop(0.75), () -> rollers.setOpenLoop(0), rollers);
     }
 
     public Command spit() {
