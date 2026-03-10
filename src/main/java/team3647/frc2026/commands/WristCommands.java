@@ -18,7 +18,7 @@ public class WristCommands {
     }
 
     public Command jerk() {
-        return setAngle(Degrees.of(20));
+        return setAngle(Degrees.of(25));
     }
 
     public Command retract() {

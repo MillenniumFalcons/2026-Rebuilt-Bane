@@ -29,7 +29,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(5.0, 0, 0.05, new Constraints(10, 10));
+            new ProfiledPIDController(5.0, 0, 0.05, new Constraints(7, 10));
 
     private Alliance color = Alliance.Red;
 
@@ -66,7 +66,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                 wantedMode == DriveMode.SHOOT_ON_THE_MOVE
                         ? targeting.shootAtHubOnTheMove().rotation
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
-        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 17.5;
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 7.0;
     }
 
     public double getHoodAngle() {
@@ -112,6 +112,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public Twist2d getVelocities() {
 
         final Pose2d robotPose = getPose();
+        // profiledRotController.reset(robotPose.getRotation().getRadians());
         final ChassisSpeeds currentSpeeds = chassisSpeedsSupplier.get();
         final ChassisSpeeds fieldSpeeds =
                 ChassisSpeeds.fromRobotRelativeSpeeds(currentSpeeds, getOdoRot());

@@ -26,7 +26,6 @@ import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.PoseUtils;
 import team3647.lib.team9442.AllianceObserver;
-import team3647.lib.tunables.TunablePID;
 
 public class AutoCommands implements AllianceObserver {
 
@@ -45,8 +44,9 @@ public class AutoCommands implements AllianceObserver {
     //                 AllianceFlip.flip(Translation2d.kZero),
     //                 AllianceFlip.flip(new Translation2d(4, 2.5)));
 
-    private final PIDController rotController = new PIDController(4.0, 0, 0.2);
-    TunablePID tunableRotController = new TunablePID("Auto/rot", rotController);
+    private final PIDController rotController = new PIDController(4.0, 0, 0.1);
+
+    //     TunablePID tunableRotController = new TunablePID("Auto/rot", rotController);
 
     // actual autos
 
@@ -64,11 +64,11 @@ public class AutoCommands implements AllianceObserver {
                 autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE),
                 midRushSegmentOne(midRushOutpost),
                 midRushSegmentTwo(midRushOutpost),
-                Commands.parallel(superstructure.shoot(), autoAlign()).withTimeout(3),
+                Commands.parallel(superstructure.shoot(), autoAlign()).withTimeout(5),
                 followChoreoPath(getTrajSplit(midRushOutpost, 2)),
                 superstructure.shooterCommands.kill(),
                 superstructure.indexerCommands.kill(),
-                Commands.run(() -> swerve.drive(0, 0, 0)).withTimeout(0.25),
+                Commands.run(() -> swerve.drive(0, 0, 0)).withTimeout(0.02),
                 outpostAuto());
     }
 
@@ -78,6 +78,7 @@ public class AutoCommands implements AllianceObserver {
 
     public Command midRushAuto(String pathname) {
         return Commands.sequence(
+                superstructure.bumpKicker().withTimeout(0.35),
                 autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE),
                 midRushSegmentOne(pathname),
                 midRushSegmentTwo(pathname),
@@ -86,7 +87,7 @@ public class AutoCommands implements AllianceObserver {
 
     public Command midRushSegmentOne(String pathname) {
         return Commands.deadline(
-                followChoreoPath(getTrajSplit(pathname, 0)), superstructure.intakeWithDelay());
+                followChoreoPath(getTrajSplit(pathname, 0)), superstructure.intake());
     }
 
     public Command midRushSegmentTwo(String pathname) {
@@ -98,7 +99,7 @@ public class AutoCommands implements AllianceObserver {
     public Command doubleMidRushAuto(String pathname) {
         return Commands.sequence(
                 autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE),
-                midRushAuto(pathname).withTimeout(8.5),
+                midRushAuto(pathname).withTimeout(10.0),
                 midRushAuto(pathname + "Close"));
     }
 
@@ -107,10 +108,10 @@ public class AutoCommands implements AllianceObserver {
 
     public Command outpostAuto() {
         return Commands.sequence(
+                superstructure.bumpKicker().withTimeout(0.35),
                 autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE),
                 Commands.deadline(
-                                followChoreoPath(getTrajSplit(outpost, 0)),
-                                superstructure.intakeWithDelay())
+                                followChoreoPath(getTrajSplit(outpost, 0)), superstructure.intake())
                         .withTimeout(3),
                 Commands.run(() -> swerve.drive(0, 0, 0))
                         .withTimeout(1.5)

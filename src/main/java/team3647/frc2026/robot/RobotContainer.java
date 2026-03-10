@@ -120,7 +120,7 @@ public class RobotContainer {
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
-        wrist.setDefaultCommand(wristCommands.holdPositionAtCall());
+        wrist.setDefaultCommand(wristCommands.retract());
         kicker.setDefaultCommand(kickerCommands.kill());
         climb.setDefaultCommand(climbCommands.kill());
     }
@@ -128,8 +128,9 @@ public class RobotContainer {
     private void configureBindings() {
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
-        mainController.leftTrigger.whileTrue(superstructure.intakeFast());
         mainController.leftBumper.onFalse(superstructure.retractIntake());
+        mainController.leftTrigger.whileTrue(superstructure.intakeFast());
+        mainController.leftTrigger.onFalse(superstructure.retractIntake());
 
         // shooting
         mainController.rightTrigger.whileTrue(superstructure.shoot());
@@ -146,7 +147,9 @@ public class RobotContainer {
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
-        coController.leftBumper.whileTrue(superstructure.intakeWithDelay());
+        coController.leftBumper.whileTrue(superstructure.bumpKicker());
+        coController.dPadDown.onTrue(superstructure.lowerOffset());
+        coController.dPadUp.onTrue(superstructure.increaseOffset());
         // coController.buttonA.onTrue(hood.setEncoderAngleCANcoder());
 
         // mainController.leftTrigger.whileTrue(superstructure.shotTuning());

@@ -13,11 +13,11 @@ public class IndexerCommands {
 
     public Command index() {
         return Commands.runEnd(
-                () -> indexer.setOpenLoop(-0.7), () -> indexer.setOpenLoop(0), indexer);
+                () -> indexer.setOpenLoop(-0.8), () -> indexer.setOpenLoop(0), indexer);
     }
 
     public Command reverse() {
-        return Commands.run(() -> indexer.setOpenLoop(0.7), indexer);
+        return Commands.run(() -> indexer.setOpenLoop(0.8), indexer);
     }
 
     public boolean currentGreater(double current) {

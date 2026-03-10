@@ -15,6 +15,7 @@ import team3647.frc2026.commands.KickerCommands;
 import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.WristCommands;
+import team3647.frc2026.constants.ShooterConstants;
 
 public class Superstructure {
 
@@ -120,14 +121,12 @@ public class Superstructure {
                 wristCommands.deploy(), rollerCommands.intake(), indexerCommands.index());
     }
 
-    public Command intakeWithDelay() {
+    public Command bumpKicker() {
         return Commands.parallel(
                 wristCommands
                         .jerk()
                         .withTimeout(0.2)
-                        .andThen(wristCommands.retract().withTimeout(0.1))
-                        .andThen(wristCommands.deploy()),
-                rollerCommands.intake());
+                        .andThen(wristCommands.retract().withTimeout(0.1)));
     }
 
     public Command intakeFast() {
@@ -136,5 +135,25 @@ public class Superstructure {
 
     public Command retractIntake() {
         return Commands.parallel(wristCommands.retract());
+    }
+
+    public Command lowerOffset() {
+        return Commands.sequence(
+                Commands.runOnce(
+                        () -> {
+                            ShooterConstants.tempOffset -= 0.5;
+                        }),
+                Commands.run(
+                        () -> Logger.recordOutput("shoot offset", ShooterConstants.tempOffset)));
+    }
+
+    public Command increaseOffset() {
+        return Commands.sequence(
+                Commands.runOnce(
+                        () -> {
+                            ShooterConstants.tempOffset += 0.5;
+                        }),
+                Commands.run(
+                        () -> Logger.recordOutput("shoot offset", ShooterConstants.tempOffset)));
     }
 }
