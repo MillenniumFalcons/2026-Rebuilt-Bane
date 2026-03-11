@@ -4,6 +4,8 @@
 
 package team3647.frc2026.robot;
 
+import com.ctre.phoenix6.Utils;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -38,7 +40,9 @@ import team3647.frc2026.subsystems.Rollers;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
 import team3647.frc2026.subsystems.Superstructure;
-import team3647.frc2026.subsystems.SwerveDrive;
+import team3647.frc2026.subsystems.Swerve.SwerveDrive;
+import team3647.frc2026.subsystems.Swerve.SwerveDriveReal;
+import team3647.frc2026.subsystems.Swerve.SwerveDriveSim;
 import team3647.frc2026.subsystems.Wrist;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.RobotTracker;
@@ -66,7 +70,7 @@ public class RobotContainer {
         configureSmartDashboardLogging();
 
         wrist.setEncoderAngle(WristConstants.kInitialAngle);
-        hood.setEncoderAngle(HoodConstants.kInitialAngle);
+        hood.setEncoderAngleCANcoder();
 
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
 
@@ -133,10 +137,10 @@ public class RobotContainer {
         // mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
 
         // sysid
-        mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
-        mainController.dPadDown.whileTrue(swerve.driveRoutineQuasiStatic());
-        mainController.dPadLeft.whileTrue(swerve.driveRoutineDynamicReverse());
-        mainController.dPadRight.whileTrue(swerve.driveRoutineQuasiStaticReverse());
+        // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
+        // mainController.dPadDown.whileTrue(swerve.driveRoutineQuasiStatic());
+        // mainController.dPadLeft.whileTrue(swerve.driveRoutineDynamicReverse());
+        // mainController.dPadRight.whileTrue(swerve.driveRoutineQuasiStaticReverse());
         // mainController.buttonY.whileTrue(shooterLeft.getSysIdDynamic());
         // mainController.buttonA.whileTrue(shooterLeft.getSysIdQuasiStatic());
         // mainController.buttonX.whileTrue(shooterLeft.getSysIdDynamicReverse());
@@ -153,7 +157,10 @@ public class RobotContainer {
 
     @SuppressWarnings("unchecked")
     public final SwerveDrive swerve =
-            new SwerveDrive(
+        Utils.isSimulation()?
+            new SwerveDriveSim(
+                SwerveDriveConstants.driveTrainSimulationConfig, GlobalConstants.kDt):
+            new SwerveDriveReal(
                     TunerConstants.DrivetrainConstants,
                     SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
                     SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec,

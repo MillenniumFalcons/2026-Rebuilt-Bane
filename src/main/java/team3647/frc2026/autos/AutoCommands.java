@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.subsystems.Superstructure;
-import team3647.frc2026.subsystems.SwerveDrive;
+import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.PoseUtils;
 import team3647.lib.team9442.AllianceObserver;
@@ -44,7 +44,9 @@ public class AutoCommands implements AllianceObserver {
     //                 AllianceFlip.flip(Translation2d.kZero),
     //                 AllianceFlip.flip(new Translation2d(4, 2.5)));
 
-    private final PIDController rotController = new PIDController(4.0, 0, 0.2);
+    // private final PIDController rotController = new PIDController(4.0, 0, 0.2);
+    private final PIDController rotController = new PIDController(1.0, 0, 0.5);
+
     TunablePID tunableRotController = new TunablePID("Auto/rot", rotController);
 
     // actual autos
