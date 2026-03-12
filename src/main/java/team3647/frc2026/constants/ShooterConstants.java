@@ -52,12 +52,12 @@ public class ShooterConstants {
 
     // feedforward from sysid left shooter
     public static final double kS = 0.0;
-    public static final double kV = 0.11762;
+    public static final double kV = 0.12;
     public static final double kA = 0.0098105;
 
     // sysid right shooter
     public static final double kSright = 0.0;
-    public static final double kVright = 0.1194;
+    public static final double kVright = 0.123;
     public static final double kAright = 0.0098557;
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
@@ -70,18 +70,18 @@ public class ShooterConstants {
 
     public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
 
-    public static double tempOffset = -2.5;
+    public static double tempOffset = -0.5;
 
     static {
         shootSpeedMap.put(1.0, 15.0 + tempOffset);
         shootSpeedMap.put(1.5, 15.5 + tempOffset);
-        shootSpeedMap.put(2.0, 16.5 + tempOffset);
-        shootSpeedMap.put(2.5, 17.0 + tempOffset);
-        shootSpeedMap.put(3.0, 17.5 + tempOffset);
-        shootSpeedMap.put(3.5, 18.5 + tempOffset);
-        shootSpeedMap.put(4.0, 19.25 + tempOffset);
-        shootSpeedMap.put(4.5, 20.0 + tempOffset);
-        shootSpeedMap.put(5.0, 21.25 + tempOffset);
+        shootSpeedMap.put(2.0, 16.0 + tempOffset);
+        shootSpeedMap.put(2.5, 16.5 + tempOffset);
+        shootSpeedMap.put(3.0, 17.0 + tempOffset);
+        shootSpeedMap.put(3.5, 18.0 + tempOffset);
+        shootSpeedMap.put(4.0, 19.5 + tempOffset);
+        shootSpeedMap.put(4.5, 19.75 + tempOffset);
+        shootSpeedMap.put(5.0, 20.25 + tempOffset);
 
         kShooterOneConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kShooterTwoConfig.MotorOutput.Inverted =
@@ -92,6 +92,11 @@ public class ShooterConstants {
 
         CurrentLimitsConfigs shooterOneCurrent = new CurrentLimitsConfigs();
         CurrentLimitsConfigs shooterTwoCurrent = new CurrentLimitsConfigs();
+
+        shooterOneCurrent.StatorCurrentLimit = 70.0;
+        shooterOneCurrent.StatorCurrentLimitEnable = true;
+        shooterTwoCurrent.StatorCurrentLimit = 70.0;
+        shooterTwoCurrent.StatorCurrentLimitEnable = true;
 
         // shooter one
         kShooterOneConfig.Slot0.kP = shooterOnekP;

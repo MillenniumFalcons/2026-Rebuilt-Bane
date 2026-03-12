@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,10 +17,10 @@ import team3647.lib.team9442.AllianceObserver;
 public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
     private Pose2d hubPose;
+    private Pose2d feedPoseRight;
+    private Pose2d feedPoseLeft;
     private Pose2d feedPose;
     private Alliance color;
-
-    private final double exitSpeedMultiplier = 0.33;
 
     private final Field2d smartDashboardField;
 
@@ -49,7 +50,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
     public RobotTracker(
             Pose2d hubPose,
-            Pose2d feedPose,
+            Pose2d feedPoseRight,
+            Pose2d feedPoseLeft,
             Transform2d robotToShooter,
             Supplier<Pose2d> drivePose,
             Supplier<ChassisSpeeds> driveSpeeds) {
@@ -57,7 +59,9 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
         this.hubPose = AllianceFlip.flip(hubPose, this.color);
         this.robotToShooter = robotToShooter;
-        this.feedPose = AllianceFlip.flip(feedPose, this.color);
+        this.feedPoseRight = AllianceFlip.flip(feedPoseRight, this.color);
+        this.feedPoseLeft = AllianceFlip.flip(feedPoseLeft, this.color);
+        this.feedPose = feedPoseRight;
         this.drivePose = drivePose;
         this.driveSpeeds = driveSpeeds;
 
@@ -76,6 +80,29 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         Logger.recordOutput("field/hubPose", this.hubPose);
         Logger.recordOutput("field/feedpose", this.feedPose);
         smartDashboardField.setRobotPose(periodicIO.pose);
+
+        boolean wonAuto = false;
+        String gameData = DriverStation.getGameSpecificMessage();
+        if (gameData.length() > 0) {
+            switch (gameData.charAt(0)) {
+                case 'B':
+                    //
+                    if (this.color == Alliance.Blue) {
+                        wonAuto = true;
+                    }
+                    break;
+                case 'R':
+                    //
+                    if (this.color == Alliance.Red) {
+                        wonAuto = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        SmartDashboard.putBoolean("won auto", wonAuto);
     }
 
     public void setPose() {
@@ -206,6 +233,11 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     }
 
     public Pose2d getFeed() {
+        if (this.color == Alliance.Blue) {
+            feedPose = getPose().getY() < 4 ? feedPoseRight : feedPoseLeft;
+        } else {
+            feedPose = getPose().getY() > 4 ? feedPoseRight : feedPoseLeft;
+        }
         return this.feedPose;
     }
 
@@ -218,5 +250,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         hubPose = AllianceFlip.flip(hubPose, color);
 
         feedPose = AllianceFlip.flip(feedPose, color);
+
+        feedPoseLeft = AllianceFlip.flip(feedPoseLeft, color);
+        feedPoseRight = AllianceFlip.flip(feedPoseRight, color);
     }
 }

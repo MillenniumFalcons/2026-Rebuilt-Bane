@@ -61,16 +61,12 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
 
     public final Field2d field = new Field2d();
 
-    private boolean drivePerspectiveGood = false;
-
     private boolean isChar = false;
 
     private final double maxSpeedMpS;
     private final double maxRotRadPerSec;
 
     private PeriodicIOAutoLogged periodicIO = new PeriodicIOAutoLogged();
-
-    private final Pose2d zeroPose2d = new Pose2d();
 
     private final double kDt;
 
@@ -80,7 +76,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
 
     Notifier m_simNotifier;
 
-    private static final double kSimLoopPeriod = 0.002;
+    // private static final double kSimLoopPeriod = 0.002;
 
     // real-specific output stuff
     public SwerveRequest masterRequest = new SwerveRequest.Idle();
@@ -90,10 +86,10 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     public SwerveFOCRequest driveFOCRequest = new SwerveFOCRequest(true);
     public SwerveFOCRequest steerFOCRequest = new SwerveFOCRequest(false);
     public FieldCentric fieldCentric =
-            new FieldCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+            new FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
     public RobotCentric robotCentric =
             new RobotCentric()
-                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                    .withDriveRequestType(DriveRequestType.Velocity)
                     .withSteerRequestType(
                             com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType.MotionMagicExpo);
 
@@ -157,7 +153,12 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
                             this,
                             "steer motor FOC"));
 
+<<<<<<< HEAD:src/main/java/team3647/frc2026/subsystems/Swerve/SwerveDriveReal.java
     public SwerveDriveReal(
+=======
+    @SuppressWarnings("unchecked")
+    public SwerveDrive(
+>>>>>>> a57f24d71d4de869a3d8218c998321a78361c09c:src/main/java/team3647/frc2026/subsystems/SwerveDrive.java
             SwerveDrivetrainConstants swerveDriveConstants,
             double maxSpeedMpS,
             double maxRotRadPerSec,
@@ -188,6 +189,61 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         this.limits.kMaxSteeringVelocity = newLimits.kMaxSteeringVelocity;
     }
 
+<<<<<<< HEAD:src/main/java/team3647/frc2026/subsystems/Swerve/SwerveDriveReal.java
+=======
+    @AutoLog
+    public static class PeriodicIO {
+        // inputs
+
+        public boolean good = false;
+
+        public double cachedVel = 0;
+        public boolean isAccel = false;
+
+        public double characterizationVoltage = 0;
+        public boolean isOpenloop = true;
+        public double heading = 0;
+        public double roll = 0;
+        public double pitch = 0;
+        public double rawHeading = 0;
+        public Rotation2d gyroRotation = new Rotation2d();
+
+        public Alliance color = Alliance.Blue;
+
+        public SwerveModuleState[] states =
+                new SwerveModuleState[] {
+                    new SwerveModuleState(), // FL
+                    new SwerveModuleState(), // FR
+                    new SwerveModuleState(), // BL
+                    new SwerveModuleState() // BR
+                };
+
+        public SwerveModuleState[] targets =
+                new SwerveModuleState[] {
+                    new SwerveModuleState(),
+                    new SwerveModuleState(),
+                    new SwerveModuleState(),
+                    new SwerveModuleState()
+                };
+
+        public double timestamp = 0;
+
+        public Pose2d visionPose = new Pose2d();
+
+        public Pose2d pose = new Pose2d();
+        public ChassisSpeeds measuredSpeeds = new ChassisSpeeds();
+
+        public double frontLeftDriveCurrent = 0;
+        public double frontLeftSteerCurrent = 0;
+        public double frontRightDriveCurrent = 0;
+        public double frontRightSteerCurrent = 0;
+        public double backLeftDriveCurrent = 0;
+        public double backLeftSteerCurrent = 0;
+        public double backRightDriveCurrent = 0;
+        public double backRightSteerCurrent = 0;
+    }
+
+>>>>>>> a57f24d71d4de869a3d8218c998321a78361c09c:src/main/java/team3647/frc2026/subsystems/SwerveDrive.java
     public void zeroPitch() {
         this.pitchZero = this.getPitch();
     }
@@ -203,6 +259,22 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         periodicIO.states[3] = this.getModules()[3].getCurrentState();
         periodicIO.gyroRotation = Rotation2d.fromDegrees(periodicIO.heading);
         periodicIO.timestamp = Timer.getFPGATimestamp();
+        periodicIO.frontLeftDriveCurrent =
+                this.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.frontLeftSteerCurrent =
+                this.getModules()[0].getSteerMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.frontRightDriveCurrent =
+                this.getModules()[1].getDriveMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.frontRightSteerCurrent =
+                this.getModules()[1].getSteerMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.backLeftDriveCurrent =
+                this.getModules()[2].getDriveMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.backLeftSteerCurrent =
+                this.getModules()[2].getSteerMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.backRightDriveCurrent =
+                this.getModules()[3].getDriveMotor().getStatorCurrent().getValueAsDouble();
+        periodicIO.backRightSteerCurrent =
+                this.getModules()[3].getSteerMotor().getStatorCurrent().getValueAsDouble();
         Logger.processInputs(getName(), periodicIO);
         // SmartDashboard.putBoolean("good", periodicIO.good);
 
@@ -301,20 +373,20 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         return periodicIO.pitch;
     }
 
-    private void reduceCancoderStatusframes() {
+    // private void reduceCancoderStatusframes() {
 
-        // this.backLeft.getCanCoderObject().setStatusFramePeriod(CANCoderStatusFrame.SensorData,
-        // 255);
-        // this.backRight
-        // .getCanCoderObject()
-        // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
-        // this.frontLeft
-        // .getCanCoderObject()
-        // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
-        // this.frontRight
-        // .getCanCoderObject()
-        // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
-    }
+    // this.backLeft.getCanCoderObject().setStatusFramePeriod(CANCoderStatusFrame.SensorData,
+    // 255);
+    // this.backRight
+    // .getCanCoderObject()
+    // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
+    // this.frontLeft
+    // .getCanCoderObject()
+    // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
+    // this.frontRight
+    // .getCanCoderObject()
+    // .setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
+    // }
 
     // // Probably want to moving average filter pitch and roll.
     // public boolean isBalanced(double thresholdDeg) {

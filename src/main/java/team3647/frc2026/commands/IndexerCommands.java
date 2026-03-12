@@ -12,7 +12,8 @@ public class IndexerCommands {
     }
 
     public Command index() {
-        return Commands.run(() -> indexer.setOpenLoop(-0.8), indexer);
+        return Commands.runEnd(
+                () -> indexer.setOpenLoop(-0.8), () -> indexer.setOpenLoop(0), indexer);
     }
 
     public Command reverse() {

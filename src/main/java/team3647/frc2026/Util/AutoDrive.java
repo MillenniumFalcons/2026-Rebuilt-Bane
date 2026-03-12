@@ -13,18 +13,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.util.TargetingUtil.AimingParameters;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
-import team3647.lib.vision.AprilTagCamera;
 
 public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     private final Supplier<Pose2d> odoPoseFunction;
     private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
-
-    private AprilTagCamera frontLL;
 
     // these are for sim
     // public final PIDController xController;
@@ -33,7 +29,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(4.0, 0, 0.2, new Constraints(10, 10));
+            new ProfiledPIDController(5.0, 0, 0.05, new Constraints(7, 10));
 
     private Alliance color = Alliance.Red;
 
@@ -42,11 +38,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public boolean enabled = false;
     public boolean isRotAligned = false;
 
-    public final Pose2d hubPose = FieldConstants.hubPose;
-
     private final TargetingUtil targeting;
-
-    private static final double ff = 1.25;
 
     public AutoDrive(
             Supplier<Pose2d> odoPoseFunction,
@@ -60,26 +52,33 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         profiledRotController.setTolerance(
                 Units.degreesToRadians(1.5), Units.degreesToRadians(1.5));
         profiledRotController.enableContinuousInput(-Math.PI, Math.PI);
+        this.wantedMode = DriveMode.SHOOT_ON_THE_MOVE;
     }
 
     public enum DriveMode {
-        SHOOT_ON_THE_MOVE
+        SHOOT_ON_THE_MOVE,
+        FEED
     }
 
     public boolean rotAligned() {
         final Pose2d robotPose = getPose();
-        Rotation2d angleToTarget = targeting.shootAtHubOnTheMove().rotation;
-        Logger.recordOutput("robot rotation", robotPose.getRotation().getDegrees());
-        Logger.recordOutput("wnated rotation", angleToTarget.getDegrees());
-        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 5.5;
+        Rotation2d angleToTarget =
+                wantedMode == DriveMode.SHOOT_ON_THE_MOVE
+                        ? targeting.shootAtHubOnTheMove().rotation
+                        : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 7.0;
     }
 
     public double getHoodAngle() {
-        return targeting.shootAtHubOnTheMove().pivot;
+        return wantedMode == DriveMode.SHOOT_ON_THE_MOVE
+                ? targeting.shootAtHubOnTheMove().pivot
+                : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
     }
 
     public double getShotSpeed() {
-        return targeting.shootAtHubOnTheMove().shootSpeed;
+        return wantedMode == DriveMode.SHOOT_ON_THE_MOVE
+                ? targeting.shootAtHubOnTheMove().shootSpeed
+                : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).shootSpeed;
     }
 
     public Pose2d getPose() {
@@ -103,7 +102,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     public Command setDriveMode(DriveMode mode) {
-        return Commands.runOnce(() -> this.wantedMode = mode).ignoringDisable(true);
+        return Commands.runOnce(() -> this.wantedMode = mode).ignoringDisable(false);
     }
 
     public DriveMode getWantedMode() {
@@ -113,11 +112,15 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public Twist2d getVelocities() {
 
         final Pose2d robotPose = getPose();
+        // profiledRotController.reset(robotPose.getRotation().getRadians());
         final ChassisSpeeds currentSpeeds = chassisSpeedsSupplier.get();
         final ChassisSpeeds fieldSpeeds =
                 ChassisSpeeds.fromRobotRelativeSpeeds(currentSpeeds, getOdoRot());
 
-        final AimingParameters targetData = targeting.shootAtHubOnTheMove();
+        final AimingParameters targetData =
+                wantedMode == DriveMode.SHOOT_ON_THE_MOVE
+                        ? targeting.shootAtHubOnTheMove()
+                        : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed());
 
         Translation2d robotToTarget = targetData.robotToTarget;
         double distanceToTarget = targetData.effectiveDistance;

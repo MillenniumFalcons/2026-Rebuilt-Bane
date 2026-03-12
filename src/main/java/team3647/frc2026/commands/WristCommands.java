@@ -14,7 +14,11 @@ import team3647.frc2026.subsystems.Wrist;
 
 public class WristCommands {
     public Command deploy() {
-        return setAngle(Degrees.of(60));
+        return setAngle(Degrees.of(70));
+    }
+
+    public Command jerk() {
+        return setAngle(Degrees.of(25));
     }
 
     public Command retract() {
