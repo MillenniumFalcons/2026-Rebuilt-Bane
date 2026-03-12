@@ -103,5 +103,14 @@ public interface SwerveDrive extends PeriodicSubsystem, AllianceObserver {
         public Translation2d centerOfRotation = Translation2d.kZero;
         public Pose2d simPose = new Pose2d(2, 2, new Rotation2d());
         public ChassisSpeeds actualSpeeds = new ChassisSpeeds();
+        
+        public double frontLeftDriveCurrent = 0;
+        public double frontLeftSteerCurrent = 0;
+        public double frontRightDriveCurrent = 0;
+        public double frontRightSteerCurrent = 0;
+        public double backLeftDriveCurrent = 0;
+        public double backLeftSteerCurrent = 0;
+        public double backRightDriveCurrent = 0;
+        public double backRightSteerCurrent = 0;
     }
 }

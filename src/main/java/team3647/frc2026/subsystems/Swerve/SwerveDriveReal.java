@@ -153,12 +153,8 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
                             this,
                             "steer motor FOC"));
 
-<<<<<<< HEAD:src/main/java/team3647/frc2026/subsystems/Swerve/SwerveDriveReal.java
-    public SwerveDriveReal(
-=======
     @SuppressWarnings("unchecked")
-    public SwerveDrive(
->>>>>>> a57f24d71d4de869a3d8218c998321a78361c09c:src/main/java/team3647/frc2026/subsystems/SwerveDrive.java
+    public SwerveDriveReal(
             SwerveDrivetrainConstants swerveDriveConstants,
             double maxSpeedMpS,
             double maxRotRadPerSec,
@@ -189,61 +185,6 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         this.limits.kMaxSteeringVelocity = newLimits.kMaxSteeringVelocity;
     }
 
-<<<<<<< HEAD:src/main/java/team3647/frc2026/subsystems/Swerve/SwerveDriveReal.java
-=======
-    @AutoLog
-    public static class PeriodicIO {
-        // inputs
-
-        public boolean good = false;
-
-        public double cachedVel = 0;
-        public boolean isAccel = false;
-
-        public double characterizationVoltage = 0;
-        public boolean isOpenloop = true;
-        public double heading = 0;
-        public double roll = 0;
-        public double pitch = 0;
-        public double rawHeading = 0;
-        public Rotation2d gyroRotation = new Rotation2d();
-
-        public Alliance color = Alliance.Blue;
-
-        public SwerveModuleState[] states =
-                new SwerveModuleState[] {
-                    new SwerveModuleState(), // FL
-                    new SwerveModuleState(), // FR
-                    new SwerveModuleState(), // BL
-                    new SwerveModuleState() // BR
-                };
-
-        public SwerveModuleState[] targets =
-                new SwerveModuleState[] {
-                    new SwerveModuleState(),
-                    new SwerveModuleState(),
-                    new SwerveModuleState(),
-                    new SwerveModuleState()
-                };
-
-        public double timestamp = 0;
-
-        public Pose2d visionPose = new Pose2d();
-
-        public Pose2d pose = new Pose2d();
-        public ChassisSpeeds measuredSpeeds = new ChassisSpeeds();
-
-        public double frontLeftDriveCurrent = 0;
-        public double frontLeftSteerCurrent = 0;
-        public double frontRightDriveCurrent = 0;
-        public double frontRightSteerCurrent = 0;
-        public double backLeftDriveCurrent = 0;
-        public double backLeftSteerCurrent = 0;
-        public double backRightDriveCurrent = 0;
-        public double backRightSteerCurrent = 0;
-    }
-
->>>>>>> a57f24d71d4de869a3d8218c998321a78361c09c:src/main/java/team3647/frc2026/subsystems/SwerveDrive.java
     public void zeroPitch() {
         this.pitchZero = this.getPitch();
     }
