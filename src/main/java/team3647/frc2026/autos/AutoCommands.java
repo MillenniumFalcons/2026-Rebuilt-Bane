@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.subsystems.Superstructure;
-import team3647.frc2026.subsystems.SwerveDrive;
+import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.PoseUtils;

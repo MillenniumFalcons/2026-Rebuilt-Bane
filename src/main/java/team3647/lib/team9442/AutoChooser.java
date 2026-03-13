@@ -21,26 +21,34 @@ public class AutoChooser extends SendableChooser<AutoMode> implements AllianceOb
         super();
         this.autoCommands = commands;
         this.setStartPose = setStartPose;
-        autosList = new ArrayList<AutoMode>();
+        autosList = autoCommands.redAutosList;
+        setDefaultOption("DEFAULT AUTO CHANE THIS", autosList.get(0));
         onChange(
                 (mode) -> {
-                    setStartPose.accept(getSelected().startingPose);
+                    AutoMode selectedMode = getSelected();
+                    Pose2d startingPose;
+                    if (selectedMode == null){
+                        startingPose = new Pose2d();
+                    } else {
+                        startingPose = selectedMode.getStartingPose();
+                    }
+                    setStartPose.accept(startingPose);
                     selected = true;
                     // Logger.recordOutput("sellected", getSelected().getName());
                 });
-        autosList = autoCommands.redAutosList;
-        setDefaultOption("DEFAULT AUTO CHANE THIS", autosList.get(0));
     }
 
     @Override
     public void onAllianceFound(Alliance color) {
         if (color != chachedColor) {
-            setStartPose.accept(getSelected().getStartingPose());
+            if (getSelected() != null) {
+                setStartPose.accept(getSelected().getStartingPose());
+            }
         }
-
         autosList = color == Alliance.Blue ? autoCommands.blueAutosList : autoCommands.redAutosList;
         addAutos();
         chachedColor = color;
+        
     }
 
     public void addAutos() {

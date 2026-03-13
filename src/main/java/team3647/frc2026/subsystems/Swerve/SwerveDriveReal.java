@@ -1,4 +1,4 @@
-package team3647.frc2026.subsystems;
+package team3647.frc2026.subsystems.Swerve;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -31,8 +31,12 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
+
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
-import org.littletonrobotics.junction.AutoLog;
+
+import org.ironmaple.simulation.IntakeSimulation;
+import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants.TunerSwerveDrivetrain;
@@ -48,8 +52,8 @@ import team3647.lib.vision.VisionMeasurement;
 
 // import team3647.lib.vision.VisionMeasurement;
 
-public class SwerveDrive extends TunerSwerveDrivetrain
-        implements PeriodicSubsystem, AllianceObserver {
+public class SwerveDriveReal extends TunerSwerveDrivetrain
+        implements PeriodicSubsystem, AllianceObserver, SwerveDrive {
 
     public final SwerveSetpointGenerator setpointGenerator;
 
@@ -150,7 +154,7 @@ public class SwerveDrive extends TunerSwerveDrivetrain
                             "steer motor FOC"));
 
     @SuppressWarnings("unchecked")
-    public SwerveDrive(
+    public SwerveDriveReal(
             SwerveDrivetrainConstants swerveDriveConstants,
             double maxSpeedMpS,
             double maxRotRadPerSec,
@@ -179,58 +183,6 @@ public class SwerveDrive extends TunerSwerveDrivetrain
         this.limits.kMaxDriveVelocity = newLimits.kMaxDriveVelocity;
         this.limits.kMaxDriveAcceleration = newLimits.kMaxDriveAcceleration;
         this.limits.kMaxSteeringVelocity = newLimits.kMaxSteeringVelocity;
-    }
-
-    @AutoLog
-    public static class PeriodicIO {
-        // inputs
-
-        public boolean good = false;
-
-        public double cachedVel = 0;
-        public boolean isAccel = false;
-
-        public double characterizationVoltage = 0;
-        public boolean isOpenloop = true;
-        public double heading = 0;
-        public double roll = 0;
-        public double pitch = 0;
-        public double rawHeading = 0;
-        public Rotation2d gyroRotation = new Rotation2d();
-
-        public Alliance color = Alliance.Blue;
-
-        public SwerveModuleState[] states =
-                new SwerveModuleState[] {
-                    new SwerveModuleState(), // FL
-                    new SwerveModuleState(), // FR
-                    new SwerveModuleState(), // BL
-                    new SwerveModuleState() // BR
-                };
-
-        public SwerveModuleState[] targets =
-                new SwerveModuleState[] {
-                    new SwerveModuleState(),
-                    new SwerveModuleState(),
-                    new SwerveModuleState(),
-                    new SwerveModuleState()
-                };
-
-        public double timestamp = 0;
-
-        public Pose2d visionPose = new Pose2d();
-
-        public Pose2d pose = new Pose2d();
-        public ChassisSpeeds measuredSpeeds = new ChassisSpeeds();
-
-        public double frontLeftDriveCurrent = 0;
-        public double frontLeftSteerCurrent = 0;
-        public double frontRightDriveCurrent = 0;
-        public double frontRightSteerCurrent = 0;
-        public double backLeftDriveCurrent = 0;
-        public double backLeftSteerCurrent = 0;
-        public double backRightDriveCurrent = 0;
-        public double backRightSteerCurrent = 0;
     }
 
     public void zeroPitch() {
@@ -637,5 +589,23 @@ public class SwerveDrive extends TunerSwerveDrivetrain
 
     public Command steerRoutineDynamic() {
         return steerRoutine.dynamic(Direction.kForward);
+    }
+
+    @Override
+    public Pose2d getRealPose() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRealPose'");
+    }
+
+    @Override
+    public Optional<IntakeSimulation> getSimIntake() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSimIntake'");
+    }
+
+    @Override
+    public AbstractDriveTrainSimulation getSim() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSim'");
     }
 }
