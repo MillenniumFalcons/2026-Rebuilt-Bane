@@ -75,7 +75,7 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         setSpeeds();
         setPose();
         setDistanceFromHub();
-        Logger.recordOutput("Robot/Distance", getDistanceFromHub());
+        Logger.recordOutput("Robot/DistanceFromHub", getDistanceFromHub());
         Logger.recordOutput("Robot/Pose", periodicIO.pose);
         Logger.recordOutput("Field/hubPose", this.hubPose);
         Logger.recordOutput("Field/feedpose", this.feedPose);
@@ -109,7 +109,7 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         periodicIO.pose = drivePose.get();
     }
 
-    public double getIntakeDirectionSpeed(){
+    public double getIntakeDirectionSpeed() {
         return periodicIO.speeds.vxMetersPerSecond;
     }
 
@@ -183,9 +183,9 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         }
 
         // Log the final converged values
-        Logger.recordOutput("SOTM/compensate time", time);
-        Logger.recordOutput("SOTM/compensate distance", currentDistance);
-        Logger.recordOutput("SOTM/compensate speed", speed);
+        Logger.recordOutput("SOTMValues/compensate time", time);
+        Logger.recordOutput("SOTMValues/compensate distance", currentDistance);
+        Logger.recordOutput("SOTMValues/compensate speed", speed);
 
         return lookaheadPose;
     }

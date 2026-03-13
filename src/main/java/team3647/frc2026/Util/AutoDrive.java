@@ -53,7 +53,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         profiledRotController.setTolerance(
                 Units.degreesToRadians(1.5), Units.degreesToRadians(1.5));
         profiledRotController.enableContinuousInput(-Math.PI, Math.PI);
-        this.wantedMode = DriveMode.SHOOT_ON_THE_MOVE;
     }
 
     public enum DriveMode {
@@ -93,7 +92,9 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public Command enableAutoDrive() {
         return Commands.runOnce(
                 () -> {
-                    this.profiledRotController.reset(getOdoRot().getRadians());
+                    this.profiledRotController.reset(
+                            getOdoRot().getRadians(),
+                            chassisSpeedsSupplier.get().omegaRadiansPerSecond);
                     this.enabled = true;
                 });
     }

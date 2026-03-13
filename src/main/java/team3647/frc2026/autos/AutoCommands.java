@@ -24,7 +24,6 @@ import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.util.AutoDrive;
-import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.PoseUtils;
 import team3647.lib.team9442.AllianceObserver;
 
@@ -62,7 +61,6 @@ public class AutoCommands implements AllianceObserver {
 
     public Command midRushOutpostAuto() {
         return Commands.sequence(
-                autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE),
                 midRushSegmentOne(midRushOutpost),
                 midRushSegmentTwo(midRushOutpost),
                 Commands.parallel(superstructure.shoot(), autoAlign()).withTimeout(5),
@@ -79,8 +77,7 @@ public class AutoCommands implements AllianceObserver {
 
     public Command midRushAuto(String pathname) {
         return Commands.sequence(
-                superstructure.bumpKicker().withTimeout(0.35),
-                autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE),
+                // superstructure.bumpKicker().withTimeout(0.35),
                 midRushSegmentOne(pathname),
                 midRushSegmentTwo(pathname),
                 Commands.parallel(superstructure.shoot(), autoAlign()));
@@ -99,9 +96,7 @@ public class AutoCommands implements AllianceObserver {
     // double mid rushes
     public Command doubleMidRushAuto(String pathname) {
         return Commands.sequence(
-                autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE),
-                midRushAuto(pathname).withTimeout(10.0),
-                midRushAuto(pathname + "Close"));
+                midRushAuto(pathname).withTimeout(10.0), midRushAuto(pathname + "Close"));
     }
 
     // outpost
@@ -109,8 +104,7 @@ public class AutoCommands implements AllianceObserver {
 
     public Command outpostAuto() {
         return Commands.sequence(
-                superstructure.bumpKicker().withTimeout(0.35),
-                autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE),
+                // superstructure.bumpKicker().withTimeout(0.35),
                 Commands.deadline(
                                 followChoreoPath(getTrajSplit(outpost, 0)), superstructure.intake())
                         .withTimeout(3),
@@ -124,7 +118,11 @@ public class AutoCommands implements AllianceObserver {
     public Command autoAlign() {
         return Commands.sequence(
                 Commands.runOnce(() -> swerve.drive(0, 0, 0)),
-                Commands.run(() -> swerve.drive(0, 0, autoDriveVelocities.get().dtheta), swerve));
+                autoDrive.enableAutoDrive(),
+                Commands.run(
+                        () -> swerve.driveFieldOriented(0, 0, autoDriveVelocities.get().dtheta),
+                        swerve),
+                autoDrive.disableAutoDrive());
     }
 
     // regular pathfollower

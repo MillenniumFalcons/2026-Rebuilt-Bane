@@ -1,6 +1,5 @@
 package team3647.lib.tunables;
 
-import edu.wpi.first.math.controller.PIDController;
 import team3647.lib.team6328.VirtualSubsystem;
 
 public class TunableDouble extends VirtualSubsystem {
