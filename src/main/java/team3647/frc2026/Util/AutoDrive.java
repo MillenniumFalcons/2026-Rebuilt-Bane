@@ -29,7 +29,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(5.0, 0, 0.05, new Constraints(7, 10));
+            new ProfiledPIDController(6.0, 0, 0.05, new Constraints(10, 10));
 
     private Alliance color = Alliance.Red;
 
@@ -90,7 +90,10 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     public Command enableAutoDrive() {
-        return Commands.runOnce(() -> this.enabled = true);
+        return Commands.runOnce(() -> {
+            this.profiledRotController.reset(getOdoRot().getRadians());
+            this.enabled = true;
+        });
     }
 
     public Command disableAutoDrive() {
@@ -112,7 +115,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public Twist2d getVelocities() {
 
         final Pose2d robotPose = getPose();
-        // profiledRotController.reset(robotPose.getRotation().getRadians());
         final ChassisSpeeds currentSpeeds = chassisSpeedsSupplier.get();
         final ChassisSpeeds fieldSpeeds =
                 ChassisSpeeds.fromRobotRelativeSpeeds(currentSpeeds, getOdoRot());
@@ -127,7 +129,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         Rotation2d angleToTarget = targetData.rotation;
 
         Logger.recordOutput(
-                "wantedAngle", new Pose2d(robotPose.getX(), robotPose.getY(), angleToTarget));
+                "SOTMAutoAlign/wantedAngle",
+                new Pose2d(robotPose.getX(), robotPose.getY(), angleToTarget));
 
         profiledRotController.setGoal(angleToTarget.getRadians());
 
@@ -152,10 +155,12 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         // Logger.recordOutput("linear velocity", linearVelocityMag);
         // Logger.recordOutput("angular error", angularError);
-        Logger.recordOutput("ff output", customFF);
-        Logger.recordOutput("pid output", rotFeedback);
-        Logger.recordOutput("rotSetpointVel", profiledRotController.getSetpoint().velocity);
-        Logger.recordOutput("rotSetpointPos", profiledRotController.getSetpoint().position);
+        Logger.recordOutput("SOTMAutoAlign/DEBUG/ff output", customFF);
+        Logger.recordOutput("SOTMAutoAlign/DEBUG/pid output", rotFeedback);
+        Logger.recordOutput(
+                "SOTMAutoAlign/DEBUG/rotSetpointVel", profiledRotController.getSetpoint().velocity);
+        Logger.recordOutput(
+                "SOTMAutoAlign/DEBUG/rotSetpointPos", profiledRotController.getSetpoint().position);
 
         double rotComp = -(rotFeedback + customFF);
 

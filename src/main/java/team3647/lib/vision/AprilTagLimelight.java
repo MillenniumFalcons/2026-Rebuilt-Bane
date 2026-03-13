@@ -140,9 +140,9 @@ public class AprilTagLimelight extends VirtualSubsystem implements AprilTagCamer
 
         setIMUMode((!VisionController.hasReset) ? 1 : 2);
 
-        Logger.recordOutput("DEBUG/autoAlign/hasreset", VisionController.hasReset);
-        Logger.recordOutput("DEBUG/autoAlign/useMT2", useMt2);
-        Logger.recordOutput("DEBUG/autoAlign/is not multitag", !isMultitag());
+        Logger.recordOutput("VisionDebug/hasreset", VisionController.hasReset);
+        Logger.recordOutput("VisionDebug/useMT2", useMt2);
+        Logger.recordOutput("VisionDebug/is not multitag", !isMultitag());
     }
 
     public RawFiducial getBestTagDist(RawFiducial[] fiducials) {
@@ -286,7 +286,7 @@ public class AprilTagLimelight extends VirtualSubsystem implements AprilTagCamer
 
     public double getTd() {
         var allTags = LimelightHelpers.getRawFiducials(name);
-        Logger.recordOutput("tages???", allTags.length);
+        Logger.recordOutput("number of tags", allTags.length);
         if (allTags.length < 1) return -1;
         var bestTag = getBestTagDist(allTags);
         return bestTag.distToCamera;

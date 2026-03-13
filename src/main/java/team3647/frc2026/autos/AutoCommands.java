@@ -211,10 +211,10 @@ public class AutoCommands implements AllianceObserver {
                             pose.getRotation().getRadians(),
                             referenceState.getPose().getRotation().getRadians());
 
-            Logger.recordOutput("xFF", xFF);
-            Logger.recordOutput("referenceX", referenceState.getPose().getX());
-            Logger.recordOutput("yFF", yFF);
-            Logger.recordOutput("referenceY", referenceState.getPose().getY());
+            Logger.recordOutput("AutoController/xFF", xFF);
+            Logger.recordOutput("AutoController/referenceX", referenceState.getPose().getX());
+            Logger.recordOutput("AutoController/yFF", yFF);
+            Logger.recordOutput("AutoController/referenceY", referenceState.getPose().getY());
 
             return ChassisSpeeds.fromFieldRelativeSpeeds(
                     xFF + xFeedback,

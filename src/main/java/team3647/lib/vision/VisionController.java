@@ -63,7 +63,7 @@ public class VisionController extends VirtualSubsystem {
                     break;
                 }
             }
-            Logger.recordOutput("selected?", AutoChooser.selected);
+            Logger.recordOutput("auto selected?", AutoChooser.selected);
 
             // Logger.recordOutput("Robot/" + camera.getName(), getInputs.pose);
         }

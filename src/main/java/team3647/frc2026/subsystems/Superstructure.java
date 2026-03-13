@@ -15,7 +15,6 @@ import team3647.frc2026.commands.KickerCommands;
 import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.WristCommands;
-import team3647.frc2026.constants.ShooterConstants;
 
 public class Superstructure {
 
@@ -81,34 +80,77 @@ public class Superstructure {
         return wantedIntakeAngle;
     }
 
+    public Command logEverything() {
+        return Commands.parallel(
+                Commands.run(
+                        () ->
+                                Logger.recordOutput(
+                                        "Shooting/ShotSpeed/wantedshotspeed",
+                                        shotSpeed.getAsDouble())),
+                Commands.run(
+                        () ->
+                                Logger.recordOutput(
+                                        "Shooting/ShotSpeed/leftshootervelocity",
+                                        shooterOne.getVelocity())),
+                Commands.run(
+                        () ->
+                                Logger.recordOutput(
+                                        "Shooting/ShotSpeed/rightshootervelocity",
+                                        shooterTwo.getVelocity())),
+                Commands.run(
+                        () ->
+                                Logger.recordOutput(
+                                        "Shooting/ShotSpeed/atshotvel", atShotVel.getAsBoolean())),
+                Commands.run(
+                        () ->
+                                Logger.recordOutput(
+                                        "Shooting/readytoshoot", readyToShoot.getAsBoolean())),
+                Commands.run(
+                        () ->
+                                Logger.recordOutput(
+                                        "Shooting/Hood/athoodangle", atHoodAngle.getAsBoolean())),
+                Commands.run(
+                        () ->
+                                Logger.recordOutput(
+                                        "Shooting/Hood/wantedhoodeangle", hoodAngle.getAsDouble())),
+                Commands.run(
+                        () ->
+                                Logger.recordOutput(
+                                        "Shooting/Hood/currenthoodangle", hood.getPosition())),
+                Commands.run(
+                        () ->
+                                Logger.recordOutput(
+                                        "Shooting/Rotation/isrotaligned",
+                                        isRotAligned.getAsBoolean())));
+    }
+
+    public Command shoot() {
+        return Commands.parallel(logEverything(), prep(), retractIntake(), indexWhenReady());
+    }
+
     public Command prep() {
         return shooterCommands.setVelocity(shotSpeed);
     }
 
-    public Command shoot() {
-        return Commands.parallel(
-                prep(),
-                retractIntake(),
-                Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
-                Commands.run(
-                        () -> Logger.recordOutput("ready to shoot", readyToShoot.getAsBoolean())),
-                Commands.run(() -> Logger.recordOutput("athoodangle", atHoodAngle.getAsBoolean())),
-                Commands.run(() -> Logger.recordOutput("atshotvel", atShotVel.getAsBoolean())),
-                Commands.sequence(
-                        Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
-                        index().onlyWhile(readyToShoot).repeatedly()));
-    }
-
-    public Command shotTuning() {
-        return Commands.parallel(
-                shooterCommands.shootTunable(),
-                Commands.run(() -> Logger.recordOutput("wanted speed", shotSpeed.getAsDouble())),
-                Commands.sequence(Commands.waitSeconds(1), index()));
+    public Command indexWhenReady() {
+        return Commands.sequence(
+                Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
+                index().onlyWhile(readyToShoot).repeatedly());
     }
 
     public Command index() {
         return Commands.parallel(
                 indexerCommands.index(), kickerCommands.kick(), rollerCommands.intake());
+    }
+
+    public Command shotTuning() {
+        return Commands.parallel(
+                shooterCommands.shootTunable(),
+                Commands.run(
+                        () ->
+                                Logger.recordOutput(
+                                        "Shooting/wanted speed", shotSpeed.getAsDouble())),
+                Commands.sequence(Commands.waitSeconds(1), index()));
     }
 
     public Command reverse() {
@@ -135,25 +177,5 @@ public class Superstructure {
 
     public Command retractIntake() {
         return Commands.parallel(wristCommands.retract());
-    }
-
-    public Command lowerOffset() {
-        return Commands.sequence(
-                Commands.runOnce(
-                        () -> {
-                            ShooterConstants.tempOffset -= 0.5;
-                        }),
-                Commands.run(
-                        () -> Logger.recordOutput("shoot offset", ShooterConstants.tempOffset)));
-    }
-
-    public Command increaseOffset() {
-        return Commands.sequence(
-                Commands.runOnce(
-                        () -> {
-                            ShooterConstants.tempOffset += 0.5;
-                        }),
-                Commands.run(
-                        () -> Logger.recordOutput("shoot offset", ShooterConstants.tempOffset)));
     }
 }

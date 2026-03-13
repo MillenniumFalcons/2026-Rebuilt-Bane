@@ -98,10 +98,6 @@ public class RobotContainer {
         SmartDashboard.putData("Autos", autoChooser);
         SmartDashboard.putData("Field", smartDashboardField);
         printer.addDouble("Match Time", Timer::getMatchTime);
-        printer.addDouble("left shooter velocity", shooterLeft::getVelocity);
-        printer.addDouble("right shooter velocity", shooterRight::getVelocity);
-        printer.addDouble("wantedhoodangle", autoDrive::getHoodAngle);
-        printer.addDouble("distance to hub", targetingUtil::getCompensatedDistance);
     }
 
     private void configureDefaultCommands() {
@@ -148,8 +144,6 @@ public class RobotContainer {
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
         coController.leftBumper.whileTrue(superstructure.bumpKicker());
-        coController.dPadDown.onTrue(superstructure.lowerOffset());
-        coController.dPadUp.onTrue(superstructure.increaseOffset());
         // coController.buttonA.onTrue(hood.setEncoderAngleCANcoder());
 
         // mainController.leftTrigger.whileTrue(superstructure.shotTuning());

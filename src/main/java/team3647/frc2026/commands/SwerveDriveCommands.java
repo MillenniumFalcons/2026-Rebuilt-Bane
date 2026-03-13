@@ -4,7 +4,6 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.BooleanSupplier;
@@ -47,9 +46,9 @@ public class SwerveDriveCommands implements AllianceObserver {
                 () -> {
                     var isAutoDrive = autoDriveEnabled.getAsBoolean();
                     var velocities = autoDriveVelocities.get();
-                    Logger.recordOutput("Velocities", velocities);
+                    Logger.recordOutput("autoDriveVelocities", velocities);
                     var robotRel = robotRelative.getAsBoolean();
-                    SmartDashboard.putBoolean("MONBEIONS", robotRel);
+                    // SmartDashboard.putBoolean("MONBEIONS", robotRel);
                     // Logger.recordOutput("hastarget@cmds", toRun);
 
                     int invert = 1;

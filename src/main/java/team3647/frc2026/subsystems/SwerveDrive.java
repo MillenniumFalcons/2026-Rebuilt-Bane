@@ -249,21 +249,21 @@ public class SwerveDrive extends TunerSwerveDrivetrain
         periodicIO.gyroRotation = Rotation2d.fromDegrees(periodicIO.heading);
         periodicIO.timestamp = Timer.getFPGATimestamp();
         periodicIO.frontLeftDriveCurrent =
-                this.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble();
+                this.getModules()[0].getDriveMotor().getSupplyCurrent().getValueAsDouble();
         periodicIO.frontLeftSteerCurrent =
-                this.getModules()[0].getSteerMotor().getStatorCurrent().getValueAsDouble();
+                this.getModules()[0].getSteerMotor().getSupplyCurrent().getValueAsDouble();
         periodicIO.frontRightDriveCurrent =
-                this.getModules()[1].getDriveMotor().getStatorCurrent().getValueAsDouble();
+                this.getModules()[1].getDriveMotor().getSupplyCurrent().getValueAsDouble();
         periodicIO.frontRightSteerCurrent =
-                this.getModules()[1].getSteerMotor().getStatorCurrent().getValueAsDouble();
+                this.getModules()[1].getSteerMotor().getSupplyCurrent().getValueAsDouble();
         periodicIO.backLeftDriveCurrent =
-                this.getModules()[2].getDriveMotor().getStatorCurrent().getValueAsDouble();
+                this.getModules()[2].getDriveMotor().getSupplyCurrent().getValueAsDouble();
         periodicIO.backLeftSteerCurrent =
-                this.getModules()[2].getSteerMotor().getStatorCurrent().getValueAsDouble();
+                this.getModules()[2].getSteerMotor().getSupplyCurrent().getValueAsDouble();
         periodicIO.backRightDriveCurrent =
-                this.getModules()[3].getDriveMotor().getStatorCurrent().getValueAsDouble();
+                this.getModules()[3].getDriveMotor().getSupplyCurrent().getValueAsDouble();
         periodicIO.backRightSteerCurrent =
-                this.getModules()[3].getSteerMotor().getStatorCurrent().getValueAsDouble();
+                this.getModules()[3].getSteerMotor().getSupplyCurrent().getValueAsDouble();
         Logger.processInputs(getName(), periodicIO);
         // SmartDashboard.putBoolean("good", periodicIO.good);
 
