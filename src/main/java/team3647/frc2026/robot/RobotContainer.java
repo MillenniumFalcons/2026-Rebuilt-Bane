@@ -225,8 +225,8 @@ public class RobotContainer {
     public final Rollers rollers =
             new Rollers(
                     RollerConstants.kMaster,
-                    0,
-                    1,
+                    RollerConstants.kNativeVelToSurfaceMpS,
+                    RollerConstants.kNativeVelToSurfaceMpS,
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
@@ -310,6 +310,7 @@ public class RobotContainer {
                     kicker,
                     wrist,
                     rollers,
+                    robotTracker,
                     autoDrive::getHoodAngle,
                     autoDrive::getShotSpeed,
                     autoDrive::rotAligned);

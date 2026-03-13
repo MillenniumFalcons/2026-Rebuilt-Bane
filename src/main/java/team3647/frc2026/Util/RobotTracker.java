@@ -109,6 +109,10 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         periodicIO.pose = drivePose.get();
     }
 
+    public double getIntakeDirectionSpeed(){
+        return periodicIO.speeds.vxMetersPerSecond;
+    }
+
     // public Pose2d compensate(Pose2d pose) {
     //     final double rawShotSpeed =
     // ShooterConstants.shootSpeedMap.get(periodicIO.distanceFromHub);
