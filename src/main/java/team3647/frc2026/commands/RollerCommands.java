@@ -1,5 +1,7 @@
 package team3647.frc2026.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import team3647.frc2026.subsystems.Rollers;
@@ -19,6 +21,10 @@ public class RollerCommands {
     public Command intake() {
         return Commands.runEnd(
                 () -> rollers.setOpenLoop(0.7), () -> rollers.setOpenLoop(0), rollers);
+    }
+
+    public Command intakeSpeedScale(DoubleSupplier robotSpeed) {
+        return Commands.run(() -> rollers.setVelocityMoving(robotSpeed.getAsDouble()), rollers);
     }
 
     public Command spit() {

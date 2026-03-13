@@ -311,6 +311,7 @@ public class RobotContainer {
                     kicker,
                     wrist,
                     rollers,
+                    robotTracker,
                     autoDrive::getHoodAngle,
                     autoDrive::getShotSpeed,
                     autoDrive::rotAligned);

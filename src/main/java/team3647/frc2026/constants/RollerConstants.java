@@ -13,7 +13,18 @@ public class RollerConstants {
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
+    public static final double kP = 0.1;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final double baseIntakeSpeed = 2; //CHANGE THIS
+    public static final double intakeSpeedPerRobotSpeed = 0.5; //CHANGE THIS
+
     static {
+        kMasterConfig.Slot0.kP = kP;
+        kMasterConfig.Slot0.kI = kI;
+        kMasterConfig.Slot0.kD = kD;
+
         kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         kMasterConfig.CurrentLimits.StatorCurrentLimit = 55.0;

@@ -2,6 +2,8 @@ package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import java.util.List;
+
+import team3647.frc2026.constants.RollerConstants;
 import team3647.lib.TalonFXSubsystem;
 
 public class Rollers extends TalonFXSubsystem {
@@ -17,6 +19,16 @@ public class Rollers extends TalonFXSubsystem {
 
     public void setOpenLoop(double percent) {
         super.setOpenloop(percent);
+    }
+
+    public void setVelocityVoltage(double velocity) {
+        super.setVelocityVoltage(velocity, 0);
+    }
+
+    public void setVelocityMoving(double robotSpeed) {
+        double velocity = RollerConstants.baseIntakeSpeed 
+            + RollerConstants.intakeSpeedPerRobotSpeed * Math.max(0, robotSpeed);
+        super.setVelocityVoltage(velocity, 0);
     }
 
     public double getMasterCurrent() {

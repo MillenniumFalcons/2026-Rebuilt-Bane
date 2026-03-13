@@ -15,6 +15,7 @@ import team3647.frc2026.commands.KickerCommands;
 import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.WristCommands;
+import team3647.frc2026.util.RobotTracker;
 
 public class Superstructure {
 
@@ -38,6 +39,8 @@ public class Superstructure {
     public Angle wantedIntakeAngle = Degrees.of(70);
     public final BooleanSupplier isRotAligned;
 
+    public final RobotTracker robotTracker;
+
     public final BooleanSupplier atShotVel;
     public final BooleanSupplier atHoodAngle;
     public final Trigger readyToShoot;
@@ -50,6 +53,7 @@ public class Superstructure {
             Kicker kicker,
             Wrist wrist,
             Rollers rollers,
+            RobotTracker robotTracker,
             DoubleSupplier hoodAngle,
             DoubleSupplier shotSpeed,
             BooleanSupplier isRotAligned) {
@@ -60,6 +64,7 @@ public class Superstructure {
         this.kicker = kicker;
         this.wrist = wrist;
         this.rollers = rollers;
+        this.robotTracker = robotTracker;
         this.hoodAngle = hoodAngle;
         this.shotSpeed = shotSpeed;
         this.isRotAligned = isRotAligned;
@@ -160,7 +165,9 @@ public class Superstructure {
 
     public Command intake() {
         return Commands.parallel(
-                wristCommands.deploy(), rollerCommands.intake(), indexerCommands.index());
+                wristCommands.deploy(), 
+                rollerCommands.intakeSpeedScale(robotTracker::getIntakeDirectionSpeed), 
+                indexerCommands.index());
     }
 
     public Command bumpKicker() {
