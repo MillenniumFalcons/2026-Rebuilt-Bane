@@ -154,25 +154,18 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         double time = 0.0;
         double speed = 0.0;
         Pose2d lookaheadPose = pose;
+        ChassisSpeeds fieldRelSpeeds =
+                ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getPose().getRotation());
 
         // Iterate 5 times to converge on the accurate lookahead pose
         for (int i = 0; i < 5; i++) {
-            // double rawShotSpeed = ShooterConstants.shootSpeedMap.get(currentDistance);
-            // double hoodAngle = HoodConstants.hoodAngleMap.get(currentDistance);
-
-            // // Calculate the horizontal exit speed
-            // speed = rawShotSpeed * Math.cos(Math.toRadians(hoodAngle)) * exitSpeedMultiplier;
-
-            // Calculate estimated Time of Flight
-            // time = currentDistance / speed;
-
             time = timeOfFlightMap.get(currentDistance);
 
             // Calculate how far the robot will travel during that Time of Flight
             var transform =
                     new Twist2d(
-                            periodicIO.speeds.vxMetersPerSecond * time,
-                            periodicIO.speeds.vyMetersPerSecond * time,
+                            fieldRelSpeeds.vxMetersPerSecond * time,
+                            fieldRelSpeeds.vyMetersPerSecond * time,
                             0);
 
             // Apply the offset to get the predicted position
