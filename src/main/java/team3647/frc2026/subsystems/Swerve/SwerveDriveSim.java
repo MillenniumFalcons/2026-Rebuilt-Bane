@@ -11,8 +11,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import java.util.Optional;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.SimulatedArena;
@@ -46,12 +44,12 @@ public class SwerveDriveSim implements SwerveDrive {
 
         this.intakeSim =
                 IntakeSimulation.OverTheBumperIntake(
-                        "Coral",
+                        "Fuel",
                         getSim(),
                         Meters.of(0.6604),
                         Meters.of(0.2),
-                        IntakeSimulation.IntakeSide.BACK,
-                        1);
+                        IntakeSimulation.IntakeSide.FRONT,
+                        30);
     }
 
     public AbstractDriveTrainSimulation getSim() {

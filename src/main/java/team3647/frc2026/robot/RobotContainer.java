@@ -5,7 +5,6 @@
 package team3647.frc2026.robot;
 
 import com.ctre.phoenix6.Utils;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -174,19 +173,19 @@ public class RobotContainer {
 
     @SuppressWarnings("unchecked")
     public final SwerveDrive swerve =
-        Utils.isSimulation()?
-            new SwerveDriveSim(
-                SwerveDriveConstants.driveTrainSimulationConfig, GlobalConstants.kDt):
-            new SwerveDriveReal(
-                    TunerConstants.DrivetrainConstants,
-                    SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
-                    SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec,
-                    GlobalConstants.kDt,
-                    SwerveDriveConstants.kTeleopKinematicLimits,
-                    TunerConstants.FrontLeft,
-                    TunerConstants.FrontRight,
-                    TunerConstants.BackLeft,
-                    TunerConstants.BackRight);
+            Utils.isSimulation()
+                    ? new SwerveDriveSim(
+                            SwerveDriveConstants.driveTrainSimulationConfig, GlobalConstants.kDt)
+                    : new SwerveDriveReal(
+                            TunerConstants.DrivetrainConstants,
+                            SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
+                            SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec,
+                            GlobalConstants.kDt,
+                            SwerveDriveConstants.kTeleopKinematicLimits,
+                            TunerConstants.FrontLeft,
+                            TunerConstants.FrontRight,
+                            TunerConstants.BackLeft,
+                            TunerConstants.BackRight);
 
     public final ShooterLeft shooterLeft =
             new ShooterLeft(

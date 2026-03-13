@@ -3,6 +3,7 @@ package team3647.frc2026.autos;
 import choreo.Choreo;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -207,9 +208,13 @@ public class AutoCommands implements AllianceObserver {
             double xFeedback = xController.calculate(pose.getX(), referenceState.getPose().getX());
             double yFeedback = yController.calculate(pose.getY(), referenceState.getPose().getY());
             double rotationFeedback =
-                    -rotationController.calculate(
-                            pose.getRotation().getRadians(),
-                            referenceState.getPose().getRotation().getRadians());
+                    !Utils.isSimulation()
+                            ? -rotationController.calculate(
+                                    pose.getRotation().getRadians(),
+                                    referenceState.getPose().getRotation().getRadians())
+                            : rotationController.calculate(
+                                    pose.getRotation().getRadians(),
+                                    referenceState.getPose().getRotation().getRadians());
 
             Logger.recordOutput("AutoController/xFF", xFF);
             Logger.recordOutput("AutoController/referenceX", referenceState.getPose().getX());

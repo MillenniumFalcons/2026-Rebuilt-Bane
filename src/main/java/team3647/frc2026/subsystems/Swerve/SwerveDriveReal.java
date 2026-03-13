@@ -31,10 +31,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
-
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
-
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 import org.littletonrobotics.junction.Logger;

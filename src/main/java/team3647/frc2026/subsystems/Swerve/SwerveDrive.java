@@ -6,8 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.Optional;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
@@ -103,7 +101,7 @@ public interface SwerveDrive extends PeriodicSubsystem, AllianceObserver {
         public Translation2d centerOfRotation = Translation2d.kZero;
         public Pose2d simPose = new Pose2d(2, 2, new Rotation2d());
         public ChassisSpeeds actualSpeeds = new ChassisSpeeds();
-        
+
         public double frontLeftDriveCurrent = 0;
         public double frontLeftSteerCurrent = 0;
         public double frontRightDriveCurrent = 0;

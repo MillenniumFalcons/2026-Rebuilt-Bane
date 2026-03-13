@@ -1,5 +1,6 @@
 package team3647.frc2026.util;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -90,10 +91,11 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     public Command enableAutoDrive() {
-        return Commands.runOnce(() -> {
-            this.profiledRotController.reset(getOdoRot().getRadians());
-            this.enabled = true;
-        });
+        return Commands.runOnce(
+                () -> {
+                    this.profiledRotController.reset(getOdoRot().getRadians());
+                    this.enabled = true;
+                });
     }
 
     public Command disableAutoDrive() {
@@ -162,7 +164,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         Logger.recordOutput(
                 "SOTMAutoAlign/DEBUG/rotSetpointPos", profiledRotController.getSetpoint().position);
 
-        double rotComp = -(rotFeedback + customFF);
+        double rotComp =
+                !Utils.isSimulation() ? -(rotFeedback + customFF) : (rotFeedback + customFF);
 
         return new Twist2d(0, 0, rotComp);
     }

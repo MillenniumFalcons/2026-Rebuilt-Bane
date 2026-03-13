@@ -3,7 +3,6 @@ package team3647.lib.team9442;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import team3647.frc2026.autos.AutoCommands;
@@ -27,7 +26,7 @@ public class AutoChooser extends SendableChooser<AutoMode> implements AllianceOb
                 (mode) -> {
                     AutoMode selectedMode = getSelected();
                     Pose2d startingPose;
-                    if (selectedMode == null){
+                    if (selectedMode == null) {
                         startingPose = new Pose2d();
                     } else {
                         startingPose = selectedMode.getStartingPose();
@@ -48,7 +47,6 @@ public class AutoChooser extends SendableChooser<AutoMode> implements AllianceOb
         autosList = color == Alliance.Blue ? autoCommands.blueAutosList : autoCommands.redAutosList;
         addAutos();
         chachedColor = color;
-        
     }
 
     public void addAutos() {
