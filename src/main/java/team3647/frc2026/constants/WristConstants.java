@@ -24,14 +24,14 @@ public class WristConstants {
 
     // 60 degrees per 4.4 rotations (this was full range of motion)
     public static final double kNativeToDeg =
-            70 / 4.4; // this converts rotations to degrees so the units should be degrees/rotation
+            70 / 10.2; // this converts rotations to degrees so the units should be degrees/rotation
 
     static {
         kMasterConfig.Slot0.withKP(10); // change these values
         kMasterConfig.Slot0.withKI(0);
         kMasterConfig.Slot0.withKD(0);
 
-        kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 

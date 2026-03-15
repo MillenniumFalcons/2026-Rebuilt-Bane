@@ -14,7 +14,7 @@ public class KickerConstants {
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
     static {
-        kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         kMasterConfig.CurrentLimits.StatorCurrentLimit = 40.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;

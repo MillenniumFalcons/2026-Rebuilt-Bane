@@ -225,8 +225,8 @@ public class RobotContainer {
     public final Rollers rollers =
             new Rollers(
                     RollerConstants.kMaster,
-                    RollerConstants.kNativeVelToSurfaceMpS,
-                    RollerConstants.kNativeVelToSurfaceMpS,
+                    RollerConstants.kNativeToSurfaceRPS,
+                    RollerConstants.kNativeToSurfaceRPS,
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 

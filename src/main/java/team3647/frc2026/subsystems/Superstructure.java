@@ -166,8 +166,8 @@ public class Superstructure {
     public Command intake() {
         return Commands.parallel(
                 wristCommands.deploy(),
-                rollerCommands.intakeSpeedScale(robotTracker::getIntakeDirectionSpeed),
-                indexerCommands.index());
+                // rollerCommands.intakeSpeedScale(robotTracker::getIntakeDirectionSpeed),
+                rollerCommands.intake());
     }
 
     public Command bumpKicker() {
