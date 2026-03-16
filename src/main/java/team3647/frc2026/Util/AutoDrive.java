@@ -57,6 +57,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     public enum DriveMode {
         SHOOT_ON_THE_MOVE,
+        SHOOT,
         FEED
     }
 
@@ -122,10 +123,14 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         final ChassisSpeeds fieldSpeeds =
                 ChassisSpeeds.fromRobotRelativeSpeeds(currentSpeeds, getOdoRot());
 
-        final AimingParameters targetData =
+        AimingParameters targetData =
                 wantedMode == DriveMode.SHOOT_ON_THE_MOVE
                         ? targeting.shootAtHubOnTheMove()
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed());
+
+        if (wantedMode == DriveMode.SHOOT) {
+            targetData = targeting.shootAtHubStationary();
+        }
 
         Translation2d robotToTarget = targetData.robotToTarget;
         double distanceToTarget = targetData.effectiveDistance;

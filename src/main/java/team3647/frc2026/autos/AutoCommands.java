@@ -44,7 +44,7 @@ public class AutoCommands implements AllianceObserver {
     //                 AllianceFlip.flip(Translation2d.kZero),
     //                 AllianceFlip.flip(new Translation2d(4, 2.5)));
 
-    private final PIDController rotController = new PIDController(4.0, 0, 0.1);
+    private final PIDController rotController = new PIDController(5.0, 0, 0.1);
 
     //     TunablePID tunableRotController = new TunablePID("Auto/rot", rotController);
 
@@ -85,18 +85,27 @@ public class AutoCommands implements AllianceObserver {
 
     public Command midRushSegmentOne(String pathname) {
         return Commands.deadline(
-                followChoreoPath(getTrajSplit(pathname, 0)), superstructure.intake());
+                followChoreoPath(getTrajSplit(pathname, 0)),
+                Commands.sequence(Commands.waitSeconds(0.8), superstructure.intake()));
     }
 
     public Command midRushSegmentTwo(String pathname) {
         return Commands.deadline(
-                followChoreoPath(getTrajSplit(pathname, 1)), superstructure.retractIntake());
+                followChoreoPath(getTrajSplit(pathname, 1))
+                // superstructure.retractIntake(),
+                );
     }
 
     // double mid rushes
     public Command doubleMidRushAuto(String pathname) {
         return Commands.sequence(
                 midRushAuto(pathname).withTimeout(10.0), midRushAuto(pathname + "Close"));
+    }
+
+    // double mid rush circle
+    public Command doubleMidRushCircleAuto(String pathname) {
+        return Commands.sequence(
+                midRushAuto(pathname).withTimeout(10.0), midRushAuto(pathname + "Circle"));
     }
 
     // outpost
@@ -294,6 +303,8 @@ public class AutoCommands implements AllianceObserver {
     public final AutoMode leftMidRushBlue;
     public final AutoMode rightDoubleMidRushBlue;
     public final AutoMode leftDoubleMidRushBlue;
+    public final AutoMode rightDoubleMidRushCircleBlue;
+    public final AutoMode leftDoubleMidRushCircleBlue;
     public final AutoMode outpostBlue;
 
     public final AutoMode redEmpty;
@@ -303,6 +314,8 @@ public class AutoCommands implements AllianceObserver {
     public final AutoMode leftMidRushRed;
     public final AutoMode rightDoubleMidRushRed;
     public final AutoMode leftDoubleMidRushRed;
+    public final AutoMode rightDoubleMidRushCircleRed;
+    public final AutoMode leftDoubleMidRushCircleRed;
     public final AutoMode outpostRed;
 
     public AutoCommands(
@@ -354,6 +367,16 @@ public class AutoCommands implements AllianceObserver {
                         doubleMidRushAuto(leftMidRush),
                         getInitial(getTraj(leftMidRush), Alliance.Blue),
                         "double" + leftMidRush);
+        this.rightDoubleMidRushCircleBlue =
+                new AutoMode(
+                        doubleMidRushCircleAuto(rightMidRush),
+                        getInitial(getTraj(rightMidRush), Alliance.Blue),
+                        "double" + rightMidRush + "Circle");
+        this.leftDoubleMidRushCircleBlue =
+                new AutoMode(
+                        doubleMidRushCircleAuto(leftMidRush),
+                        getInitial(getTraj(leftMidRush), Alliance.Blue),
+                        "double" + leftMidRush + "Circle");
         this.outpostBlue =
                 new AutoMode(outpostAuto(), getInitial(getTraj(outpost), Alliance.Blue), outpost);
 
@@ -383,28 +406,42 @@ public class AutoCommands implements AllianceObserver {
                         doubleMidRushAuto(leftMidRush),
                         getInitial(getTraj(leftMidRush), Alliance.Red),
                         "double" + leftMidRush);
+        this.rightDoubleMidRushCircleRed =
+                new AutoMode(
+                        doubleMidRushCircleAuto(rightMidRush),
+                        getInitial(getTraj(rightMidRush), Alliance.Red),
+                        "double" + rightMidRush + "Circle");
+        this.leftDoubleMidRushCircleRed =
+                new AutoMode(
+                        doubleMidRushCircleAuto(leftMidRush),
+                        getInitial(getTraj(leftMidRush), Alliance.Red),
+                        "double" + leftMidRush + "Circle");
         this.outpostRed =
                 new AutoMode(outpostAuto(), getInitial(getTraj(outpost), Alliance.Red), outpost);
 
         blueAutosList =
                 List.of(
                         blueEmpty,
+                        rightDoubleMidRushBlue,
+                        leftDoubleMidRushBlue,
+                        rightDoubleMidRushCircleBlue,
+                        leftDoubleMidRushCircleBlue,
                         preloadBlue,
                         midRushOutpostBlue,
                         rightMidRushBlue,
                         leftMidRushBlue,
-                        rightDoubleMidRushBlue,
-                        leftDoubleMidRushBlue,
                         outpostBlue);
         redAutosList =
                 List.of(
                         redEmpty,
+                        rightDoubleMidRushRed,
+                        leftDoubleMidRushRed,
+                        rightDoubleMidRushCircleRed,
+                        leftDoubleMidRushCircleRed,
                         preloadRed,
                         midRushOutpostRed,
                         rightMidRushRed,
                         leftMidRushRed,
-                        rightDoubleMidRushRed,
-                        leftDoubleMidRushRed,
                         outpostRed);
     }
 

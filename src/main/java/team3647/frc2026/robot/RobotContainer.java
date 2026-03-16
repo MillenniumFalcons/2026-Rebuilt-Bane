@@ -132,15 +132,18 @@ public class RobotContainer {
 
         // shooting
         mainController.rightTrigger.whileTrue(superstructure.shoot());
-        // mainController.rightTrigger.whileTrue(superstructure.shotTuning());
+        mainController.buttonB.whileTrue(superstructure.bumpShot());
         mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         mainController.rightBumper.whileTrue(superstructure.reverse());
         mainController.buttonA.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
         mainController.buttonY.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
 
-        mainController.dPadRight.whileTrue(climbCommands.up());
-        mainController.dPadLeft.whileTrue(climbCommands.down());
+        mainController.dPadRight.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT));
+        mainController.dPadRight.whileTrue(autoDrive.enableAutoDrive());
+        mainController.dPadRight.whileTrue(superstructure.prep());
+        mainController.dPadRight.onFalse(autoDrive.disableAutoDrive());
+        mainController.dPadRight.onFalse(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
 
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());

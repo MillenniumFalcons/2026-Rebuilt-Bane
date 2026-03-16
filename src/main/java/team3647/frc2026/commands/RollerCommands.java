@@ -14,12 +14,12 @@ public class RollerCommands {
 
     public Command intakeFast() {
         return Commands.runEnd(
-                () -> rollers.setOpenLoop(0.85), () -> rollers.setOpenLoop(0), rollers);
+                () -> rollers.setOpenLoop(1.0), () -> rollers.setOpenLoop(0), rollers);
     }
 
     public Command intake() {
         return Commands.runEnd(
-                () -> rollers.setOpenLoop(0.7), () -> rollers.setOpenLoop(0), rollers);
+                () -> rollers.setOpenLoop(1.0), () -> rollers.setOpenLoop(0), rollers);
     }
 
     public Command intakeSpeedScale(DoubleSupplier robotSpeed) {
@@ -27,7 +27,7 @@ public class RollerCommands {
     }
 
     public Command spit() {
-        return Commands.run(() -> rollers.setOpenLoop(-0.85), rollers);
+        return Commands.run(() -> rollers.setOpenLoop(-1.0), rollers);
     }
 
     public boolean currentGreater(double current) {

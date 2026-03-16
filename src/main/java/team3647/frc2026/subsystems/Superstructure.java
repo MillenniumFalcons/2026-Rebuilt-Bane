@@ -133,8 +133,21 @@ public class Superstructure {
         return Commands.parallel(logEverything(), prep(), retractIntake(), indexWhenReady());
     }
 
+    public Command bumpShot() {
+        return Commands.parallel(
+                logEverything(),
+                prepForBump(),
+                hoodCommands.setAngle(Degrees.of(72)),
+                retractIntake(),
+                index());
+    }
+
     public Command prep() {
         return shooterCommands.setVelocity(shotSpeed);
+    }
+
+    public Command prepForBump() {
+        return shooterCommands.setVelocity(() -> 13.5);
     }
 
     public Command indexWhenReady() {
