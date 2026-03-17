@@ -47,7 +47,6 @@ public class Superstructure {
 
     public SuperstructureState currentState = SuperstructureState.NONE;
 
-
     public Superstructure(
             ShooterLeft shooterOne,
             ShooterRight shooterTwo,
@@ -86,16 +85,18 @@ public class Superstructure {
         this.currentState = SuperstructureState.NONE;
     }
 
-    //FOR LEDS
+    // FOR LEDS
     public enum SuperstructureState {
         NONE,
         INTAKING,
         PREPPING,
         SHOOTING;
 
-        // basically everytime you want to change the leds, it only sets the state if it has higher priority
+        // basically everytime you want to change the leds, it only sets the state if it has higher
+        // priority
         // this is to avoid trying to set the state to two different things repeatedly
         public final int priority;
+
         SuperstructureState() {
             this.priority = ordinal();
         }
@@ -106,20 +107,20 @@ public class Superstructure {
     }
 
     /**
-     * Use this with deadlineFor() to set the state of the superstructure for the duration of a command,
-     * it will only change the state if the new state has higher or equal priority than the current state.
-     * After the command ends, it will reset the state to NONE.
+     * Use this with deadlineFor() to set the state of the superstructure for the duration of a
+     * command, it will only change the state if the new state has higher or equal priority than the
+     * current state. After the command ends, it will reset the state to NONE.
      */
     public Command requestSetState(SuperstructureState newState) {
         return Commands.run(
-                () -> {
-                    if (newState.priority >= currentState.priority) {
-                        currentState = newState;
-                    }
-                })
+                        () -> {
+                            if (newState.priority >= currentState.priority) {
+                                currentState = newState;
+                            }
+                        })
                 .finallyDo(
-                        () -> {        
-                                currentState = SuperstructureState.NONE;
+                        () -> {
+                            currentState = SuperstructureState.NONE;
                         });
     }
 
@@ -189,38 +190,28 @@ public class Superstructure {
     }
 
     public Command prep() {
-        return shooterCommands.setVelocity(shotSpeed)
-                .deadlineFor(requestSetState(SuperstructureState.PREPPING)
-                );
+        return shooterCommands
+                .setVelocity(shotSpeed)
+                .deadlineFor(requestSetState(SuperstructureState.PREPPING));
     }
 
     public Command prepForBump() {
-        return shooterCommands.setVelocity(() -> 13.5)
-                .deadlineFor(requestSetState(SuperstructureState.PREPPING)
-                );
+        return shooterCommands
+                .setVelocity(() -> 13.5)
+                .deadlineFor(requestSetState(SuperstructureState.PREPPING));
     }
 
     public Command indexWhenReady() {
         return Commands.sequence(
                 Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
-                index().onlyWhile(readyToShoot).repeatedly()
-                        .deadlineFor(requestSetState(SuperstructureState.SHOOTING))
-                );
+                index().onlyWhile(readyToShoot)
+                        .repeatedly()
+                        .deadlineFor(requestSetState(SuperstructureState.SHOOTING)));
     }
 
     public Command index() {
         return Commands.parallel(
                 indexerCommands.index(), kickerCommands.kick(), rollerCommands.intake());
-    }
-
-    public Command shotTuning() {
-        return Commands.parallel(
-                shooterCommands.shootTunable(),
-                Commands.run(
-                        () ->
-                                Logger.recordOutput(
-                                        "Shooting/wanted speed", shotSpeed.getAsDouble())),
-                Commands.sequence(Commands.waitSeconds(1), index()));
     }
 
     public Command reverse() {
@@ -230,25 +221,10 @@ public class Superstructure {
 
     public Command intake() {
         return Commands.parallel(
-                wristCommands.deploy(),
-                // rollerCommands.intakeSpeedScale(robotTracker::getIntakeDirectionSpeed),
-                rollerCommands.intake())
-                .deadlineFor(requestSetState(SuperstructureState.INTAKING)
-                );
-    }
-
-    public Command bumpKicker() {
-        return Commands.parallel(
-                wristCommands
-                        .jerk()
-                        .withTimeout(0.2)
-                        .andThen(wristCommands.retract().withTimeout(0.1)));
-    }
-
-    public Command intakeFast() {
-        return Commands.parallel(wristCommands.deploy(), rollerCommands.intakeFast())
-                .deadlineFor(requestSetState(SuperstructureState.INTAKING)
-                );
+                        wristCommands.deploy(),
+                        // rollerCommands.intakeSpeedScale(robotTracker::getIntakeDirectionSpeed),
+                        rollerCommands.intake())
+                .deadlineFor(requestSetState(SuperstructureState.INTAKING));
     }
 
     public Command retractIntake() {

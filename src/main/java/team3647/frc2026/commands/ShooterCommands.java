@@ -5,18 +5,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.DoubleSupplier;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
-import team3647.lib.tunables.TunableNumber;
 
 public class ShooterCommands {
     ShooterLeft shooterOne;
     ShooterRight shooterTwo;
-    TunableNumber leftVel, rightVel;
-    TunableNumber shootSpeed;
 
     public ShooterCommands(ShooterLeft shooterOne, ShooterRight shooterTwo) {
         this.shooterOne = shooterOne;
         this.shooterTwo = shooterTwo;
-        shootSpeed = new TunableNumber("shoot speed", 15);
     }
 
     public Command setOpenLoop(double output) {
@@ -46,16 +42,6 @@ public class ShooterCommands {
                 () -> {
                     shooterOne.setVelocityVoltage(vel.getAsDouble());
                     shooterTwo.setVelocityVoltage(vel.getAsDouble());
-                },
-                shooterOne,
-                shooterTwo);
-    }
-
-    public Command shootTunable() {
-        return Commands.run(
-                () -> {
-                    shooterOne.setVelocityVoltage(shootSpeed.get());
-                    shooterTwo.setVelocityVoltage(shootSpeed.get());
                 },
                 shooterOne,
                 shooterTwo);

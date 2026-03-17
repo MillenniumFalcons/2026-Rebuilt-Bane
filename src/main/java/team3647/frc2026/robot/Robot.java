@@ -5,7 +5,6 @@
 package team3647.frc2026.robot;
 
 import com.ctre.phoenix6.SignalLogger;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -14,7 +13,6 @@ import edu.wpi.first.wpilibj.RuntimeType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 import org.ironmaple.simulation.SimulatedArena;
 import org.littletonrobotics.junction.AutoLogOutputManager;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -60,8 +58,8 @@ public class Robot extends LoggedRobot {
             } else {
                 setUseTiming(true);
                 // Force a specific folder for Sim logs
-                String simLogPath = "sim_logs"; 
-                Logger.addDataReceiver(new WPILOGWriter(simLogPath)); 
+                String simLogPath = "sim_logs";
+                Logger.addDataReceiver(new WPILOGWriter(simLogPath));
                 Logger.addDataReceiver(new NT4Publisher());
             }
         }

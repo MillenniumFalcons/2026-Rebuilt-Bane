@@ -48,7 +48,7 @@ public class ShooterConstants {
             kWheelRotationMeters / GlobalConstants.kFalconTicksPerRotation * kGearboxReduction;
 
     public static final double kNominalVoltage = 11.0;
-    public static final double kMaxCurrent = 100.0;
+    public static final double kMaxCurrent = 70.0;
 
     // feedforward from sysid left shooter
     public static final double kS = 0.0;
@@ -93,11 +93,6 @@ public class ShooterConstants {
         CurrentLimitsConfigs shooterOneCurrent = new CurrentLimitsConfigs();
         CurrentLimitsConfigs shooterTwoCurrent = new CurrentLimitsConfigs();
 
-        shooterOneCurrent.StatorCurrentLimit = 70.0;
-        shooterOneCurrent.StatorCurrentLimitEnable = true;
-        shooterTwoCurrent.StatorCurrentLimit = 70.0;
-        shooterTwoCurrent.StatorCurrentLimitEnable = true;
-
         // shooter one
         kShooterOneConfig.Slot0.kP = shooterOnekP;
         kShooterOneConfig.Slot0.kI = masterkI;
@@ -108,8 +103,7 @@ public class ShooterConstants {
 
         shooterOneMotor.NeutralMode = NeutralModeValue.Coast;
         shooterOneMotor.PeakReverseDutyCycle = 0;
-        shooterOneMotor.Inverted =
-                InvertedValue.Clockwise_Positive; // this is a random value CHANGE
+        shooterOneMotor.Inverted = InvertedValue.Clockwise_Positive;
 
         shooterOneCurrent.StatorCurrentLimitEnable = true;
         shooterOneCurrent.StatorCurrentLimit = kMaxCurrent;
@@ -124,8 +118,7 @@ public class ShooterConstants {
 
         shooterTwoMotor.NeutralMode = NeutralModeValue.Coast;
         shooterTwoMotor.PeakReverseDutyCycle = 0;
-        shooterTwoMotor.Inverted =
-                InvertedValue.CounterClockwise_Positive; // this is a random value CHANGE
+        shooterTwoMotor.Inverted = InvertedValue.CounterClockwise_Positive;
 
         shooterTwoCurrent.StatorCurrentLimitEnable = true;
         shooterTwoCurrent.StatorCurrentLimit = kMaxCurrent;

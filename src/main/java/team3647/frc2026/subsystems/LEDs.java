@@ -31,7 +31,7 @@
 //     public LEDs(CANdle candle, Supplier<SuperstructureState> stateSupplier) {
 //         this.candle = candle;
 //         this.stateSupplier = stateSupplier;
-        
+
 //     }
 
 //     public void setAnimation(ControlRequest animation) {

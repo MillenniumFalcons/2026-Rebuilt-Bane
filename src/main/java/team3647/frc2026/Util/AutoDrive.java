@@ -64,20 +64,23 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public boolean rotAligned() {
         final Pose2d robotPose = getPose();
         Rotation2d angleToTarget =
-                wantedMode == DriveMode.SHOOT_ON_THE_MOVE
+                (wantedMode == DriveMode.SHOOT_ON_THE_MOVE || wantedMode == DriveMode.SHOOT)
                         ? targeting.shootAtHubOnTheMove().rotation
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
         return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 7.0;
     }
 
     public double getHoodAngle() {
-        return wantedMode == DriveMode.SHOOT_ON_THE_MOVE
-                ? targeting.shootAtHubOnTheMove().pivot
-                : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
+        if (enabled) {
+            return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE || wantedMode == DriveMode.SHOOT)
+                    ? targeting.shootAtHubOnTheMove().pivot
+                    : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
+        }
+        return 72;
     }
 
     public double getShotSpeed() {
-        return wantedMode == DriveMode.SHOOT_ON_THE_MOVE
+        return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE || wantedMode == DriveMode.SHOOT)
                 ? targeting.shootAtHubOnTheMove().shootSpeed
                 : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).shootSpeed;
     }

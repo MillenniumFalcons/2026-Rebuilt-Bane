@@ -28,7 +28,7 @@ import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.IndexerConstants;
 import team3647.frc2026.constants.KickerConstants;
-//import team3647.frc2026.constants.LEDConstants;
+// import team3647.frc2026.constants.LEDConstants;
 import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
@@ -39,7 +39,7 @@ import team3647.frc2026.subsystems.Climb;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
 import team3647.frc2026.subsystems.Kicker;
-//import team3647.frc2026.subsystems.LEDs;
+// import team3647.frc2026.subsystems.LEDs;
 import team3647.frc2026.subsystems.Rollers;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
@@ -56,7 +56,6 @@ import team3647.lib.GroupPrinter;
 import team3647.lib.inputs.Joysticks;
 import team3647.lib.team9442.AllianceChecker;
 import team3647.lib.team9442.AutoChooser;
-import team3647.lib.tunables.TunableNumber;
 import team3647.lib.vision.AprilTagLimelight;
 import team3647.lib.vision.VisionController;
 
@@ -65,8 +64,6 @@ public class RobotContainer {
     public final Joysticks coController = new Joysticks(1);
 
     public Field2d smartDashboardField = new Field2d();
-
-    public TunableNumber hoodAngle = new TunableNumber("hood angle", 72);
 
     public RobotContainer() {
         configureBindings();
@@ -96,7 +93,7 @@ public class RobotContainer {
     private void configureAllianceObservers() {
         allianceChecker.registerObservers(
                 swerveCommands, swerve, autoCommands, autoChooser, autoDrive, robotTracker
-                //, leds
+                // , leds
                 );
     }
 
@@ -131,33 +128,29 @@ public class RobotContainer {
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(superstructure.retractIntake());
-        mainController.leftTrigger.whileTrue(superstructure.intakeFast());
-        mainController.leftTrigger.onFalse(superstructure.retractIntake());
-
         // shooting
+        mainController.rightTrigger.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
         mainController.rightTrigger.whileTrue(superstructure.shoot());
-        mainController.buttonB.whileTrue(superstructure.bumpShot());
         mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        // unjam
         mainController.rightBumper.whileTrue(superstructure.reverse());
-        mainController.buttonA.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
-        mainController.buttonY.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
-
+        // bump shot
+        mainController.buttonB.whileTrue(superstructure.bumpShot());
+        // feed
+        mainController.leftTrigger.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
+        mainController.leftTrigger.whileTrue(superstructure.shoot());
+        mainController.leftTrigger.whileTrue(autoDrive.enableAutoDrive());
+        mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
+        // pre align + spin up (no indexing)
         mainController.dPadRight.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT));
         mainController.dPadRight.whileTrue(autoDrive.enableAutoDrive());
         mainController.dPadRight.whileTrue(superstructure.prep());
         mainController.dPadRight.onFalse(autoDrive.disableAutoDrive());
-        mainController.dPadRight.onFalse(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
 
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
-        coController.leftBumper.whileTrue(superstructure.bumpKicker());
-        // coController.buttonA.onTrue(hood.setEncoderAngleCANcoder());
-
-        // mainController.leftTrigger.whileTrue(superstructure.shotTuning());
-        // mainController.leftTrigger.whileTrue(autoDrive.enableAutoDrive());
-        // mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
@@ -322,7 +315,7 @@ public class RobotContainer {
                     autoDrive::getShotSpeed,
                     autoDrive::rotAligned);
 
-    //public final LEDs leds = new LEDs(LEDConstants.m_candle, superstructure::getState);
+    // public final LEDs leds = new LEDs(LEDConstants.m_candle, superstructure::getState);
 
     // cams (need to change transforms)
     AprilTagLimelight rightCam =
