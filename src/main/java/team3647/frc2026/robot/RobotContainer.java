@@ -28,6 +28,7 @@ import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.IndexerConstants;
 import team3647.frc2026.constants.KickerConstants;
+//import team3647.frc2026.constants.LEDConstants;
 import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
@@ -38,6 +39,7 @@ import team3647.frc2026.subsystems.Climb;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
 import team3647.frc2026.subsystems.Kicker;
+//import team3647.frc2026.subsystems.LEDs;
 import team3647.frc2026.subsystems.Rollers;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
@@ -93,7 +95,9 @@ public class RobotContainer {
 
     private void configureAllianceObservers() {
         allianceChecker.registerObservers(
-                swerveCommands, swerve, autoCommands, autoChooser, autoDrive, robotTracker);
+                swerveCommands, swerve, autoCommands, autoChooser, autoDrive, robotTracker
+                //, leds
+                );
     }
 
     private void configureSmartDashboardLogging() {
@@ -318,8 +322,7 @@ public class RobotContainer {
                     autoDrive::getShotSpeed,
                     autoDrive::rotAligned);
 
-    // private final LEDTriggers triggers = new LEDTriggers(superstructure);
-    // private final LEDs leds = new LEDs(LEDConstants.m_candle, triggers);
+    //public final LEDs leds = new LEDs(LEDConstants.m_candle, superstructure::getState);
 
     // cams (need to change transforms)
     AprilTagLimelight rightCam =

@@ -45,6 +45,9 @@ public class Superstructure {
     public final BooleanSupplier atHoodAngle;
     public final Trigger readyToShoot;
 
+    public SuperstructureState currentState = SuperstructureState.NONE;
+
+
     public Superstructure(
             ShooterLeft shooterOne,
             ShooterRight shooterTwo,
@@ -79,6 +82,49 @@ public class Superstructure {
         this.atShotVel = () -> shooterCommands.isAtVelocity(this.shotSpeed, 1.0);
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
+
+        this.currentState = SuperstructureState.NONE;
+    }
+
+    //FOR LEDS
+    public enum SuperstructureState {
+        NONE,
+        INTAKING,
+        PREPPING,
+        SHOOTING;
+
+        // basically everytime you want to change the leds, it only sets the state if it has higher priority
+        // this is to avoid trying to set the state to two different things repeatedly
+        public final int priority;
+        SuperstructureState() {
+            this.priority = ordinal();
+        }
+    }
+
+    public SuperstructureState getState() {
+        return currentState;
+    }
+
+    /**
+     * Use this with deadlineFor() to set the state of the superstructure for the duration of a command,
+     * it will only change the state if the new state has higher or equal priority than the current state.
+     * After the command ends, it will reset the state to NONE.
+     */
+    public Command requestSetState(SuperstructureState newState) {
+        return Commands.run(
+                () -> {
+                    if (newState.priority >= currentState.priority) {
+                        currentState = newState;
+                    }
+                })
+                .finallyDo(
+                        () -> {        
+                                currentState = SuperstructureState.NONE;
+                        });
+    }
+
+    public Command setStateNoneOverride() {
+        return Commands.run(() -> currentState = SuperstructureState.NONE);
     }
 
     public Angle getIntakeAngle() {
@@ -143,17 +189,23 @@ public class Superstructure {
     }
 
     public Command prep() {
-        return shooterCommands.setVelocity(shotSpeed);
+        return shooterCommands.setVelocity(shotSpeed)
+                .deadlineFor(requestSetState(SuperstructureState.PREPPING)
+                );
     }
 
     public Command prepForBump() {
-        return shooterCommands.setVelocity(() -> 13.5);
+        return shooterCommands.setVelocity(() -> 13.5)
+                .deadlineFor(requestSetState(SuperstructureState.PREPPING)
+                );
     }
 
     public Command indexWhenReady() {
         return Commands.sequence(
                 Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
-                index().onlyWhile(readyToShoot).repeatedly());
+                index().onlyWhile(readyToShoot).repeatedly()
+                        .deadlineFor(requestSetState(SuperstructureState.SHOOTING))
+                );
     }
 
     public Command index() {
@@ -180,7 +232,9 @@ public class Superstructure {
         return Commands.parallel(
                 wristCommands.deploy(),
                 // rollerCommands.intakeSpeedScale(robotTracker::getIntakeDirectionSpeed),
-                rollerCommands.intake());
+                rollerCommands.intake())
+                .deadlineFor(requestSetState(SuperstructureState.INTAKING)
+                );
     }
 
     public Command bumpKicker() {
@@ -192,7 +246,9 @@ public class Superstructure {
     }
 
     public Command intakeFast() {
-        return Commands.parallel(wristCommands.deploy(), rollerCommands.intakeFast());
+        return Commands.parallel(wristCommands.deploy(), rollerCommands.intakeFast())
+                .deadlineFor(requestSetState(SuperstructureState.INTAKING)
+                );
     }
 
     public Command retractIntake() {
