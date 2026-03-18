@@ -16,7 +16,7 @@ public class KickerConstants {
     static {
         kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 40.0;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = 50.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         kMaster.getConfigurator().apply(kMasterConfig);

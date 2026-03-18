@@ -46,10 +46,10 @@ public class HoodConstants {
         hoodAngleMap.put(2.0, 67.0);
         hoodAngleMap.put(2.5, 65.0);
         hoodAngleMap.put(3.0, 64.0);
-        hoodAngleMap.put(3.5, 63.0);
-        hoodAngleMap.put(4.0, 62.0);
-        hoodAngleMap.put(4.5, 61.0);
-        hoodAngleMap.put(5.0, 59.0);
+        hoodAngleMap.put(3.5, 62.0);
+        hoodAngleMap.put(4.0, 60.0);
+        hoodAngleMap.put(4.5, 59.0);
+        hoodAngleMap.put(5.0, 58.0);
 
         kMasterConfig.Slot0.withKP(125); // change these values
         kMasterConfig.Slot0.withKI(0);
@@ -76,7 +76,7 @@ public class HoodConstants {
 
         // cancoder configs
         kCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        kCanCoderConfig.MagnetSensor.MagnetOffset = 0.2 + 0.034;
+        kCanCoderConfig.MagnetSensor.MagnetOffset = 0.2 + 0.037;
         kCanCoder.getConfigurator().apply(kCanCoderConfig);
     }
 }

@@ -30,7 +30,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(6.0, 0, 0.05, new Constraints(10, 10));
+            new ProfiledPIDController(6.0, 0, 0, new Constraints(20, 20));
 
     private Alliance color = Alliance.Red;
 
@@ -96,9 +96,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public Command enableAutoDrive() {
         return Commands.runOnce(
                 () -> {
-                    this.profiledRotController.reset(
-                            getOdoRot().getRadians(),
-                            chassisSpeedsSupplier.get().omegaRadiansPerSecond);
+                    this.profiledRotController.reset(getOdoRot().getRadians());
                     this.enabled = true;
                 });
     }
