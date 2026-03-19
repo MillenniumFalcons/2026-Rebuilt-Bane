@@ -87,6 +87,8 @@ public class Superstructure {
         this.currentState = SuperstructureState.NONE;
     }
 
+    
+
     // FOR LEDS
     public enum SuperstructureState {
         NONE,
@@ -125,6 +127,13 @@ public class Superstructure {
                         () -> {
                                 currentState = SuperstructureState.NONE;
                             });
+    }
+
+    public Command requestStateOnce(SuperstructureState newState) {
+        return Commands.runOnce(
+                () -> {if (newState.priority >= currentState.priority) {
+                        currentState = newState;
+                }});
     }
 
     public Command setStateOnce(SuperstructureState state){
@@ -184,7 +193,8 @@ public class Superstructure {
     }
 
     public Command shoot() {
-        return Commands.parallel(logEverything(), prep(), retractIntake(), indexWhenReady());
+        return Commands.parallel(logEverything(), prep(), retractIntake(), indexWhenReady())
+                .finallyDo(() -> currentState = SuperstructureState.NONE);
     }
 
     public Command bumpShot() {
@@ -199,21 +209,21 @@ public class Superstructure {
     public Command prep() {
         return shooterCommands
                 .setVelocity(shotSpeed)
-                .deadlineFor(requestSetState(SuperstructureState.PREPPING));
+                .deadlineFor(requestStateOnce(SuperstructureState.PREPPING));
     }
 
     public Command prepForBump() {
         return shooterCommands
                 .setVelocity(() -> 13.5)
-                .deadlineFor(requestSetState(SuperstructureState.PREPPING));
+                .deadlineFor(requestStateOnce(SuperstructureState.PREPPING));
     }
 
     public Command indexWhenReady() {
         return Commands.sequence(
                 Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
                 index().onlyWhile(readyToShoot)
-                        .repeatedly())
-                        .deadlineFor(requestSetState(SuperstructureState.SHOOTING));
+                        .repeatedly()
+                        .deadlineFor(requestStateOnce(SuperstructureState.SHOOTING)));
     }
 
     public Command index() {
@@ -235,7 +245,6 @@ public class Superstructure {
     }
 
     public Command retractIntake() {
-        return Commands.parallel(wristCommands.retract())
-                .deadlineFor(setStateNoneOverride());
+        return Commands.parallel(wristCommands.retract());
     }
 }

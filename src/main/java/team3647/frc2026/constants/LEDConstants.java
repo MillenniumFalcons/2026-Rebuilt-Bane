@@ -56,7 +56,7 @@ public class LEDConstants {
                     .withFrameRate(800);
 
     public static final SolidColor SOLID_BLUE =
-            new SolidColor(0, LEDCOUNT).withColor(new RGBWColor(0, 255, 0));
+            new SolidColor(0, LEDCOUNT).withColor(new RGBWColor(0, 0, 255));
 
     public static final SolidColor SOLID_RED =
             new SolidColor(0, LEDCOUNT).withColor(new RGBWColor(255, 0, 0));
