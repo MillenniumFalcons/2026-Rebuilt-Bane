@@ -1,33 +1,30 @@
 package team3647.frc2026.subsystems;
+
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.EmptyControl;
 import com.ctre.phoenix6.hardware.CANdle;
-
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle.Control;
 import java.util.function.Supplier;
 import team3647.frc2026.constants.LEDConstants;
 import team3647.frc2026.subsystems.Superstructure.SuperstructureState;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
 
-public class LEDs extends VirtualSubsystem implements AllianceObserver{
+public class LEDs extends VirtualSubsystem implements AllianceObserver {
 
     CANdle candle;
     ControlRequest masterRequest = new EmptyControl();
     Supplier<SuperstructureState> stateSupplier;
     ControlRequest defaultAnimation = LEDConstants.SOLID_RED;
-    Map<SuperstructureState, ControlRequest> stateAnimations 
-        = new HashMap<>(Map.of(
-                SuperstructureState.NONE, LEDConstants.SOLID_RED,
-                SuperstructureState.INTAKING, LEDConstants.FADE_PURPLE,
-                SuperstructureState.PREPPING, LEDConstants.STROBE_ORANGE,
-                SuperstructureState.SHOOTING, LEDConstants.FADE_GREEN
-    ));
-            
+    Map<SuperstructureState, ControlRequest> stateAnimations =
+            new HashMap<>(
+                    Map.of(
+                            SuperstructureState.NONE, LEDConstants.SOLID_RED,
+                            SuperstructureState.INTAKING, LEDConstants.FADE_PURPLE,
+                            SuperstructureState.PREPPING, LEDConstants.STROBE_ORANGE,
+                            SuperstructureState.SHOOTING, LEDConstants.FADE_GREEN));
 
     public LEDs(CANdle candle, Supplier<SuperstructureState> stateSupplier) {
         this.candle = candle;

@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.commands.HoodCommands;
@@ -117,18 +116,21 @@ public class Superstructure {
      */
     public Command requestSetState(SuperstructureState newState) {
         return Commands.startEnd(
-                        () -> {
-                            if (newState.priority >= currentState.priority) {
-                                currentState = newState;
-                            }
-                        },
-                        () -> {
-                                currentState = SuperstructureState.NONE;
-                            });
+                () -> {
+                    if (newState.priority >= currentState.priority) {
+                        currentState = newState;
+                    }
+                },
+                () -> {
+                    currentState = SuperstructureState.NONE;
+                });
     }
 
-    public Command setStateOnce(SuperstructureState state){
-        return Commands.runOnce(() -> {currentState = state;});
+    public Command setStateOnce(SuperstructureState state) {
+        return Commands.runOnce(
+                () -> {
+                    currentState = state;
+                });
     }
 
     public Command setStateNoneOverride() {
@@ -210,10 +212,9 @@ public class Superstructure {
 
     public Command indexWhenReady() {
         return Commands.sequence(
-                Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
-                index().onlyWhile(readyToShoot)
-                        .repeatedly())
-                        .deadlineFor(requestSetState(SuperstructureState.SHOOTING));
+                        Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
+                        index().onlyWhile(readyToShoot).repeatedly())
+                .deadlineFor(requestSetState(SuperstructureState.SHOOTING));
     }
 
     public Command index() {
@@ -235,7 +236,6 @@ public class Superstructure {
     }
 
     public Command retractIntake() {
-        return Commands.parallel(wristCommands.retract())
-                .deadlineFor(setStateNoneOverride());
+        return Commands.parallel(wristCommands.retract()).deadlineFor(setStateNoneOverride());
     }
 }

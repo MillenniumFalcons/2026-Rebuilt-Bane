@@ -29,21 +29,6 @@ import team3647.lib.team9442.AllianceObserver;
 
 public class AutoCommands implements AllianceObserver {
 
-    // private final Rectangle2d BlueLSource =
-    //         new Rectangle2d(
-    //                 new Translation2d(0, FieldConstants.kFieldLengthM), new Translation2d(4,
-    // 5.5));
-    // private final Rectangle2d BlueRSource =
-    //         new Rectangle2d(Translation2d.kZero, new Translation2d(4, 2.5));
-    // private final Rectangle2d RedLSource =
-    //         new Rectangle2d(
-    //                 AllianceFlip.flip(new Translation2d(0, FieldConstants.kFieldLengthM)),
-    //                 AllianceFlip.flip(new Translation2d(4, 5.5)));
-    // private final Rectangle2d RedRSource =
-    //         new Rectangle2d(
-    //                 AllianceFlip.flip(Translation2d.kZero),
-    //                 AllianceFlip.flip(new Translation2d(4, 2.5)));
-
     private final PIDController rotController = new PIDController(5.0, 0, 0.1);
 
     //     TunablePID tunableRotController = new TunablePID("Auto/rot", rotController);
@@ -53,22 +38,6 @@ public class AutoCommands implements AllianceObserver {
     // preload only
     public Command preloadAuto() {
         return Commands.parallel(superstructure.shoot(), autoAlign());
-    }
-
-    // mid rush outpost
-
-    private final String midRushOutpost = "MidRushOutpost";
-
-    public Command midRushOutpostAuto() {
-        return Commands.sequence(
-                midRushSegmentOne(midRushOutpost),
-                midRushSegmentTwo(midRushOutpost),
-                Commands.parallel(superstructure.shoot(), autoAlign()).withTimeout(5),
-                followChoreoPath(getTrajSplit(midRushOutpost, 2)),
-                superstructure.shooterCommands.kill(),
-                superstructure.indexerCommands.kill(),
-                Commands.run(() -> swerve.drive(0, 0, 0)).withTimeout(0.02),
-                outpostAuto());
     }
 
     // mid rushes
@@ -100,28 +69,6 @@ public class AutoCommands implements AllianceObserver {
     public Command doubleMidRushAuto(String pathname) {
         return Commands.sequence(
                 midRushAuto(pathname).withTimeout(10.0), midRushAuto(pathname + "Close"));
-    }
-
-    // double mid rush circle
-    public Command doubleMidRushCircleAuto(String pathname) {
-        return Commands.sequence(
-                midRushAuto(pathname).withTimeout(10.0), midRushAuto(pathname + "Circle"));
-    }
-
-    // outpost
-    private final String outpost = "Outpost";
-
-    public Command outpostAuto() {
-        return Commands.sequence(
-                // superstructure.bumpKicker().withTimeout(0.35),
-                Commands.deadline(
-                                followChoreoPath(getTrajSplit(outpost, 0)), superstructure.intake())
-                        .withTimeout(3),
-                Commands.run(() -> swerve.drive(0, 0, 0))
-                        .withTimeout(1.5)
-                        .alongWith(superstructure.rollerCommands.intake().withTimeout(1.5)),
-                followChoreoPath(getTrajSplit(outpost, 1)),
-                Commands.parallel(superstructure.shoot(), autoAlign()));
     }
 
     public Command autoAlign() {
@@ -275,7 +222,6 @@ public class AutoCommands implements AllianceObserver {
     }
 
     public boolean isRed() {
-
         return this.isRed;
     }
 
@@ -288,35 +234,25 @@ public class AutoCommands implements AllianceObserver {
     final SwerveDrive swerve;
     final Superstructure superstructure;
     final Supplier<Twist2d> autoDriveVelocities;
-
-    public final AutoDrive autoDrive;
-
     public final BooleanSupplier hasTarget;
+    public final AutoDrive autoDrive;
 
     public List<AutoMode> redAutosList;
     public List<AutoMode> blueAutosList;
 
     public final AutoMode blueEmpty;
     public final AutoMode preloadBlue;
-    public final AutoMode midRushOutpostBlue;
     public final AutoMode rightMidRushBlue;
     public final AutoMode leftMidRushBlue;
     public final AutoMode rightDoubleMidRushBlue;
     public final AutoMode leftDoubleMidRushBlue;
-    public final AutoMode rightDoubleMidRushCircleBlue;
-    public final AutoMode leftDoubleMidRushCircleBlue;
-    public final AutoMode outpostBlue;
 
     public final AutoMode redEmpty;
     public final AutoMode preloadRed;
-    public final AutoMode midRushOutpostRed;
     public final AutoMode rightMidRushRed;
     public final AutoMode leftMidRushRed;
     public final AutoMode rightDoubleMidRushRed;
     public final AutoMode leftDoubleMidRushRed;
-    public final AutoMode rightDoubleMidRushCircleRed;
-    public final AutoMode leftDoubleMidRushCircleRed;
-    public final AutoMode outpostRed;
 
     public AutoCommands(
             SwerveDrive swerve,
@@ -334,19 +270,12 @@ public class AutoCommands implements AllianceObserver {
 
         this.hasTarget = hasTarget;
 
-        this.preloadBlue =
-                new AutoMode(preloadAuto(), getInitial(getTraj(outpost), Alliance.Blue), "preload");
-        this.preloadRed =
-                new AutoMode(preloadAuto(), getInitial(getTraj(outpost), Alliance.Red), "preload");
+        this.preloadBlue = new AutoMode(preloadAuto(), new Pose2d(), "preload");
+        this.preloadRed = new AutoMode(preloadAuto(), new Pose2d(), "preload");
 
         this.blueEmpty =
                 new AutoMode(
                         Commands.none(), Pose2d.kZero.rotateBy(Rotation2d.k180deg), "blue empty");
-        this.midRushOutpostBlue =
-                new AutoMode(
-                        midRushOutpostAuto(),
-                        getInitial(getTraj(midRushOutpost), Alliance.Blue),
-                        midRushOutpost);
         this.rightMidRushBlue =
                 new AutoMode(
                         midRushAuto(rightMidRush),
@@ -367,25 +296,8 @@ public class AutoCommands implements AllianceObserver {
                         doubleMidRushAuto(leftMidRush),
                         getInitial(getTraj(leftMidRush), Alliance.Blue),
                         "double" + leftMidRush);
-        this.rightDoubleMidRushCircleBlue =
-                new AutoMode(
-                        doubleMidRushCircleAuto(rightMidRush),
-                        getInitial(getTraj(rightMidRush), Alliance.Blue),
-                        "double" + rightMidRush + "Circle");
-        this.leftDoubleMidRushCircleBlue =
-                new AutoMode(
-                        doubleMidRushCircleAuto(leftMidRush),
-                        getInitial(getTraj(leftMidRush), Alliance.Blue),
-                        "double" + leftMidRush + "Circle");
-        this.outpostBlue =
-                new AutoMode(outpostAuto(), getInitial(getTraj(outpost), Alliance.Blue), outpost);
 
         this.redEmpty = new AutoMode(Commands.none(), Pose2d.kZero, "red empty");
-        this.midRushOutpostRed =
-                new AutoMode(
-                        midRushOutpostAuto(),
-                        getInitial(getTraj(midRushOutpost), Alliance.Red),
-                        midRushOutpost);
         this.rightMidRushRed =
                 new AutoMode(
                         midRushAuto(rightMidRush),
@@ -406,43 +318,23 @@ public class AutoCommands implements AllianceObserver {
                         doubleMidRushAuto(leftMidRush),
                         getInitial(getTraj(leftMidRush), Alliance.Red),
                         "double" + leftMidRush);
-        this.rightDoubleMidRushCircleRed =
-                new AutoMode(
-                        doubleMidRushCircleAuto(rightMidRush),
-                        getInitial(getTraj(rightMidRush), Alliance.Red),
-                        "double" + rightMidRush + "Circle");
-        this.leftDoubleMidRushCircleRed =
-                new AutoMode(
-                        doubleMidRushCircleAuto(leftMidRush),
-                        getInitial(getTraj(leftMidRush), Alliance.Red),
-                        "double" + leftMidRush + "Circle");
-        this.outpostRed =
-                new AutoMode(outpostAuto(), getInitial(getTraj(outpost), Alliance.Red), outpost);
 
         blueAutosList =
                 List.of(
                         blueEmpty,
                         rightDoubleMidRushBlue,
                         leftDoubleMidRushBlue,
-                        rightDoubleMidRushCircleBlue,
-                        leftDoubleMidRushCircleBlue,
                         preloadBlue,
-                        midRushOutpostBlue,
                         rightMidRushBlue,
-                        leftMidRushBlue,
-                        outpostBlue);
+                        leftMidRushBlue);
         redAutosList =
                 List.of(
                         redEmpty,
                         rightDoubleMidRushRed,
                         leftDoubleMidRushRed,
-                        rightDoubleMidRushCircleRed,
-                        leftDoubleMidRushCircleRed,
                         preloadRed,
-                        midRushOutpostRed,
                         rightMidRushRed,
-                        leftMidRushRed,
-                        outpostRed);
+                        leftMidRushRed);
     }
 
     public BooleanSupplier hasTarget() {
