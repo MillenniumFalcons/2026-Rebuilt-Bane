@@ -28,7 +28,7 @@ import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.IndexerConstants;
 import team3647.frc2026.constants.KickerConstants;
-// import team3647.frc2026.constants.LEDConstants;
+import team3647.frc2026.constants.LEDConstants;
 import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
@@ -39,7 +39,7 @@ import team3647.frc2026.subsystems.Climb;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
 import team3647.frc2026.subsystems.Kicker;
-// import team3647.frc2026.subsystems.LEDs;
+import team3647.frc2026.subsystems.LEDs;
 import team3647.frc2026.subsystems.Rollers;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
@@ -48,6 +48,7 @@ import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveReal;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveSim;
 import team3647.frc2026.subsystems.Wrist;
+import team3647.frc2026.subsystems.Superstructure.SuperstructureState;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.RobotTracker;
@@ -92,9 +93,7 @@ public class RobotContainer {
 
     private void configureAllianceObservers() {
         allianceChecker.registerObservers(
-                swerveCommands, swerve, autoCommands, autoChooser, autoDrive, robotTracker
-                // , leds
-                );
+                swerveCommands, swerve, autoCommands, autoChooser, autoDrive, robotTracker, leds);
     }
 
     private void configureSmartDashboardLogging() {
@@ -128,11 +127,15 @@ public class RobotContainer {
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(superstructure.retractIntake());
+        mainController.leftBumper.onTrue(superstructure.setStateOnce(SuperstructureState.INTAKING));
+        mainController.leftBumper.onFalse(superstructure.setStateNoneOverride());
         // shooting
         mainController.rightTrigger.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
         mainController.rightTrigger.whileTrue(superstructure.shoot());
         mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        mainController.rightTrigger.onFalse(superstructure.setStateNoneOverride());
+
         // unjam
         mainController.rightBumper.whileTrue(superstructure.reverse());
         // bump shot
@@ -315,7 +318,7 @@ public class RobotContainer {
                     autoDrive::getShotSpeed,
                     autoDrive::rotAligned);
 
-    // public final LEDs leds = new LEDs(LEDConstants.m_candle, superstructure::getState);
+    public final LEDs leds = new LEDs(LEDConstants.m_candle, superstructure::getState);
 
     // cams (need to change transforms)
     AprilTagLimelight rightCam =

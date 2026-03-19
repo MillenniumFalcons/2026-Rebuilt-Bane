@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
@@ -102,7 +104,9 @@ public class Superstructure {
         }
     }
 
+    @AutoLogOutput
     public SuperstructureState getState() {
+        Logger.recordOutput("Superstructure State", currentState);
         return currentState;
     }
 
@@ -118,14 +122,19 @@ public class Superstructure {
                                 currentState = newState;
                             }
                         })
-                .finallyDo(
-                        () -> {
-                            currentState = SuperstructureState.NONE;
-                        });
+                // .finallyDo(
+                //         () -> {
+                //             currentState = SuperstructureState.NONE;
+                        // })
+                        ;
+    }
+
+    public Command setStateOnce(SuperstructureState state){
+        return Commands.runOnce(() -> {currentState = state;});
     }
 
     public Command setStateNoneOverride() {
-        return Commands.run(() -> currentState = SuperstructureState.NONE);
+        return Commands.runOnce(() -> currentState = SuperstructureState.NONE);
     }
 
     public Angle getIntakeAngle() {
@@ -192,7 +201,7 @@ public class Superstructure {
     public Command prep() {
         return shooterCommands
                 .setVelocity(shotSpeed)
-                .deadlineFor(requestSetState(SuperstructureState.PREPPING));
+                .alongWith(setStateOnce(SuperstructureState.PREPPING));
     }
 
     public Command prepForBump() {
@@ -205,8 +214,8 @@ public class Superstructure {
         return Commands.sequence(
                 Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
                 index().onlyWhile(readyToShoot)
-                        .repeatedly()
-                        .deadlineFor(requestSetState(SuperstructureState.SHOOTING)));
+                        .repeatedly())
+                        .alongWith(setStateOnce(SuperstructureState.SHOOTING));
     }
 
     public Command index() {
@@ -224,10 +233,11 @@ public class Superstructure {
                         wristCommands.deploy(),
                         // rollerCommands.intakeSpeedScale(robotTracker::getIntakeDirectionSpeed),
                         rollerCommands.intake())
-                .deadlineFor(requestSetState(SuperstructureState.INTAKING));
+                .alongWith(setStateOnce(SuperstructureState.INTAKING));
     }
 
     public Command retractIntake() {
-        return Commands.parallel(wristCommands.retract());
+        return Commands.parallel(wristCommands.retract())
+                .alongWith(setStateNoneOverride());
     }
 }
