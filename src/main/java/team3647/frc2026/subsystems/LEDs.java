@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.CANdle;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle.Control;
 import java.util.function.Supplier;
@@ -19,18 +20,18 @@ public class LEDs extends VirtualSubsystem implements AllianceObserver{
     ControlRequest masterRequest = new EmptyControl();
     Supplier<SuperstructureState> stateSupplier;
     ControlRequest defaultAnimation = LEDConstants.SOLID_RED;
-    Map<SuperstructureState, ControlRequest> stateAnimations;
+    Map<SuperstructureState, ControlRequest> stateAnimations 
+        = new HashMap<>(Map.of(
+                SuperstructureState.NONE, LEDConstants.SOLID_RED,
+                SuperstructureState.INTAKING, LEDConstants.FADE_PURPLE,
+                SuperstructureState.PREPPING, LEDConstants.STROBE_ORANGE,
+                SuperstructureState.SHOOTING, LEDConstants.FADE_GREEN
+    ));
             
 
     public LEDs(CANdle candle, Supplier<SuperstructureState> stateSupplier) {
         this.candle = candle;
         this.stateSupplier = stateSupplier;
-        stateAnimations = Map.of(
-                    SuperstructureState.NONE, LEDConstants.SOLID_RED,
-                    SuperstructureState.INTAKING, LEDConstants.FADE_PURPLE,
-                    SuperstructureState.PREPPING, LEDConstants.STROBE_ORANGE,
-                    SuperstructureState.SHOOTING, LEDConstants.FADE_GREEN
-                    );
     }
 
     public void setAnimation(ControlRequest animation) {
@@ -58,5 +59,6 @@ public class LEDs extends VirtualSubsystem implements AllianceObserver{
         } else {
             defaultAnimation = LEDConstants.SOLID_BLUE;
         }
+        stateAnimations.put(SuperstructureState.NONE, defaultAnimation);
     }
 }

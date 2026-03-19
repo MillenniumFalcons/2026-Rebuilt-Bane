@@ -44,11 +44,11 @@ import team3647.frc2026.subsystems.Rollers;
 import team3647.frc2026.subsystems.ShooterLeft;
 import team3647.frc2026.subsystems.ShooterRight;
 import team3647.frc2026.subsystems.Superstructure;
+import team3647.frc2026.subsystems.Superstructure.SuperstructureState;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveReal;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveSim;
 import team3647.frc2026.subsystems.Wrist;
-import team3647.frc2026.subsystems.Superstructure.SuperstructureState;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.RobotTracker;
@@ -127,14 +127,12 @@ public class RobotContainer {
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(superstructure.retractIntake());
-        mainController.leftBumper.onTrue(superstructure.setStateOnce(SuperstructureState.INTAKING));
-        mainController.leftBumper.onFalse(superstructure.setStateNoneOverride());
+
         // shooting
         mainController.rightTrigger.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
         mainController.rightTrigger.whileTrue(superstructure.shoot());
         mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
-        mainController.rightTrigger.onFalse(superstructure.setStateNoneOverride());
 
         // unjam
         mainController.rightBumper.whileTrue(superstructure.reverse());
