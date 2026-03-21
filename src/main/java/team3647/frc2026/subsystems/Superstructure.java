@@ -86,8 +86,6 @@ public class Superstructure {
         this.currentState = SuperstructureState.NONE;
     }
 
-    
-
     // FOR LEDS
     public enum SuperstructureState {
         NONE,
@@ -130,13 +128,18 @@ public class Superstructure {
 
     public Command requestStateOnce(SuperstructureState newState) {
         return Commands.runOnce(
-                () -> {if (newState.priority >= currentState.priority) {
+                () -> {
+                    if (newState.priority >= currentState.priority) {
                         currentState = newState;
-                }});
+                    }
+                });
     }
 
-    public Command setStateOnce(SuperstructureState state){
-        return Commands.runOnce(() -> {currentState = state;});
+    public Command setStateOnce(SuperstructureState state) {
+        return Commands.runOnce(
+                () -> {
+                    currentState = state;
+                });
     }
 
     public Command setStateNoneOverride() {

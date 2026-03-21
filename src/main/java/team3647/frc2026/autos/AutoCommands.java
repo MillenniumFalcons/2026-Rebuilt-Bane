@@ -32,7 +32,7 @@ public class AutoCommands extends AutoPathFollowers {
         return Commands.sequence(
                 // superstructure.bumpKicker().withTimeout(0.35),
                 midRushSegmentOne(pathname),
-                midRushSegmentTwo(pathname),
+                midRushSegmentTwo(pathname).withTimeout(4),
                 Commands.parallel(superstructure.shoot(), autoAlign()));
     }
 
@@ -55,6 +55,12 @@ public class AutoCommands extends AutoPathFollowers {
                 midRushAuto(pathname).withTimeout(11.0), midRushAuto(pathname + "Close"));
     }
 
+    // double mid rush loops
+    public Command doubleMidRushLoopAuto(String pathname) {
+        return Commands.sequence(
+                midRushAuto(pathname).withTimeout(11.0), midRushAuto(pathname + "CloseLoop"));
+    }
+
     public List<AutoMode> redAutosList;
     public List<AutoMode> blueAutosList;
 
@@ -64,6 +70,8 @@ public class AutoCommands extends AutoPathFollowers {
     public final AutoMode leftMidRushBlue;
     public final AutoMode rightDoubleMidRushBlue;
     public final AutoMode leftDoubleMidRushBlue;
+    public final AutoMode rightDoubleMidRushLoopBlue;
+    public final AutoMode leftDoubleMidRushLoopBlue;
 
     public final AutoMode redEmpty;
     public final AutoMode preloadRed;
@@ -71,6 +79,8 @@ public class AutoCommands extends AutoPathFollowers {
     public final AutoMode leftMidRushRed;
     public final AutoMode rightDoubleMidRushRed;
     public final AutoMode leftDoubleMidRushRed;
+    public final AutoMode rightDoubleMidRushLoopRed;
+    public final AutoMode leftDoubleMidRushLoopRed;
 
     public AutoCommands(
             SwerveDrive swerve,
@@ -106,6 +116,16 @@ public class AutoCommands extends AutoPathFollowers {
                         doubleMidRushAuto(leftMidRush),
                         getInitial(getTraj(leftMidRush), Alliance.Blue),
                         "double" + leftMidRush);
+        this.rightDoubleMidRushLoopBlue =
+                new AutoMode(
+                        doubleMidRushLoopAuto(rightMidRush),
+                        getInitial(getTraj(rightMidRush), Alliance.Blue),
+                        "doubleLoop" + rightMidRush);
+        this.leftDoubleMidRushLoopBlue =
+                new AutoMode(
+                        doubleMidRushLoopAuto(leftMidRush),
+                        getInitial(getTraj(leftMidRush), Alliance.Blue),
+                        "doubleLoop" + leftMidRush);
 
         this.redEmpty = new AutoMode(Commands.none(), Pose2d.kZero, "red empty");
         this.rightMidRushRed =
@@ -128,12 +148,24 @@ public class AutoCommands extends AutoPathFollowers {
                         doubleMidRushAuto(leftMidRush),
                         getInitial(getTraj(leftMidRush), Alliance.Red),
                         "double" + leftMidRush);
+        this.rightDoubleMidRushLoopRed =
+                new AutoMode(
+                        doubleMidRushLoopAuto(rightMidRush),
+                        getInitial(getTraj(rightMidRush), Alliance.Red),
+                        "doubleLoop" + rightMidRush);
+        this.leftDoubleMidRushLoopRed =
+                new AutoMode(
+                        doubleMidRushLoopAuto(leftMidRush),
+                        getInitial(getTraj(leftMidRush), Alliance.Red),
+                        "doubleLoop" + leftMidRush);
 
         blueAutosList =
                 List.of(
                         blueEmpty,
                         rightDoubleMidRushBlue,
                         leftDoubleMidRushBlue,
+                        rightDoubleMidRushLoopBlue,
+                        leftDoubleMidRushLoopBlue,
                         preloadBlue,
                         rightMidRushBlue,
                         leftMidRushBlue);
@@ -142,6 +174,8 @@ public class AutoCommands extends AutoPathFollowers {
                         redEmpty,
                         rightDoubleMidRushRed,
                         leftDoubleMidRushRed,
+                        rightDoubleMidRushLoopRed,
+                        leftDoubleMidRushLoopRed,
                         preloadRed,
                         rightMidRushRed,
                         leftMidRushRed);
