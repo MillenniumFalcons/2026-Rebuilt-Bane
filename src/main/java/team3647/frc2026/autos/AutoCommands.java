@@ -52,13 +52,17 @@ public class AutoCommands extends AutoPathFollowers {
     // double mid rushes
     public Command doubleMidRushAuto(String pathname) {
         return Commands.sequence(
-                midRushAuto(pathname).withTimeout(11.0), midRushAuto(pathname + "Close"));
+                midRushAuto(pathname).withTimeout(9.5),
+                superstructure.retractIntake().withTimeout(0.1),
+                midRushAuto(pathname + "Close"));
     }
 
     // double mid rush loops
     public Command doubleMidRushLoopAuto(String pathname) {
         return Commands.sequence(
-                midRushAuto(pathname).withTimeout(11.0), midRushAuto(pathname + "CloseLoop"));
+                midRushAuto(pathname).withTimeout(9.5),
+                superstructure.retractIntake().withTimeout(0.1),
+                midRushAuto(pathname + "CloseLoop"));
     }
 
     public List<AutoMode> redAutosList;

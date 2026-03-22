@@ -150,6 +150,10 @@ public class Superstructure {
         return wantedIntakeAngle;
     }
 
+    public Command feed() {
+        return Commands.sequence(Commands.waitSeconds(0.75), Commands.parallel(deployIntake(), reverse()));
+    }
+
     public Command logEverything() {
         return Commands.parallel(
                 Commands.run(
@@ -195,7 +199,15 @@ public class Superstructure {
     }
 
     public Command shoot() {
-        return Commands.parallel(logEverything(), prep(), retractIntake(), indexWhenReady())
+        return Commands.parallel(
+                        logEverything(),
+                        prep(),
+                        Commands.sequence(
+                                deployIntake()
+                                        .until(readyToShoot)
+                                        .andThen(Commands.waitSeconds(1.25)),
+                                retractIntake()),
+                        indexWhenReady())
                 .finallyDo(() -> currentState = SuperstructureState.NONE);
     }
 
@@ -242,11 +254,16 @@ public class Superstructure {
         return Commands.parallel(
                         wristCommands.deploy(),
                         // rollerCommands.intakeSpeedScale(robotTracker::getIntakeDirectionSpeed),
-                        rollerCommands.intake())
+                        rollerCommands.intake(),
+                        kickerCommands.jamProtect())
                 .deadlineFor(requestSetState(SuperstructureState.INTAKING));
     }
 
     public Command retractIntake() {
         return Commands.parallel(wristCommands.retract());
+    }
+
+    public Command deployIntake() {
+        return Commands.parallel(wristCommands.deploy());
     }
 }

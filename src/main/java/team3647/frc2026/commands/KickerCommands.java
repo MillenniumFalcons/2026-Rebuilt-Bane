@@ -16,7 +16,11 @@ public class KickerCommands {
     }
 
     public Command reverse() {
-        return Commands.run(() -> kicker.setOpenLoop(-0.5), kicker);
+        return Commands.run(() -> kicker.setOpenLoop(-0.75), kicker);
+    }
+
+    public Command jamProtect() {
+        return Commands.run(() -> kicker.setOpenLoop(-0.25), kicker);
     }
 
     public boolean currentGreater(double current) {

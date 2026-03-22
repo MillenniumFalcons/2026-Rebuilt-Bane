@@ -2,10 +2,13 @@ package team3647.frc2026.util;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class PoseUtils {
 

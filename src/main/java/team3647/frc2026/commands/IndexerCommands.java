@@ -13,7 +13,7 @@ public class IndexerCommands {
 
     public Command index() {
         return Commands.runEnd(
-                () -> indexer.setOpenLoop(-1.0), () -> indexer.setOpenLoop(0), indexer);
+                () -> indexer.setOpenLoop(-0.8), () -> indexer.setOpenLoop(0), indexer);
     }
 
     public Command reverse() {

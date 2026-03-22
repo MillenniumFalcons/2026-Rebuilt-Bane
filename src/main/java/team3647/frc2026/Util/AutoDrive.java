@@ -12,6 +12,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.util.TargetingUtil.AimingParameters;
@@ -58,7 +61,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public enum DriveMode {
         SHOOT_ON_THE_MOVE,
         SHOOT,
-        FEED
+        FEED,
+        INTAKE_FEED
     }
 
     public boolean rotAligned() {
@@ -67,6 +71,12 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                 (wantedMode == DriveMode.SHOOT_ON_THE_MOVE || wantedMode == DriveMode.SHOOT)
                         ? targeting.shootAtHubOnTheMove().rotation
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
+        Logger.recordOutput(
+                "Shooting/Rotation/robot rotation", robotPose.getRotation().getDegrees());
+        Logger.recordOutput("Shooting/Rotation/wanted rotation", angleToTarget.getDegrees());
+        Logger.recordOutput(
+                "Shooting/Rotation/difference in angle",
+                Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()));
         return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 7.0;
     }
 
@@ -136,6 +146,14 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         Translation2d robotToTarget = targetData.robotToTarget;
         double distanceToTarget = targetData.effectiveDistance;
         Rotation2d angleToTarget = targetData.rotation;
+
+        if (wantedMode == DriveMode.INTAKE_FEED) {
+            if (color == Alliance.Blue) {
+                angleToTarget = new Rotation2d(Degrees.of(180));
+            } else {
+                angleToTarget = new Rotation2d(Degrees.of(0));
+            }
+        }
 
         Logger.recordOutput(
                 "SOTMAutoAlign/wantedAngle",

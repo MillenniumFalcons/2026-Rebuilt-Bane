@@ -128,6 +128,31 @@ public class AutoPathFollowers implements AllianceObserver {
                 swerve);
     }
 
+    public Command customPathFollowerNi(
+            Trajectory<SwerveSample> traj,
+            ChoreoController controller,
+            Consumer<ChassisSpeeds> outputChassisSpeeds,
+            Supplier<Pose2d> poseSupplier) {
+
+        Timer timer = new Timer();
+
+        return new FunctionalCommand(
+                timer::restart,
+                () -> {
+                    outputChassisSpeeds.accept(
+                            controller.apply(
+                                    poseSupplier.get(),
+                                    traj.sampleAt(timer.get(), isRed())
+                                            .orElse(AutoConstants.kEmptySample)));
+                },
+                (interrupted) -> {
+                    outputChassisSpeeds.accept(new ChassisSpeeds());
+                    timer.stop();
+                },
+                () -> PoseUtils.inCircle(poseSupplier.get(), traj.getFinalPose(isRed()).get(), 0.3),
+                swerve);
+    }
+
     public static ChoreoController choreoSwerveController(
             PIDController xController,
             PIDController yController,

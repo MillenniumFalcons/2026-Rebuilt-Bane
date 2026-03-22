@@ -76,7 +76,8 @@ public class HoodConstants {
 
         // cancoder configs
         kCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        kCanCoderConfig.MagnetSensor.MagnetOffset = 0.2 + 0.037;
+        // kCanCoderConfig.MagnetSensor.MagnetOffset = 0.2 - 0.1273;
+        kCanCoderConfig.MagnetSensor.MagnetOffset = 0.053;
         kCanCoder.getConfigurator().apply(kCanCoderConfig);
     }
 }

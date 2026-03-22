@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team3647.frc2026.autos.AutoCommands;
-import team3647.frc2026.commands.ClimbCommands;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
 import team3647.frc2026.commands.KickerCommands;
@@ -22,7 +21,6 @@ import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.SwerveDriveCommands;
 import team3647.frc2026.commands.WristCommands;
 import team3647.frc2026.constants.AutoConstants;
-import team3647.frc2026.constants.ClimbConstants;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
@@ -35,7 +33,6 @@ import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants;
 import team3647.frc2026.constants.VisionConstants;
 import team3647.frc2026.constants.WristConstants;
-import team3647.frc2026.subsystems.Climb;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
 import team3647.frc2026.subsystems.Kicker;
@@ -86,7 +83,7 @@ public class RobotContainer {
                         wrist,
                         rollers,
                         kicker,
-                        climb,
+                        // climb,
                         printer);
     }
 
@@ -119,7 +116,7 @@ public class RobotContainer {
         rollers.setDefaultCommand(rollerCommands.kill());
         wrist.setDefaultCommand(wristCommands.retract());
         kicker.setDefaultCommand(kickerCommands.kill());
-        climb.setDefaultCommand(climbCommands.kill());
+        // climb.setDefaultCommand(climbCommands.kill());
     }
 
     private void configureBindings() {
@@ -132,16 +129,23 @@ public class RobotContainer {
         mainController.rightTrigger.whileTrue(superstructure.shoot());
         mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        mainController.rightTrigger.onFalse(superstructure.retractIntake());
 
         // unjam
         mainController.rightBumper.whileTrue(superstructure.reverse());
         // bump shot
         mainController.buttonB.whileTrue(superstructure.bumpShot());
-        // feed
-        mainController.leftTrigger.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
-        mainController.leftTrigger.whileTrue(superstructure.shoot());
+        // intake feed
+        mainController.leftTrigger.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
+        mainController.leftTrigger.whileTrue(superstructure.feed());
+        mainController.leftTrigger.onFalse(superstructure.retractIntake());
         mainController.leftTrigger.whileTrue(autoDrive.enableAutoDrive());
         mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
+        // shoot feed
+        mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
+        mainController.dPadLeft.whileTrue(superstructure.shoot());
+        mainController.dPadLeft.whileTrue(autoDrive.enableAutoDrive());
+        mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
         // pre align + spin up (no indexing)
         mainController.dPadRight.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT));
         mainController.dPadRight.whileTrue(autoDrive.enableAutoDrive());
@@ -251,13 +255,13 @@ public class RobotContainer {
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
-    public final Climb climb =
-            new Climb(
-                    ClimbConstants.kMaster,
-                    0,
-                    1,
-                    GlobalConstants.kNominalVoltage,
-                    GlobalConstants.kDt);
+    //     public final Climb climb =
+    //             new Climb(
+    //                     ClimbConstants.kMaster,
+    //                     0,
+    //                     1,
+    //                     GlobalConstants.kNominalVoltage,
+    //                     GlobalConstants.kDt);
     //     NeuralDetectorLimelight detector = new
     // NeuralDetectorLimelight(VisionConstants.kShooterCam);
 
@@ -279,7 +283,7 @@ public class RobotContainer {
 
     public final HoodCommands hoodCommands = new HoodCommands(hood);
 
-    public final ClimbCommands climbCommands = new ClimbCommands(climb);
+    //     public final ClimbCommands climbCommands = new ClimbCommands(climb);
 
     public final AllianceChecker allianceChecker = new AllianceChecker();
 
