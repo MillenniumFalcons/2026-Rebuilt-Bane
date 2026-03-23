@@ -114,7 +114,7 @@ public class RobotContainer {
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
-        wrist.setDefaultCommand(wristCommands.retract());
+        wrist.setDefaultCommand(wristCommands.holdPositionAtCall());
         kicker.setDefaultCommand(kickerCommands.kill());
         // climb.setDefaultCommand(climbCommands.kill());
     }
@@ -122,14 +122,15 @@ public class RobotContainer {
     private void configureBindings() {
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
-        mainController.leftBumper.onFalse(superstructure.retractIntake());
+        mainController.leftBumper.onFalse(rollerCommands.kill());
+        mainController.buttonX.onTrue(superstructure.retractIntake());
 
         // shooting
         mainController.rightTrigger.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
         mainController.rightTrigger.whileTrue(superstructure.shoot());
-        mainController.rightTrigger.whileTrue(autoDrive.enableAutoDrive());
+        mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
-        mainController.rightTrigger.onFalse(superstructure.retractIntake());
+        mainController.rightTrigger.onFalse(rollerCommands.kill());
 
         // unjam
         mainController.rightBumper.whileTrue(superstructure.reverse());
@@ -138,17 +139,15 @@ public class RobotContainer {
         // intake feed
         mainController.leftTrigger.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.leftTrigger.whileTrue(superstructure.feed());
-        mainController.leftTrigger.onFalse(superstructure.retractIntake());
-        mainController.leftTrigger.whileTrue(autoDrive.enableAutoDrive());
+        mainController.leftTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
         // shoot feed
-        mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
-        mainController.dPadLeft.whileTrue(superstructure.shoot());
-        mainController.dPadLeft.whileTrue(autoDrive.enableAutoDrive());
+        mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
+        mainController.dPadLeft.onTrue(autoDrive.enableAutoDrive());
         mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
         // pre align + spin up (no indexing)
         mainController.dPadRight.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT));
-        mainController.dPadRight.whileTrue(autoDrive.enableAutoDrive());
+        mainController.dPadRight.onTrue(autoDrive.enableAutoDrive());
         mainController.dPadRight.whileTrue(superstructure.prep());
         mainController.dPadRight.onFalse(autoDrive.disableAutoDrive());
 

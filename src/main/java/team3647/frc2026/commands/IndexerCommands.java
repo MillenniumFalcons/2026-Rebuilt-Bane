@@ -20,6 +20,10 @@ public class IndexerCommands {
         return Commands.run(() -> indexer.setOpenLoop(1.0), indexer);
     }
 
+    public Command reverseSlow() {
+        return Commands.run(() -> indexer.setOpenLoop(0.5), indexer);
+    }
+
     public boolean currentGreater(double current) {
         return indexer.getMasterCurrent() >= current;
     }

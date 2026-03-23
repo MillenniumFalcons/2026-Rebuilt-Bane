@@ -151,7 +151,7 @@ public class Superstructure {
     }
 
     public Command feed() {
-        return Commands.sequence(Commands.waitSeconds(0.75), Commands.parallel(deployIntake(), reverse()));
+        return Commands.parallel(deployIntake(), reverseIntake());
     }
 
     public Command logEverything() {
@@ -199,25 +199,13 @@ public class Superstructure {
     }
 
     public Command shoot() {
-        return Commands.parallel(
-                        logEverything(),
-                        prep(),
-                        Commands.sequence(
-                                deployIntake()
-                                        .until(readyToShoot)
-                                        .andThen(Commands.waitSeconds(1.25)),
-                                retractIntake()),
-                        indexWhenReady())
+        return Commands.parallel(logEverything(), prep(), indexWhenReady())
                 .finallyDo(() -> currentState = SuperstructureState.NONE);
     }
 
     public Command bumpShot() {
         return Commands.parallel(
-                logEverything(),
-                prepForBump(),
-                hoodCommands.setAngle(Degrees.of(72)),
-                retractIntake(),
-                index());
+                logEverything(), prepForBump(), hoodCommands.setAngle(Degrees.of(72)), index());
     }
 
     public Command prep() {
@@ -246,8 +234,12 @@ public class Superstructure {
     }
 
     public Command reverse() {
+        return Commands.parallel(indexerCommands.reverse(), kickerCommands.reverse());
+    }
+
+    public Command reverseIntake() {
         return Commands.parallel(
-                indexerCommands.reverse(), kickerCommands.reverse(), rollerCommands.spit());
+                indexerCommands.reverseSlow(), kickerCommands.reverse(), rollerCommands.spit());
     }
 
     public Command intake() {

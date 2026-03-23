@@ -1,5 +1,7 @@
 package team3647.frc2026.util;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,9 +14,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-
-import static edu.wpi.first.units.Units.Degrees;
-
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.util.TargetingUtil.AimingParameters;

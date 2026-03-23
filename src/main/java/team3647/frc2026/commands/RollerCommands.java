@@ -22,6 +22,13 @@ public class RollerCommands {
                 () -> rollers.setOpenLoop(1.0), () -> rollers.setOpenLoop(0), rollers);
     }
 
+    public Command jerkOff() {
+        return Commands.sequence(
+                        Commands.run(() -> rollers.setOpenLoop(0.5), rollers).withTimeout(0.05),
+                        Commands.run(() -> rollers.setOpenLoop(-0.5), rollers).withTimeout(0.05))
+                .repeatedly();
+    }
+
     public Command intakeSpeedScale(DoubleSupplier robotSpeed) {
         return Commands.run(() -> rollers.setVelocityMoving(robotSpeed.getAsDouble()), rollers);
     }
