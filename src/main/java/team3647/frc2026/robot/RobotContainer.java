@@ -46,6 +46,7 @@ import team3647.frc2026.subsystems.Swerve.SwerveDriveReal;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveSim;
 import team3647.frc2026.subsystems.Wrist;
 import team3647.frc2026.util.AutoDrive;
+import team3647.frc2026.util.LEDStates;
 import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.RobotTracker;
 import team3647.frc2026.util.TargetingUtil;
@@ -304,6 +305,10 @@ public class RobotContainer {
     public final AutoDrive autoDrive =
             new AutoDrive(swerve::getOdoPose, swerve::getChassisSpeeds, targetingUtil);
 
+    public LEDStates ledStates = new LEDStates();
+
+    public final LEDs leds = new LEDs(LEDConstants.m_candle, ledStates);
+
     public final Superstructure superstructure =
             new Superstructure(
                     shooterLeft,
@@ -313,12 +318,11 @@ public class RobotContainer {
                     kicker,
                     wrist,
                     rollers,
+                    ledStates,
                     robotTracker,
                     autoDrive::getHoodAngle,
                     autoDrive::getShotSpeed,
                     autoDrive::rotAligned);
-
-    public final LEDs leds = new LEDs(LEDConstants.m_candle, superstructure::getState);
 
     // cams (need to change transforms)
     AprilTagLimelight rightCam =
