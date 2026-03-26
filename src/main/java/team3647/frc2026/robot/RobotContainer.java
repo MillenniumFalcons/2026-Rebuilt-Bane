@@ -31,7 +31,6 @@ import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants;
-import team3647.frc2026.constants.VisionConstants;
 import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
@@ -54,8 +53,10 @@ import team3647.lib.GroupPrinter;
 import team3647.lib.inputs.Joysticks;
 import team3647.lib.team9442.AllianceChecker;
 import team3647.lib.team9442.AutoChooser;
-import team3647.lib.vision.AprilTagLimelight;
-import team3647.lib.vision.VisionController;
+import team3647.lib.vision.VisionFieldPoseEstimate;
+import team3647.lib.vision.VisionIOHardwareLimelight;
+import team3647.lib.vision.VisionState;
+import team3647.lib.vision.VisionSubsystem;
 
 public class RobotContainer {
     public final Joysticks mainController = new Joysticks(0);
@@ -169,6 +170,13 @@ public class RobotContainer {
 
     public void updateRobotPoseForSmartdashboard() {
         smartDashboardField.setRobotPose(swerve.getOdoPose());
+    }
+
+    /** Feed the latest odometry and yaw velocity into VisionState each cycle. */
+    public void updateVisionState() {
+        double timestamp = Timer.getFPGATimestamp();
+        visionState.addOdometryMeasurement(timestamp, swerve.getOdoPose());
+        visionState.addDriveYawVelocity(timestamp, swerve.getChassisSpeeds().omegaRadiansPerSecond);
     }
 
     public Command getAutonomousCommand() {
@@ -324,39 +332,19 @@ public class RobotContainer {
                     autoDrive::getShotSpeed,
                     autoDrive::rotAligned);
 
-    // cams (need to change transforms)
-    AprilTagLimelight rightCam =
-            new AprilTagLimelight(
-                    VisionConstants.kRightCam,
-                    VisionConstants.rightMount,
-                    swerve::getPigeonOrientation,
-                    VisionConstants.baseStdDevs,
-                    autoDrive::getAutoDriveEnabled);
+    // 254-style vision system
+    public final VisionState visionState =
+            new VisionState(
+                    (VisionFieldPoseEstimate est) -> {
+                        swerve.addVisionMeasurement(
+                                est.getVisionRobotPoseMeters(),
+                                est.getTimestampSeconds(),
+                                est.getVisionMeasurementStdDevs());
+                    });
 
-    AprilTagLimelight leftCam =
-            new AprilTagLimelight(
-                    VisionConstants.kLeftCam,
-                    VisionConstants.leftMount,
-                    swerve::getPigeonOrientation,
-                    VisionConstants.baseStdDevs,
-                    autoDrive::getAutoDriveEnabled);
+    public final VisionIOHardwareLimelight visionIO = new VisionIOHardwareLimelight(visionState);
 
-    AprilTagLimelight midCam =
-            new AprilTagLimelight(
-                    VisionConstants.kShooterCam,
-                    VisionConstants.midMount,
-                    swerve::getPigeonOrientation,
-                    VisionConstants.baseStdDevs,
-                    autoDrive::getAutoDriveEnabled);
-
-    public final VisionController controller =
-            new VisionController(
-                    swerve::addVisionData,
-                    swerve::shouldAddData,
-                    swerve::resetPose,
-                    rightCam,
-                    leftCam,
-                    midCam);
+    public final VisionSubsystem visionSubsystem = new VisionSubsystem(visionIO, visionState);
 
     public final AutoCommands autoCommands =
             new AutoCommands(

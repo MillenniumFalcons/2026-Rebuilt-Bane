@@ -13,11 +13,14 @@ import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveRotation;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveSteerGains;
 import com.ctre.phoenix6.swerve.SwerveRequest.SysIdSwerveTranslation;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -414,21 +417,13 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
 
     public void addVisionData(VisionMeasurement data) {
         periodicIO.visionPose = data.pose;
-        // DriverStation.reportError("is adding data", false);
-        // SmartDashboard.putNumber("timestamped viison", data.timestamp);
-        // SignalLogger.writeDoubleArray(
-        // "vision pose",
-        // new double[] {
-        // data.pose.getX(),
-        // data.pose.getY(),
-        // data.pose.getRotation().getDegrees(),
-        // data.timestamp
-        // });
         addVisionMeasurement(data.pose, Utils.fpgaToCurrentTime(data.timestamp), data.stdDevs);
-        // if(RobotBase.isSimulation()){
-        // simpleSim.addVisionEstimation(data.pose, data.timestamp, data.stdDevs);
+    }
 
-        // }
+    @Override
+    public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
+        periodicIO.visionPose = pose;
+        super.addVisionMeasurement(pose, timestamp, stdDevs);
     }
 
     public void onAllianceFound(Alliance color) {

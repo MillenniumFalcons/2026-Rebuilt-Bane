@@ -85,17 +85,18 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
+        // Feed odometry into VisionState before CommandScheduler runs VisionSubsystem
+        m_robotContainer.updateVisionState();
+
         CommandScheduler.getInstance().run();
 
         m_robotContainer.updateRobotPoseForSmartdashboard();
-        // m_robotContainer.setHoodEncoder();
         VirtualSubsystem.periodicAll();
     }
 
     @Override
     public void disabledInit() {
-        m_robotContainer.rightCam.setIMUMode(1);
-        m_robotContainer.leftCam.setIMUMode(1);
+        m_robotContainer.visionIO.setIMUMode(1);
         SignalLogger.stop();
         ModifiedSignalLogger.stop();
     }
@@ -133,8 +134,7 @@ public class Robot extends LoggedRobot {
 
         // ModifiedSignalLogger.start();
         ModifiedSignalLogger.stop();
-        m_robotContainer.rightCam.setIMUMode(4);
-        m_robotContainer.leftCam.setIMUMode(4);
+        m_robotContainer.visionIO.setIMUMode(4);
     }
 
     @Override

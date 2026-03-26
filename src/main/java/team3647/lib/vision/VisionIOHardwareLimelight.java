@@ -71,6 +71,13 @@ public class VisionIOHardwareLimelight implements VisionIO {
         latestInputs.set(inputs);
     }
 
+    /** Sets the IMU mode on all Limelights. Call from Robot disabledInit/teleopInit. */
+    public void setIMUMode(int mode) {
+        LimelightHelpers.SetIMUMode(VisionConstants.kLimelightATableName, mode);
+        LimelightHelpers.SetIMUMode(VisionConstants.kLimelightBTableName, mode);
+        LimelightHelpers.SetIMUMode(VisionConstants.kLimelightCTableName, mode);
+    }
+
     private void readCameraData(
             NetworkTable table, VisionIOInputs.CameraInputs camera, String limelightName) {
         camera.seesTarget = table.getEntry("tv").getDouble(0) == 1.0;

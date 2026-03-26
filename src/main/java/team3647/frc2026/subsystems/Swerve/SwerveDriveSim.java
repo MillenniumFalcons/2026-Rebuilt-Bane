@@ -5,9 +5,12 @@ import static edu.wpi.first.units.Units.Meters;
 
 import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -92,6 +95,12 @@ public class SwerveDriveSim implements SwerveDrive {
     public void addVisionData(VisionMeasurement data) {
         simSwerve.addVisionEstimation(data.pose, data.timestamp, data.stdDevs);
         periodicIO.visionPose = data.pose;
+    }
+
+    @Override
+    public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
+        simSwerve.addVisionEstimation(pose, timestamp, stdDevs);
+        periodicIO.visionPose = pose;
     }
 
     @Override

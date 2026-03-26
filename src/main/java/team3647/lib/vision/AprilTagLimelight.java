@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.constants.FieldConstants;
@@ -34,8 +33,6 @@ public class AprilTagLimelight extends VirtualSubsystem implements AprilTagCamer
     private final int kAprilTagPipelineIndex = 0;
 
     private final Supplier<Orientation> orientation;
-
-    private BooleanSupplier autoDriveEnabled;
 
     public final PoseEstimate kEmpty =
             new PoseEstimate(
@@ -58,13 +55,11 @@ public class AprilTagLimelight extends VirtualSubsystem implements AprilTagCamer
             String name,
             Transform3d robotToCamera,
             Supplier<Orientation> orientationSupplier,
-            Vector<N3> baseStdDevs,
-            BooleanSupplier autoDriveEnabled) {
+            Vector<N3> baseStdDevs) {
         super();
         this.name = name;
         this.robotToCamera = robotToCamera;
         this.orientation = orientationSupplier;
-        this.autoDriveEnabled = autoDriveEnabled;
         setIMUMode(3);
         // LimelightHelpers.setCameraPose_RobotSpace(
         //         name,
