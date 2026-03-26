@@ -6,6 +6,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import java.util.HashMap;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -16,6 +18,8 @@ import team3647.frc2026.commands.KickerCommands;
 import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.WristCommands;
+import team3647.frc2026.util.LEDStates;
+import team3647.frc2026.util.LEDStates.SuperstructureState;
 import team3647.frc2026.util.RobotTracker;
 
 public class Superstructure {
@@ -46,7 +50,7 @@ public class Superstructure {
     public final BooleanSupplier atHoodAngle;
     public final Trigger readyToShoot;
 
-    public SuperstructureState currentState = SuperstructureState.NONE;
+    public final LEDStates ledStates;
 
     public Superstructure(
             ShooterLeft shooterOne,
@@ -56,6 +60,7 @@ public class Superstructure {
             Kicker kicker,
             Wrist wrist,
             Rollers rollers,
+            LEDStates ledStates,
             RobotTracker robotTracker,
             DoubleSupplier hoodAngle,
             DoubleSupplier shotSpeed,
@@ -83,67 +88,11 @@ public class Superstructure {
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
 
-        this.currentState = SuperstructureState.NONE;
+        this.ledStates = ledStates;
     }
 
-    // FOR LEDS
-    public enum SuperstructureState {
-        NONE,
-        INTAKING,
-        PREPPING,
-        SHOOTING;
-
-        // basically everytime you want to change the leds, it only sets the state if it has higher
-        // priority
-        // this is to avoid trying to set the state to two different things repeatedly
-        public final int priority;
-
-        SuperstructureState() {
-            this.priority = ordinal();
-        }
-    }
-
-    @AutoLogOutput
-    public SuperstructureState getState() {
-        Logger.recordOutput("Superstructure State", currentState);
-        return currentState;
-    }
-
-    /**
-     * Use this with deadlineFor() to set the state of the superstructure for the duration of a
-     * command, it will only change the state if the new state has higher or equal priority than the
-     * current state. After the command ends, it will reset the state to NONE.
-     */
-    public Command requestSetState(SuperstructureState newState) {
-        return Commands.startEnd(
-                () -> {
-                    if (newState.priority >= currentState.priority) {
-                        currentState = newState;
-                    }
-                },
-                () -> {
-                    currentState = SuperstructureState.NONE;
-                });
-    }
-
-    public Command requestStateOnce(SuperstructureState newState) {
-        return Commands.runOnce(
-                () -> {
-                    if (newState.priority >= currentState.priority) {
-                        currentState = newState;
-                    }
-                });
-    }
-
-    public Command setStateOnce(SuperstructureState state) {
-        return Commands.runOnce(
-                () -> {
-                    currentState = state;
-                });
-    }
-
-    public Command setStateNoneOverride() {
-        return Commands.runOnce(() -> currentState = SuperstructureState.NONE);
+    public LEDStates getStates() {
+        return ledStates;
     }
 
     public Angle getIntakeAngle() {
@@ -151,7 +100,7 @@ public class Superstructure {
     }
 
     public Command feed() {
-        return Commands.parallel(deployIntake(), reverseIntake());
+        return Commands.sequence(Commands.waitSeconds(0.75), Commands.parallel(deployIntake(), reverse()));
     }
 
     public Command logEverything() {
@@ -199,25 +148,37 @@ public class Superstructure {
     }
 
     public Command shoot() {
-        return Commands.parallel(logEverything(), prep(), indexWhenReady())
-                .finallyDo(() -> currentState = SuperstructureState.NONE);
+        return Commands.parallel(
+                        logEverything(),
+                        prep(),
+                        Commands.sequence(
+                                deployIntake()
+                                        .until(readyToShoot)
+                                        .andThen(Commands.waitSeconds(1.25)),
+                                retractIntake()),
+                        indexWhenReady())
+                        .finallyDo(() -> ledStates.setStateFalse(SuperstructureState.PREPPING));
     }
 
     public Command bumpShot() {
         return Commands.parallel(
-                logEverything(), prepForBump(), hoodCommands.setAngle(Degrees.of(72)), index());
+                logEverything(),
+                prepForBump(),
+                hoodCommands.setAngle(Degrees.of(72)),
+                retractIntake(),
+                index());
     }
 
     public Command prep() {
         return shooterCommands
                 .setVelocity(shotSpeed)
-                .deadlineFor(requestStateOnce(SuperstructureState.PREPPING));
+                .deadlineFor(ledStates.setStateTrueCommand(SuperstructureState.PREPPING));
     }
 
     public Command prepForBump() {
         return shooterCommands
                 .setVelocity(() -> 13.5)
-                .deadlineFor(requestStateOnce(SuperstructureState.PREPPING));
+                .deadlineFor(ledStates.activateState(SuperstructureState.PREPPING));
     }
 
     public Command indexWhenReady() {
@@ -225,7 +186,8 @@ public class Superstructure {
                 Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
                 index().onlyWhile(readyToShoot)
                         .repeatedly()
-                        .deadlineFor(requestStateOnce(SuperstructureState.SHOOTING)));
+                        .alongWith(ledStates.setStateTrueCommand(SuperstructureState.SHOOTING)))
+                .finallyDo(() -> ledStates.setStateFalse(SuperstructureState.SHOOTING));
     }
 
     public Command index() {
@@ -234,12 +196,8 @@ public class Superstructure {
     }
 
     public Command reverse() {
-        return Commands.parallel(indexerCommands.reverse(), kickerCommands.reverse());
-    }
-
-    public Command reverseIntake() {
         return Commands.parallel(
-                indexerCommands.reverseSlow(), kickerCommands.reverse(), rollerCommands.spit());
+                indexerCommands.reverse(), kickerCommands.reverse(), rollerCommands.spit());
     }
 
     public Command intake() {
@@ -248,7 +206,9 @@ public class Superstructure {
                         // rollerCommands.intakeSpeedScale(robotTracker::getIntakeDirectionSpeed),
                         rollerCommands.intake(),
                         kickerCommands.jamProtect())
-                .deadlineFor(requestSetState(SuperstructureState.INTAKING));
+                .deadlineFor(ledStates.setStateTrueCommand(SuperstructureState.INTAKING))
+                .finallyDo(() -> {ledStates.setStateFalse(SuperstructureState.INTAKING);
+                System.out.println("intaking false");});
     }
 
     public Command retractIntake() {

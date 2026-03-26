@@ -7,8 +7,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.Logger;
+
 import team3647.frc2026.constants.LEDConstants;
-import team3647.frc2026.subsystems.Superstructure.SuperstructureState;
+import team3647.frc2026.util.LEDStates;
+import team3647.frc2026.util.LEDStates.SuperstructureState;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
 
@@ -16,7 +20,8 @@ public class LEDs extends VirtualSubsystem implements AllianceObserver {
 
     CANdle candle;
     ControlRequest masterRequest = new EmptyControl();
-    Supplier<SuperstructureState> stateSupplier;
+    SuperstructureState currentState;
+    LEDStates ledStates;
     ControlRequest defaultAnimation = LEDConstants.SOLID_RED;
     Map<SuperstructureState, ControlRequest> stateAnimations =
             new HashMap<>(
@@ -26,9 +31,10 @@ public class LEDs extends VirtualSubsystem implements AllianceObserver {
                             SuperstructureState.PREPPING, LEDConstants.STROBE_ORANGE,
                             SuperstructureState.SHOOTING, LEDConstants.FADE_GREEN));
 
-    public LEDs(CANdle candle, Supplier<SuperstructureState> stateSupplier) {
+    public LEDs(CANdle candle, LEDStates ledStates) {
         this.candle = candle;
-        this.stateSupplier = stateSupplier;
+        this.ledStates = ledStates;
+        this.currentState = SuperstructureState.NONE;
     }
 
     public void setAnimation(ControlRequest animation) {
@@ -36,17 +42,21 @@ public class LEDs extends VirtualSubsystem implements AllianceObserver {
     }
 
     public void setAnimationWithState() {
-        SuperstructureState state = stateSupplier.get();
-        if (state == null) {
-            state = SuperstructureState.NONE;
-        }
-        masterRequest = stateAnimations.get(state);
+        SuperstructureState highestState = ledStates.getHighestPriorityState();
+        if (currentState != highestState) {
+            currentState = highestState;
+            masterRequest = stateAnimations.get(currentState);
+        } 
+        candle.setControl(masterRequest);
+        //candle.setControl(masterRequest);
+        Logger.recordOutput("led state", currentState);
+        Logger.recordOutput("highest state", highestState);
     }
 
     @Override
     public void periodic() {
         setAnimationWithState();
-        candle.setControl(masterRequest);
+        ledStates.log();
     }
 
     @Override
