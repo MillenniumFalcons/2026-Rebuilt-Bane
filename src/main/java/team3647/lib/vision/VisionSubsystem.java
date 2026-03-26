@@ -109,9 +109,11 @@ public class VisionSubsystem extends SubsystemBase {
 
         logCameraInputs("Vision/CameraA", inputs.cameraA);
         logCameraInputs("Vision/CameraB", inputs.cameraB);
+        logCameraInputs("Vision/CameraC", inputs.cameraC);
 
         var maybeMTA = processCamera(inputs.cameraA, "CameraA", VisionConstants.kRobotToCameraA);
         var maybeMTB = processCamera(inputs.cameraB, "CameraB", VisionConstants.kRobotToCameraB);
+        var maybeMTC = processCamera(inputs.cameraC, "CameraC", VisionConstants.kRobotToCameraC);
 
         if (!useVision) {
             Logger.recordOutput("Vision/usingVision", false);
@@ -122,11 +124,20 @@ public class VisionSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Vision/usingVision", true);
 
+        // Pairwise fusion: fuse A+B first, then fuse result with C
         Optional<VisionFieldPoseEstimate> accepted = Optional.empty();
         if (maybeMTA.isPresent() != maybeMTB.isPresent()) {
             accepted = maybeMTA.isPresent() ? maybeMTA : maybeMTB;
         } else if (maybeMTA.isPresent() && maybeMTB.isPresent()) {
             accepted = Optional.of(fuseEstimates(maybeMTA.get(), maybeMTB.get()));
+        }
+
+        if (maybeMTC.isPresent()) {
+            if (accepted.isPresent()) {
+                accepted = Optional.of(fuseEstimates(accepted.get(), maybeMTC.get()));
+            } else {
+                accepted = maybeMTC;
+            }
         }
 
         accepted.ifPresent(

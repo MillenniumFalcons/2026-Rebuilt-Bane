@@ -25,6 +25,7 @@ public interface VisionIO {
 
         public CameraInputs cameraA = new CameraInputs();
         public CameraInputs cameraB = new CameraInputs();
+        public CameraInputs cameraC = new CameraInputs();
     }
 
     void readInputs(VisionIOInputs inputs);

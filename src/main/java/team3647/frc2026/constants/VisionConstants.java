@@ -97,6 +97,19 @@ public class VisionConstants {
                     new Translation2d(kRobotToCameraBForward, kRobotToCameraBSide),
                     kCameraBYawOffset);
 
+    // ---- Camera C (Mid/Shooter Camera) ----
+    public static final String kLimelightCTableName = "limelight-mid";
+    public static final double kCameraCPitchDegrees = -19.653;
+    public static final double kCameraCPitchRads = Units.degreesToRadians(kCameraCPitchDegrees);
+    public static final double kCameraCHeightOffGroundMeters = Inches.of(15).in(Meters);
+    public static final double kRobotToCameraCForward = Inches.of(6.75).in(Meters);
+    public static final double kRobotToCameraCSide = Inches.of(9).in(Meters);
+    public static final Rotation2d kCameraCYawOffset = Rotation2d.fromDegrees(0.0);
+    public static final Transform2d kRobotToCameraC =
+            new Transform2d(
+                    new Translation2d(kRobotToCameraCForward, kRobotToCameraCSide),
+                    kCameraCYawOffset);
+
     // ---- Camera names (old format, kept for legacy references) ----
     public static final String kShooterCam = "limelight-mid";
     public static final String kLeftCam = "limelight-left";
