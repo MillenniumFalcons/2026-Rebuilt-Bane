@@ -156,6 +156,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         Pose2d lookaheadPose = pose;
         ChassisSpeeds fieldRelSpeeds =
                 ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getPose().getRotation());
+        // ChassisSpeeds fieldRelSpeeds =
+        //         getChassisSpeeds();
 
         // Iterate 5 times to converge on the accurate lookahead pose
         for (int i = 0; i < 5; i++) {
@@ -173,6 +175,7 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
             // Update the distance based on this new position for the next loop
             currentDistance = getDistanceFromHub(lookaheadPose);
+            Logger.recordOutput("SOTMAutoAlign/lookahead", lookaheadPose);
         }
 
         // Log the final converged values

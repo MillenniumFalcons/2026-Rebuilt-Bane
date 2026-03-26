@@ -68,8 +68,9 @@ public class SwerveDriveCommands implements AllianceObserver {
                     double motionTurnComponent = rot.getAsDouble() * kMaxRotRadPs * 0.6;
 
                     if (!isAutoDrive) {
-                        if (robotRel && Utils.isSimulation()) {
-                            swerve.drive(-motionXComponent, -motionYComponent, motionTurnComponent);
+                        if (Utils.isSimulation()) {
+                            swerve.driveFieldOriented(
+                                    motionXComponent, motionYComponent, -motionTurnComponent);
                         } else {
                             swerve.driveFieldOriented(
                                     motionXComponent, motionYComponent, motionTurnComponent);

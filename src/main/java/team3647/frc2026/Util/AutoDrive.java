@@ -3,13 +3,12 @@ package team3647.frc2026.util;
 import static edu.wpi.first.units.Units.Degrees;
 
 import com.ctre.phoenix6.Utils;
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,8 +30,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     // public final PIDController rotController;
 
     // this is for real robot
-    public final ProfiledPIDController profiledRotController =
-            new ProfiledPIDController(6.0, 0, 0, new Constraints(20, 20));
+    public final PIDController rotController = new PIDController(6.0, 0, 0);
 
     private Alliance color = Alliance.Red;
 
@@ -52,9 +50,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         this.chassisSpeedsSupplier = chassisSpeedsSupplier;
         this.targeting = targeting;
 
-        profiledRotController.setTolerance(
-                Units.degreesToRadians(1.5), Units.degreesToRadians(1.5));
-        profiledRotController.enableContinuousInput(-Math.PI, Math.PI);
+        rotController.setTolerance(Units.degreesToRadians(1.5), Units.degreesToRadians(1.5));
+        rotController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     public enum DriveMode {
@@ -105,7 +102,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public Command enableAutoDrive() {
         return Commands.runOnce(
                 () -> {
-                    this.profiledRotController.reset(getOdoRot().getRadians());
+                    this.rotController.reset();
                     this.enabled = true;
                 });
     }
@@ -158,10 +155,10 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                 "SOTMAutoAlign/wantedAngle",
                 new Pose2d(robotPose.getX(), robotPose.getY(), angleToTarget));
 
-        profiledRotController.setGoal(angleToTarget.getRadians());
-
         // Standard PID output
-        double rotFeedback = profiledRotController.calculate(robotPose.getRotation().getRadians());
+        double rotFeedback =
+                rotController.calculate(
+                        robotPose.getRotation().getRadians(), angleToTarget.getRadians());
 
         // goofy ahh feedforward
         // Calculate the magnitude of linear velocity from ChassisSpeeds
@@ -183,10 +180,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         // Logger.recordOutput("angular error", angularError);
         Logger.recordOutput("SOTMAutoAlign/DEBUG/ff output", customFF);
         Logger.recordOutput("SOTMAutoAlign/DEBUG/pid output", rotFeedback);
-        Logger.recordOutput(
-                "SOTMAutoAlign/DEBUG/rotSetpointVel", profiledRotController.getSetpoint().velocity);
-        Logger.recordOutput(
-                "SOTMAutoAlign/DEBUG/rotSetpointPos", profiledRotController.getSetpoint().position);
 
         double rotComp =
                 !Utils.isSimulation() ? -(rotFeedback + customFF) : (rotFeedback + customFF);
