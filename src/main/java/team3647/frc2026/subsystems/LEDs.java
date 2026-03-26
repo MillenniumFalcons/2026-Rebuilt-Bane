@@ -6,10 +6,7 @@ import com.ctre.phoenix6.hardware.CANdle;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
-
 import team3647.frc2026.constants.LEDConstants;
 import team3647.frc2026.util.LEDStates;
 import team3647.frc2026.util.LEDStates.SuperstructureState;
@@ -46,9 +43,9 @@ public class LEDs extends VirtualSubsystem implements AllianceObserver {
         if (currentState != highestState) {
             currentState = highestState;
             masterRequest = stateAnimations.get(currentState);
-        } 
+        }
         candle.setControl(masterRequest);
-        //candle.setControl(masterRequest);
+        // candle.setControl(masterRequest);
         Logger.recordOutput("led state", currentState);
         Logger.recordOutput("highest state", highestState);
     }

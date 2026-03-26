@@ -6,11 +6,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-import java.util.HashMap;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
@@ -100,7 +97,8 @@ public class Superstructure {
     }
 
     public Command feed() {
-        return Commands.sequence(Commands.waitSeconds(0.75), Commands.parallel(deployIntake(), reverse()));
+        return Commands.sequence(
+                Commands.waitSeconds(0.75), Commands.parallel(deployIntake(), reverse()));
     }
 
     public Command logEverything() {
@@ -157,7 +155,7 @@ public class Superstructure {
                                         .andThen(Commands.waitSeconds(1.25)),
                                 retractIntake()),
                         indexWhenReady())
-                        .finallyDo(() -> ledStates.setStateFalse(SuperstructureState.PREPPING));
+                .finallyDo(() -> ledStates.setStateFalse(SuperstructureState.PREPPING));
     }
 
     public Command bumpShot() {
@@ -183,10 +181,12 @@ public class Superstructure {
 
     public Command indexWhenReady() {
         return Commands.sequence(
-                Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
-                index().onlyWhile(readyToShoot)
-                        .repeatedly()
-                        .alongWith(ledStates.setStateTrueCommand(SuperstructureState.SHOOTING)))
+                        Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
+                        index().onlyWhile(readyToShoot)
+                                .repeatedly()
+                                .alongWith(
+                                        ledStates.setStateTrueCommand(
+                                                SuperstructureState.SHOOTING)))
                 .finallyDo(() -> ledStates.setStateFalse(SuperstructureState.SHOOTING));
     }
 
@@ -207,8 +207,11 @@ public class Superstructure {
                         rollerCommands.intake(),
                         kickerCommands.jamProtect())
                 .deadlineFor(ledStates.setStateTrueCommand(SuperstructureState.INTAKING))
-                .finallyDo(() -> {ledStates.setStateFalse(SuperstructureState.INTAKING);
-                System.out.println("intaking false");});
+                .finallyDo(
+                        () -> {
+                            ledStates.setStateFalse(SuperstructureState.INTAKING);
+                            System.out.println("intaking false");
+                        });
     }
 
     public Command retractIntake() {
