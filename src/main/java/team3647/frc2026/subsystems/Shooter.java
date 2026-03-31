@@ -2,6 +2,8 @@ package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,38 +17,37 @@ import team3647.lib.ModifiedSignalLogger;
 import team3647.lib.TalonFXSubsystem;
 import team3647.lib.tunables.TunableSlotConfigs;
 
-public class ShooterLeft extends TalonFXSubsystem {
+public class Shooter extends TalonFXSubsystem {
 
     TunableSlotConfigs configs;
-
     SysIdRoutine sysIdRoutine =
             new SysIdRoutine(
                     new Config(
                             Units.Volts.of(6).per(Units.Second),
                             Units.Volts.of(30),
                             Units.Seconds.of(8),
-                            ModifiedSignalLogger.logState("left shooter routine")),
+                            ModifiedSignalLogger.logState("shooter routine")),
                     new Mechanism(
-                            (Voltage volts) -> setVoltage(volts.in(Units.Volts)),
+                            (Voltage volts) -> setVoltage(volts.in(Units.Volt)),
                             null,
                             this,
-                            "Left Shooter"));
+                            "Shooter"));
 
-    public ShooterLeft(
+    public Shooter(
             TalonFX master,
             TalonFX slave,
             double velocityConversion,
             double positionConversion,
             double nominalVoltage,
             double kDt) {
-        super(List.of(master, slave), velocityConversion, positionConversion, nominalVoltage, kDt);
-        // this.addFollower(slave, MotorAlignmentValue.Aligned);
+        super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
+        this.addFollower(slave, MotorAlignmentValue.Aligned);
         configs =
                 new TunableSlotConfigs(
                         master,
                         0,
-                        "Left Shooter KV Tunable",
-                        SlotConfigs.from(ShooterConstants.kShooterOneConfig.Slot0));
+                        "Shooter KV Tunable",
+                        SlotConfigs.from(ShooterConstants.kShooterConfig.Slot0));
     }
 
     public void setOpenLoop(double percent) {
@@ -57,12 +58,12 @@ public class ShooterLeft extends TalonFXSubsystem {
         return super.getMasterCurrent();
     }
 
-    public void setVelocityVoltage(double velocity) {
-        super.setVelocityVoltage(velocity, 0);
-    }
-
     public void setVelocity(double velocity) {
         super.setVelocity(velocity, 0);
+    }
+
+    public void setVelocityVoltage(double velocity) {
+        super.setVelocityVoltage(velocity, 0);
     }
 
     @Override
@@ -72,7 +73,7 @@ public class ShooterLeft extends TalonFXSubsystem {
 
     @Override
     public String getName() {
-        return "ShooterLeft";
+        return "Shooter";
     }
 
     public Command getSysIdDynamic() {

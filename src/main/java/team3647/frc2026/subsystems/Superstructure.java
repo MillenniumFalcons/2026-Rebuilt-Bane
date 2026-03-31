@@ -21,8 +21,7 @@ import team3647.frc2026.util.RobotTracker;
 
 public class Superstructure {
 
-    public final ShooterLeft shooterOne;
-    public final ShooterRight shooterTwo;
+    public final Shooter shooter;
     public final Indexer indexer;
     public final Kicker kicker;
     public final Hood hood;
@@ -50,8 +49,7 @@ public class Superstructure {
     public final LEDStates ledStates;
 
     public Superstructure(
-            ShooterLeft shooterOne,
-            ShooterRight shooterTwo,
+            Shooter shooter,
             Indexer indexer,
             Hood hood,
             Kicker kicker,
@@ -62,8 +60,7 @@ public class Superstructure {
             DoubleSupplier hoodAngle,
             DoubleSupplier shotSpeed,
             BooleanSupplier isRotAligned) {
-        this.shooterOne = shooterOne;
-        this.shooterTwo = shooterTwo;
+        this.shooter = shooter;
         this.indexer = indexer;
         this.hood = hood;
         this.kicker = kicker;
@@ -74,7 +71,7 @@ public class Superstructure {
         this.shotSpeed = shotSpeed;
         this.isRotAligned = isRotAligned;
 
-        this.shooterCommands = new ShooterCommands(this.shooterOne, this.shooterTwo);
+        this.shooterCommands = new ShooterCommands(this.shooter);
         this.indexerCommands = new IndexerCommands(this.indexer);
         this.kickerCommands = new KickerCommands(this.kicker);
         this.hoodCommands = new HoodCommands(this.hood);
@@ -111,13 +108,8 @@ public class Superstructure {
                 Commands.run(
                         () ->
                                 Logger.recordOutput(
-                                        "Shooting/ShotSpeed/leftshootervelocity",
-                                        shooterOne.getVelocity())),
-                Commands.run(
-                        () ->
-                                Logger.recordOutput(
-                                        "Shooting/ShotSpeed/rightshootervelocity",
-                                        shooterTwo.getVelocity())),
+                                        "Shooting/ShotSpeed/shootervelocity",
+                                        shooter.getVelocity())),
                 Commands.run(
                         () ->
                                 Logger.recordOutput(
@@ -154,8 +146,7 @@ public class Superstructure {
                                         .until(readyToShoot)
                                         .andThen(Commands.waitSeconds(1.25)),
                                 retractIntake()),
-                        indexWhenReady())
-                .finallyDo(() -> ledStates.setStateFalse(SuperstructureState.PREPPING));
+                        indexWhenReady());
     }
 
     public Command bumpShot() {
@@ -170,7 +161,7 @@ public class Superstructure {
     public Command prep() {
         return shooterCommands
                 .setVelocity(shotSpeed)
-                .deadlineFor(ledStates.setStateTrueCommand(SuperstructureState.PREPPING));
+                .deadlineFor(ledStates.activateState(SuperstructureState.PREPPING));
     }
 
     public Command prepForBump() {
@@ -184,10 +175,7 @@ public class Superstructure {
                         Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
                         index().onlyWhile(readyToShoot)
                                 .repeatedly()
-                                .alongWith(
-                                        ledStates.setStateTrueCommand(
-                                                SuperstructureState.SHOOTING)))
-                .finallyDo(() -> ledStates.setStateFalse(SuperstructureState.SHOOTING));
+                                .deadlineFor(ledStates.activateState(SuperstructureState.SHOOTING)));
     }
 
     public Command index() {
@@ -203,15 +191,9 @@ public class Superstructure {
     public Command intake() {
         return Commands.parallel(
                         wristCommands.deploy(),
-                        // rollerCommands.intakeSpeedScale(robotTracker::getIntakeDirectionSpeed),
                         rollerCommands.intake(),
                         kickerCommands.jamProtect())
-                .deadlineFor(ledStates.setStateTrueCommand(SuperstructureState.INTAKING))
-                .finallyDo(
-                        () -> {
-                            ledStates.setStateFalse(SuperstructureState.INTAKING);
-                            System.out.println("intaking false");
-                        });
+                .deadlineFor(ledStates.activateState(SuperstructureState.INTAKING));
     }
 
     public Command retractIntake() {

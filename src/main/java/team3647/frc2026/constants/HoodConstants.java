@@ -29,6 +29,7 @@ public class HoodConstants {
 
     public static final CANcoderConfiguration kCanCoderConfig = new CANcoderConfiguration();
 
+    // CHANGE THESE VALUES
     public static final Angle kMaxAngle = Degree.of(72);
     public static final Angle kMinAngle = Degree.of(48);
 

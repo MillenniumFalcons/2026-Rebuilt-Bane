@@ -14,35 +14,22 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
 public class ShooterConstants {
-    // one is left two is right i got too lazy to change
-    public static final TalonFX kShooterOne =
+    public static final TalonFX kShooter =
             new TalonFX(
-                    GlobalConstants.ShooterIds.kShooterOneId,
+                    GlobalConstants.ShooterIds.kMasterId,
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
-    public static final TalonFX kShooterOneSlave =
+    public static final TalonFX kShooterSlave =
             new TalonFX(
-                    GlobalConstants.ShooterIds.kShooterOneSlaveId,
+                    GlobalConstants.ShooterIds.kSlaveId,
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
-    public static final TalonFX kShooterTwo =
-            new TalonFX(
-                    GlobalConstants.ShooterIds.kShooterTwoId,
-                    new CANBus(GlobalConstants.kSubsystemCanbusName));
-
-    public static final TalonFX kShooterTwoSlave =
-            new TalonFX(
-                    GlobalConstants.ShooterIds.kShooterTwoSlaveId,
-                    new CANBus(GlobalConstants.kSubsystemCanbusName));
-
-    public static final TalonFXConfiguration kShooterOneConfig = new TalonFXConfiguration();
-    public static final TalonFXConfiguration kShooterTwoConfig = new TalonFXConfiguration();
+    public static final TalonFXConfiguration kShooterConfig = new TalonFXConfiguration();
 
     public static final Transform2d robotToBetweenShooter = new Transform2d();
 
-    public static final double kGearboxReduction = 1; // i think this is correct now
-    public static final double kWheelDiameterMeters =
-            Units.inchesToMeters(4); // i think this is also correct now
+    public static final double kGearboxReduction = 0.75; // 18:24 gears
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.5);
     public static final double kWheelRotationMeters = kWheelDiameterMeters * Math.PI;
     public static final double kNativeVelToSurfaceMpS =
             kWheelRotationMeters / GlobalConstants.kFalconTicksPerRotation * kGearboxReduction;
@@ -50,29 +37,24 @@ public class ShooterConstants {
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxCurrent = 70.0;
 
-    // feedforward from sysid left shooter
+    //need to sys these
     public static final double kS = 0.0;
     public static final double kV = 0.12;
     public static final double kA = 0.0098105;
 
-    // sysid right shooter
-    public static final double kSright = 0.0;
-    public static final double kVright = 0.123;
-    public static final double kAright = 0.0098557;
-
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
-    // pid
-    public static final double shooterOnekP = 0.5;
-    public static final double shooterTwokP = 0.5;
-    public static final double masterkI = 0;
-    public static final double masterkD = 0.0025;
+    //need to tune
+    public static final double kP = 0.5;
+    public static final double kI = 0;
+    public static final double kD = 0.0025;
 
     public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
 
     public static double tempOffset = 0;
 
     static {
+        //need to reinterpolate
         shootSpeedMap.put(1.0, 13.5 + tempOffset);
         shootSpeedMap.put(1.5, 14.0 + tempOffset);
         shootSpeedMap.put(2.0, 15.0 + tempOffset);
@@ -89,65 +71,174 @@ public class ShooterConstants {
         shootSpeedMap.put(7.5, 22.0 + tempOffset);
         shootSpeedMap.put(8.0, 22.5 + tempOffset);
 
-        kShooterOneConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        kShooterTwoConfig.MotorOutput.Inverted =
-                InvertedValue.CounterClockwise_Positive; // these should be opposites of each other
+        kShooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // make sure this is right
 
-        MotorOutputConfigs shooterOneMotor = new MotorOutputConfigs();
-        MotorOutputConfigs shooterTwoMotor = new MotorOutputConfigs();
+        MotorOutputConfigs shooterMotor = new MotorOutputConfigs();
+        CurrentLimitsConfigs shooterCurrent = new CurrentLimitsConfigs();
 
-        CurrentLimitsConfigs shooterOneCurrent = new CurrentLimitsConfigs();
-        CurrentLimitsConfigs shooterTwoCurrent = new CurrentLimitsConfigs();
+        kShooterConfig.Slot0.kP = kP;
+        kShooterConfig.Slot0.kI = kI;
+        kShooterConfig.Slot0.kD = kD;
+        kShooterConfig.Slot0.kS = kS;
+        kShooterConfig.Slot0.kV = kV;
+        kShooterConfig.Slot0.kA = kA;
 
-        // shooter one
-        kShooterOneConfig.Slot0.kP = shooterOnekP;
-        kShooterOneConfig.Slot0.kI = masterkI;
-        kShooterOneConfig.Slot0.kD = masterkD;
-        kShooterOneConfig.Slot0.kS = kS;
-        kShooterOneConfig.Slot0.kV = kV;
-        kShooterOneConfig.Slot0.kA = kA;
+        shooterMotor.NeutralMode = NeutralModeValue.Coast;
+        shooterMotor.PeakReverseDutyCycle = 0;
+        shooterMotor.Inverted = InvertedValue.Clockwise_Positive; // make sure this is right
 
-        shooterOneMotor.NeutralMode = NeutralModeValue.Coast;
-        shooterOneMotor.PeakReverseDutyCycle = 0;
-        shooterOneMotor.Inverted = InvertedValue.Clockwise_Positive;
+        shooterCurrent.StatorCurrentLimitEnable = true;
+        shooterCurrent.StatorCurrentLimit = kMaxCurrent;
 
-        shooterOneCurrent.StatorCurrentLimitEnable = true;
-        shooterOneCurrent.StatorCurrentLimit = kMaxCurrent;
+        final TalonFXConfigurator kShooterConfigurator = kShooter.getConfigurator();
+        kShooterConfigurator.apply(kShooterConfig);
+        kShooterConfigurator.apply(shooterCurrent);
+        kShooterConfigurator.apply(shooterMotor);
 
-        // shooter two
-        kShooterTwoConfig.Slot0.kP = shooterTwokP;
-        kShooterTwoConfig.Slot0.kI = masterkI;
-        kShooterTwoConfig.Slot0.kD = masterkD;
-        kShooterTwoConfig.Slot0.kS = kSright;
-        kShooterTwoConfig.Slot0.kV = kVright;
-        kShooterTwoConfig.Slot0.kA = kAright;
-
-        shooterTwoMotor.NeutralMode = NeutralModeValue.Coast;
-        shooterTwoMotor.PeakReverseDutyCycle = 0;
-        shooterTwoMotor.Inverted = InvertedValue.CounterClockwise_Positive;
-
-        shooterTwoCurrent.StatorCurrentLimitEnable = true;
-        shooterTwoCurrent.StatorCurrentLimit = kMaxCurrent;
-
-        // apply configs
-        final TalonFXConfigurator kShooterOneConfigurator = kShooterOne.getConfigurator();
-        final TalonFXConfigurator kShooterTwoConfigurator = kShooterTwo.getConfigurator();
-        kShooterOneConfigurator.apply(kShooterOneConfig);
-        kShooterOneConfigurator.apply(shooterOneCurrent);
-        kShooterOneConfigurator.apply(shooterOneMotor);
-
-        kShooterTwoConfigurator.apply(kShooterTwoConfig);
-        kShooterTwoConfigurator.apply(shooterTwoCurrent);
-        kShooterTwoConfigurator.apply(shooterTwoMotor);
-
-        final TalonFXConfigurator kShooterOneSlaveConfigurator = kShooterOneSlave.getConfigurator();
-        final TalonFXConfigurator kShooterTwoSlaveConfigurator = kShooterTwoSlave.getConfigurator();
-        kShooterOneSlaveConfigurator.apply(kShooterOneConfig);
-        kShooterOneSlaveConfigurator.apply(shooterOneCurrent);
-        kShooterOneSlaveConfigurator.apply(shooterOneMotor);
-
-        kShooterTwoSlaveConfigurator.apply(kShooterTwoConfig);
-        kShooterTwoSlaveConfigurator.apply(shooterTwoCurrent);
-        kShooterTwoSlaveConfigurator.apply(shooterTwoMotor);
+        final TalonFXConfigurator kShooterSlaveConfigurator = kShooterSlave.getConfigurator();
+        kShooterSlaveConfigurator.apply(kShooterConfig);
+        kShooterSlaveConfigurator.apply(shooterCurrent);
+        kShooterSlaveConfigurator.apply(shooterMotor);
     }
 }
+
+//OLD SHOOTER CODE IN CASE WE WANT TO USE BETA
+
+// public class ShooterConstants {
+//     // one is left two is right i got too lazy to change
+//     public static final TalonFX kShooterOne =
+//             new TalonFX(
+//                     GlobalConstants.ShooterIds.kShooterOneId,
+//                     new CANBus(GlobalConstants.kSubsystemCanbusName));
+
+//     public static final TalonFX kShooterOneSlave =
+//             new TalonFX(
+//                     GlobalConstants.ShooterIds.kShooterOneSlaveId,
+//                     new CANBus(GlobalConstants.kSubsystemCanbusName));
+
+//     public static final TalonFX kShooterTwo =
+//             new TalonFX(
+//                     GlobalConstants.ShooterIds.kShooterTwoId,
+//                     new CANBus(GlobalConstants.kSubsystemCanbusName));
+
+//     public static final TalonFX kShooterTwoSlave =
+//             new TalonFX(
+//                     GlobalConstants.ShooterIds.kShooterTwoSlaveId,
+//                     new CANBus(GlobalConstants.kSubsystemCanbusName));
+
+//     public static final TalonFXConfiguration kShooterOneConfig = new TalonFXConfiguration();
+//     public static final TalonFXConfiguration kShooterTwoConfig = new TalonFXConfiguration();
+
+//     public static final Transform2d robotToBetweenShooter = new Transform2d();
+
+//     public static final double kGearboxReduction = 1; // i think this is correct now
+//     public static final double kWheelDiameterMeters =
+//             Units.inchesToMeters(4); // i think this is also correct now
+//     public static final double kWheelRotationMeters = kWheelDiameterMeters * Math.PI;
+//     public static final double kNativeVelToSurfaceMpS =
+//             kWheelRotationMeters / GlobalConstants.kFalconTicksPerRotation * kGearboxReduction;
+
+//     public static final double kNominalVoltage = 11.0;
+//     public static final double kMaxCurrent = 70.0;
+
+//     // feedforward from sysid left shooter
+//     public static final double kS = 0.0;
+//     public static final double kV = 0.12;
+//     public static final double kA = 0.0098105;
+
+//     // sysid right shooter
+//     public static final double kSright = 0.0;
+//     public static final double kVright = 0.123;
+//     public static final double kAright = 0.0098557;
+
+//     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
+
+//     // pid
+//     public static final double shooterOnekP = 0.5;
+//     public static final double shooterTwokP = 0.5;
+//     public static final double masterkI = 0;
+//     public static final double masterkD = 0.0025;
+
+//     public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
+
+//     public static double tempOffset = 0;
+
+//     static {
+//         shootSpeedMap.put(1.0, 13.5 + tempOffset);
+//         shootSpeedMap.put(1.5, 14.0 + tempOffset);
+//         shootSpeedMap.put(2.0, 15.0 + tempOffset);
+//         shootSpeedMap.put(2.5, 15.75 + tempOffset);
+//         shootSpeedMap.put(3.0, 16.0 + tempOffset);
+//         shootSpeedMap.put(3.5, 17.0 + tempOffset);
+//         shootSpeedMap.put(4.0, 18.0 + tempOffset);
+//         shootSpeedMap.put(4.5, 18.75 + tempOffset);
+//         shootSpeedMap.put(5.0, 19.25 + tempOffset);
+//         shootSpeedMap.put(5.5, 20.0 + tempOffset);
+//         shootSpeedMap.put(6.0, 20.5 + tempOffset);
+//         shootSpeedMap.put(6.5, 21.0 + tempOffset);
+//         shootSpeedMap.put(7.0, 21.5 + tempOffset);
+//         shootSpeedMap.put(7.5, 22.0 + tempOffset);
+//         shootSpeedMap.put(8.0, 22.5 + tempOffset);
+
+//         kShooterOneConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+//         kShooterTwoConfig.MotorOutput.Inverted =
+//                 InvertedValue.CounterClockwise_Positive; // these should be opposites of each other
+
+//         MotorOutputConfigs shooterOneMotor = new MotorOutputConfigs();
+//         MotorOutputConfigs shooterTwoMotor = new MotorOutputConfigs();
+
+//         CurrentLimitsConfigs shooterOneCurrent = new CurrentLimitsConfigs();
+//         CurrentLimitsConfigs shooterTwoCurrent = new CurrentLimitsConfigs();
+
+//         // shooter one
+//         kShooterOneConfig.Slot0.kP = shooterOnekP;
+//         kShooterOneConfig.Slot0.kI = masterkI;
+//         kShooterOneConfig.Slot0.kD = masterkD;
+//         kShooterOneConfig.Slot0.kS = kS;
+//         kShooterOneConfig.Slot0.kV = kV;
+//         kShooterOneConfig.Slot0.kA = kA;
+
+//         shooterOneMotor.NeutralMode = NeutralModeValue.Coast;
+//         shooterOneMotor.PeakReverseDutyCycle = 0;
+//         shooterOneMotor.Inverted = InvertedValue.Clockwise_Positive;
+
+//         shooterOneCurrent.StatorCurrentLimitEnable = true;
+//         shooterOneCurrent.StatorCurrentLimit = kMaxCurrent;
+
+//         // shooter two
+//         kShooterTwoConfig.Slot0.kP = shooterTwokP;
+//         kShooterTwoConfig.Slot0.kI = masterkI;
+//         kShooterTwoConfig.Slot0.kD = masterkD;
+//         kShooterTwoConfig.Slot0.kS = kSright;
+//         kShooterTwoConfig.Slot0.kV = kVright;
+//         kShooterTwoConfig.Slot0.kA = kAright;
+
+//         shooterTwoMotor.NeutralMode = NeutralModeValue.Coast;
+//         shooterTwoMotor.PeakReverseDutyCycle = 0;
+//         shooterTwoMotor.Inverted = InvertedValue.CounterClockwise_Positive;
+
+//         shooterTwoCurrent.StatorCurrentLimitEnable = true;
+//         shooterTwoCurrent.StatorCurrentLimit = kMaxCurrent;
+
+//         // apply configs
+//         final TalonFXConfigurator kShooterOneConfigurator = kShooterOne.getConfigurator();
+//         final TalonFXConfigurator kShooterTwoConfigurator = kShooterTwo.getConfigurator();
+//         kShooterOneConfigurator.apply(kShooterOneConfig);
+//         kShooterOneConfigurator.apply(shooterOneCurrent);
+//         kShooterOneConfigurator.apply(shooterOneMotor);
+
+//         kShooterTwoConfigurator.apply(kShooterTwoConfig);
+//         kShooterTwoConfigurator.apply(shooterTwoCurrent);
+//         kShooterTwoConfigurator.apply(shooterTwoMotor);
+
+//         final TalonFXConfigurator kShooterOneSlaveConfigurator = kShooterOneSlave.getConfigurator();
+//         final TalonFXConfigurator kShooterTwoSlaveConfigurator = kShooterTwoSlave.getConfigurator();
+//         kShooterOneSlaveConfigurator.apply(kShooterOneConfig);
+//         kShooterOneSlaveConfigurator.apply(shooterOneCurrent);
+//         kShooterOneSlaveConfigurator.apply(shooterOneMotor);
+
+//         kShooterTwoSlaveConfigurator.apply(kShooterTwoConfig);
+//         kShooterTwoSlaveConfigurator.apply(shooterTwoCurrent);
+//         kShooterTwoSlaveConfigurator.apply(shooterTwoMotor);
+//     }
+// }

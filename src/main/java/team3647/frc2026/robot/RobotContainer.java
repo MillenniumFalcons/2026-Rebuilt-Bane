@@ -37,8 +37,7 @@ import team3647.frc2026.subsystems.Indexer;
 import team3647.frc2026.subsystems.Kicker;
 import team3647.frc2026.subsystems.LEDs;
 import team3647.frc2026.subsystems.Rollers;
-import team3647.frc2026.subsystems.ShooterLeft;
-import team3647.frc2026.subsystems.ShooterRight;
+import team3647.frc2026.subsystems.Shooter;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveReal;
@@ -78,8 +77,7 @@ public class RobotContainer {
         CommandScheduler.getInstance()
                 .registerSubsystem(
                         swerve,
-                        shooterLeft,
-                        shooterRight,
+                        shooter,
                         indexer,
                         hood,
                         wrist,
@@ -111,8 +109,7 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         mainController.rightJoyStickPress));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        shooterLeft.setDefaultCommand(shooterCommands.killLeft());
-        shooterRight.setDefaultCommand(shooterCommands.killRight());
+        shooter.setDefaultCommand(shooterCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
@@ -199,23 +196,32 @@ public class RobotContainer {
                             TunerConstants.BackLeft,
                             TunerConstants.BackRight);
 
-    public final ShooterLeft shooterLeft =
-            new ShooterLeft(
-                    ShooterConstants.kShooterOne,
-                    ShooterConstants.kShooterOneSlave,
+       public final Shooter shooter =
+            new Shooter(
+                    ShooterConstants.kShooter,
+                    ShooterConstants.kShooterSlave,
                     ShooterConstants.kNativeVelToSurfaceMpS,
                     ShooterConstants.kNativeVelToSurfaceMpS,
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
-    public final ShooterRight shooterRight =
-            new ShooterRight(
-                    ShooterConstants.kShooterTwo,
-                    ShooterConstants.kShooterTwoSlave,
-                    ShooterConstants.kNativeVelToSurfaceMpS,
-                    ShooterConstants.kNativeVelToSurfaceMpS,
-                    GlobalConstants.kNominalVoltage,
-                    GlobalConstants.kDt);
+//     public final ShooterLeft shooterLeft =
+//             new ShooterLeft(
+//                     ShooterConstants.kShooterOne,
+//                     ShooterConstants.kShooterOneSlave,
+//                     ShooterConstants.kNativeVelToSurfaceMpS,
+//                     ShooterConstants.kNativeVelToSurfaceMpS,
+//                     GlobalConstants.kNominalVoltage,
+//                     GlobalConstants.kDt);
+
+//     public final ShooterRight shooterRight =
+//             new ShooterRight(
+//                     ShooterConstants.kShooterTwo,
+//                     ShooterConstants.kShooterTwoSlave,
+//                     ShooterConstants.kNativeVelToSurfaceMpS,
+//                     ShooterConstants.kNativeVelToSurfaceMpS,
+//                     GlobalConstants.kNominalVoltage,
+//                     GlobalConstants.kDt);
 
     public final Indexer indexer =
             new Indexer(
@@ -229,6 +235,9 @@ public class RobotContainer {
     public final Kicker kicker =
             new Kicker(
                     KickerConstants.kMaster,
+                    KickerConstants.kSlave1,
+                    KickerConstants.kSlave2,
+                    KickerConstants.kSlave3,
                     0,
                     1,
                     GlobalConstants.kNominalVoltage,
@@ -279,7 +288,7 @@ public class RobotContainer {
                     SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
                     SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
 
-    public final ShooterCommands shooterCommands = new ShooterCommands(shooterLeft, shooterRight);
+    public final ShooterCommands shooterCommands = new ShooterCommands(shooter);
 
     public final IndexerCommands indexerCommands = new IndexerCommands(indexer);
 
@@ -319,8 +328,7 @@ public class RobotContainer {
 
     public final Superstructure superstructure =
             new Superstructure(
-                    shooterLeft,
-                    shooterRight,
+                    shooter,
                     indexer,
                     hood,
                     kicker,

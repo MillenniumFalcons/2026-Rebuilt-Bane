@@ -1,10 +1,12 @@
 package team3647.frc2026.util;
 
+import java.util.EnumMap;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import java.util.EnumMap;
-import org.littletonrobotics.junction.Logger;
 
 public class LEDStates {
 
@@ -21,10 +23,11 @@ public class LEDStates {
         }
     }
 
-    public EnumMap<SuperstructureState, Boolean> states =
-            new EnumMap<SuperstructureState, Boolean>(SuperstructureState.class);
+    public EnumMap<SuperstructureState, Boolean> states = 
+        new EnumMap<SuperstructureState, Boolean>(SuperstructureState.class);
 
     public double counter = 0;
+    public double counter2 = 0;
 
     public LEDStates() {
         for (SuperstructureState state : SuperstructureState.values()) {
@@ -33,7 +36,7 @@ public class LEDStates {
         states.put(SuperstructureState.NONE, true);
     }
 
-    public SuperstructureState getHighestPriorityState() {
+    public synchronized SuperstructureState getHighestPriorityState() {
         SuperstructureState highestPriorityState = SuperstructureState.NONE;
         for (SuperstructureState state : SuperstructureState.values()) {
             if (states.get(state) && state.priority > highestPriorityState.priority) {
@@ -43,15 +46,16 @@ public class LEDStates {
         return highestPriorityState;
     }
 
-    public void setStateTrue(SuperstructureState newState) {
+    public synchronized void setStateTrue(SuperstructureState newState) {
         states.put(newState, true);
         log();
-        counter++;
+        counter ++;
     }
 
-    public void setStateFalse(SuperstructureState newState) {
+    public synchronized void setStateFalse(SuperstructureState newState) {
         states.put(newState, false);
         log();
+        counter2 ++;
     }
 
     public Command setStateTrueCommand(SuperstructureState newState) {
@@ -62,18 +66,17 @@ public class LEDStates {
         return Commands.runOnce(() -> setStateFalse(newState));
     }
 
-    /**
-     * use in deadline with a command to set the state true when the command starts and false when
-     * it ends
-     */
+    /**  
+    * use in deadline with a command to set the state true when the command starts and false when it ends 
+    */
     public Command activateState(SuperstructureState newState) {
         return Commands.startEnd(() -> setStateTrue(newState), () -> setStateFalse(newState));
     }
 
     /**
-     * use to bind a boolean trigger to a state the state will be true when the trigger is true and
-     * false when the trigger is false
-     */
+    * use to bind a boolean trigger to a state
+    * the state will be true when the trigger is true and false when the trigger is false
+    */
     public void bindStateToTrigger(SuperstructureState newState, Trigger trigger) {
         trigger.whileTrue(activateState(newState));
     }

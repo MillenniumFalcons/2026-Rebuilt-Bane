@@ -33,22 +33,27 @@ public class GlobalConstants {
 
     public class KickerIds {
         public static final int kMasterId = 18;
+        public static final int kSlave1Id = 19;
+        public static final int kSlave2Id = 20;
+        public static final int kSlave3Id = 21;
     }
 
     public class ShooterIds {
-        public static final int kShooterOneId = 19; // left
-        public static final int kShooterOneSlaveId = 20; // left slave
-        public static final int kShooterTwoId = 21; // right
-        public static final int kShooterTwoSlaveId = 22; // right slave
+        public static final int kMasterId = 23;
+        public static final int kSlaveId = 24;
+        // public static final int kShooterOneId = 19; // left
+        // public static final int kShooterOneSlaveId = 20; // left slave
+        // public static final int kShooterTwoId = 21; // right
+        // public static final int kShooterTwoSlaveId = 22; // right slave
     }
 
     public class HoodIds {
-        public static final int kMasterId = 23;
+        public static final int kMasterId = 25; // old id is 23
         public static final int kCanCoderId = 26;
     }
 
-    public class ClimbIds {
-        public static final int kLeftId = 24;
-        public static final int kRightId = 25;
-    }
+    // public class ClimbIds {
+    //     public static final int kLeftId = 24;
+    //     public static final int kRightId = 25;
+    // }
 }
