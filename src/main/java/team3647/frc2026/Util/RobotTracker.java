@@ -1,5 +1,6 @@
 package team3647.frc2026.util;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -162,7 +163,7 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         double vx = fieldRelSpeeds.vxMetersPerSecond;
         double vy = fieldRelSpeeds.vyMetersPerSecond;
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             time = timeOfFlightMap.get(currentDistance);
             lookaheadPose = new Pose2d(pose.getX() + vx * time, pose.getY() + vy * time, pose.getRotation());
             currentDistance = getDistanceFromHub(lookaheadPose);
@@ -195,14 +196,14 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     // Initial guess: τ = D / (vp + |v|cos(θ))  where vp ≈ D/TOF(D)
     // public Pose2d compensate(Pose2d pose) {
     //     double currentDistance = periodicIO.distanceFromHub;
-    //     double time = currentDistance / (currentDistance / timeOfFlightMap.get(currentDistance) + getSpeedToHub());
+    //     double time = timeOfFlightMap.get(currentDistance);
     //     Pose2d lookaheadPose = pose;
     //     ChassisSpeeds fieldRelSpeeds =
     //             ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getPose().getRotation());
     //     double vx = fieldRelSpeeds.vxMetersPerSecond;
     //     double vy = fieldRelSpeeds.vyMetersPerSecond;
 
-    //     for (int i = 0; i < 5; i++) {
+    //     for (int i = 0; i < 10; i++) {
     //         currentDistance = getDistanceFromHub(lookaheadPose);
     //         double error = time - timeOfFlightMap.get(currentDistance);
     //         double distanceDerivative =
@@ -210,15 +211,15 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     //                         - (hubPose.getY() - lookaheadPose.getY()) * vy)/currentDistance;
     //         double distanceDerivativeOfTime = time/currentDistance;
     //         double errorDerivative = 1 - distanceDerivativeOfTime * distanceDerivative;
-    //         time = time - error / errorDerivative;
+    //         double timeChange = error / errorDerivative;
+    //         // Limit time change to prevent divergence
+    //         timeChange = MathUtil.clamp(timeChange, -0.2, 0.2);
+    //         time = time - timeChange;
     //         lookaheadPose = new Pose2d(pose.getX() + vx * time, pose.getY() + vy * time, pose.getRotation());
-    //         Logger.recordOutput("SOTMValues/time", time);
     //         Logger.recordOutput("SOTMValues/error", error);
     //         Logger.recordOutput("SOTMValues/error derivative", errorDerivative);
     //     }
 
-    //     Pose2d compensatedPose = new Pose2d(pose.getX() + vx * time, pose.getY() + vy * time, pose.getRotation());
-    //     Logger.recordOutput("SOTMValues/compensated pose", compensatedPose);
     //     Logger.recordOutput("SOTMAutoAlign/lookahead", lookaheadPose);
     //     Logger.recordOutput("SOTMValues/compensate time", time);
     //     Logger.recordOutput("SOTMValues/compensate distance", currentDistance);
@@ -286,11 +287,11 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
         this.color = color;
 
-        hubPose = AllianceFlip.flip(FieldConstants.hubPose, color);
+        hubPose = AllianceFlip.flip(FieldConstants.blueHubPose, color);
 
         feedPose = AllianceFlip.flip(feedPose, color);
 
-        feedPoseLeft = AllianceFlip.flip(FieldConstants.feedPoseLeft, color);
-        feedPoseRight = AllianceFlip.flip(FieldConstants.feedPoseRight, color);
+        feedPoseLeft = AllianceFlip.flip(FieldConstants.blueFeedPoseLeft, color);
+        feedPoseRight = AllianceFlip.flip(FieldConstants.blueFeedPoseRight, color);
     }
 }

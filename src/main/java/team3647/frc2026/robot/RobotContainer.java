@@ -310,7 +310,7 @@ public class RobotContainer {
 
     public final RobotTracker robotTracker =
             new RobotTracker(
-                    FieldConstants.hubPose,
+                    FieldConstants.redHubPose,
                     FieldConstants.feedPoseRight,
                     FieldConstants.feedPoseLeft,
                     ShooterConstants.robotToBetweenShooter,
