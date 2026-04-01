@@ -22,7 +22,8 @@ public class IndexerConstants {
     public static final TalonFXConfiguration kRightSlaveConfig = new TalonFXConfiguration();
 
     static {
-        kLeftMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //change if needed
+        kLeftMasterConfig.MotorOutput.Inverted =
+                InvertedValue.CounterClockwise_Positive; // change if needed
         kLeftMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kLeftMasterConfig.CurrentLimits.StatorCurrentLimit = 50.0;
@@ -30,7 +31,8 @@ public class IndexerConstants {
 
         kLeftMaster.getConfigurator().apply(kLeftMasterConfig);
 
-        kRightSlaveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // change if needed
+        kRightSlaveConfig.MotorOutput.Inverted =
+                InvertedValue.Clockwise_Positive; // change if needed
         kRightSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kRightSlaveConfig.CurrentLimits.StatorCurrentLimit = 50.0;

@@ -2,7 +2,6 @@ package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-
 import java.util.List;
 import team3647.lib.TalonFXSubsystem;
 
@@ -18,7 +17,7 @@ public class Kicker extends TalonFXSubsystem {
             double nominalVoltage,
             double kDt) {
         super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
-        addFollower(slave1, MotorAlignmentValue.Opposed); 
+        addFollower(slave1, MotorAlignmentValue.Opposed);
         addFollower(slave2, MotorAlignmentValue.Aligned);
         addFollower(slave3, MotorAlignmentValue.Opposed);
     }

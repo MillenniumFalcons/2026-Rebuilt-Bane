@@ -37,14 +37,14 @@ public class ShooterConstants {
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxCurrent = 70.0;
 
-    //need to sys these
+    // need to sys these
     public static final double kS = 0.0;
     public static final double kV = 0.12;
     public static final double kA = 0.0098105;
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
-    //need to tune
+    // need to tune
     public static final double kP = 0.5;
     public static final double kI = 0;
     public static final double kD = 0.0025;
@@ -54,7 +54,7 @@ public class ShooterConstants {
     public static double tempOffset = 0;
 
     static {
-        //need to reinterpolate
+        // need to reinterpolate
         shootSpeedMap.put(1.0, 13.5 + tempOffset);
         shootSpeedMap.put(1.5, 14.0 + tempOffset);
         shootSpeedMap.put(2.0, 15.0 + tempOffset);
@@ -71,7 +71,8 @@ public class ShooterConstants {
         shootSpeedMap.put(7.5, 22.0 + tempOffset);
         shootSpeedMap.put(8.0, 22.5 + tempOffset);
 
-        kShooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // make sure this is right
+        kShooterConfig.MotorOutput.Inverted =
+                InvertedValue.Clockwise_Positive; // make sure this is right
 
         MotorOutputConfigs shooterMotor = new MotorOutputConfigs();
         CurrentLimitsConfigs shooterCurrent = new CurrentLimitsConfigs();
@@ -102,7 +103,7 @@ public class ShooterConstants {
     }
 }
 
-//OLD SHOOTER CODE IN CASE WE WANT TO USE BETA
+// OLD SHOOTER CODE IN CASE WE WANT TO USE BETA
 
 // public class ShooterConstants {
 //     // one is left two is right i got too lazy to change
@@ -159,7 +160,8 @@ public class ShooterConstants {
 //     public static final double masterkI = 0;
 //     public static final double masterkD = 0.0025;
 
-//     public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
+//     public static final InterpolatingDoubleTreeMap shootSpeedMap = new
+// InterpolatingDoubleTreeMap();
 
 //     public static double tempOffset = 0;
 
@@ -182,7 +184,8 @@ public class ShooterConstants {
 
 //         kShooterOneConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 //         kShooterTwoConfig.MotorOutput.Inverted =
-//                 InvertedValue.CounterClockwise_Positive; // these should be opposites of each other
+//                 InvertedValue.CounterClockwise_Positive; // these should be opposites of each
+// other
 
 //         MotorOutputConfigs shooterOneMotor = new MotorOutputConfigs();
 //         MotorOutputConfigs shooterTwoMotor = new MotorOutputConfigs();
@@ -231,8 +234,10 @@ public class ShooterConstants {
 //         kShooterTwoConfigurator.apply(shooterTwoCurrent);
 //         kShooterTwoConfigurator.apply(shooterTwoMotor);
 
-//         final TalonFXConfigurator kShooterOneSlaveConfigurator = kShooterOneSlave.getConfigurator();
-//         final TalonFXConfigurator kShooterTwoSlaveConfigurator = kShooterTwoSlave.getConfigurator();
+//         final TalonFXConfigurator kShooterOneSlaveConfigurator =
+// kShooterOneSlave.getConfigurator();
+//         final TalonFXConfigurator kShooterTwoSlaveConfigurator =
+// kShooterTwoSlave.getConfigurator();
 //         kShooterOneSlaveConfigurator.apply(kShooterOneConfig);
 //         kShooterOneSlaveConfigurator.apply(shooterOneCurrent);
 //         kShooterOneSlaveConfigurator.apply(shooterOneMotor);

@@ -196,7 +196,7 @@ public class RobotContainer {
                             TunerConstants.BackLeft,
                             TunerConstants.BackRight);
 
-       public final Shooter shooter =
+    public final Shooter shooter =
             new Shooter(
                     ShooterConstants.kShooter,
                     ShooterConstants.kShooterSlave,
@@ -205,23 +205,23 @@ public class RobotContainer {
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
-//     public final ShooterLeft shooterLeft =
-//             new ShooterLeft(
-//                     ShooterConstants.kShooterOne,
-//                     ShooterConstants.kShooterOneSlave,
-//                     ShooterConstants.kNativeVelToSurfaceMpS,
-//                     ShooterConstants.kNativeVelToSurfaceMpS,
-//                     GlobalConstants.kNominalVoltage,
-//                     GlobalConstants.kDt);
+    //     public final ShooterLeft shooterLeft =
+    //             new ShooterLeft(
+    //                     ShooterConstants.kShooterOne,
+    //                     ShooterConstants.kShooterOneSlave,
+    //                     ShooterConstants.kNativeVelToSurfaceMpS,
+    //                     ShooterConstants.kNativeVelToSurfaceMpS,
+    //                     GlobalConstants.kNominalVoltage,
+    //                     GlobalConstants.kDt);
 
-//     public final ShooterRight shooterRight =
-//             new ShooterRight(
-//                     ShooterConstants.kShooterTwo,
-//                     ShooterConstants.kShooterTwoSlave,
-//                     ShooterConstants.kNativeVelToSurfaceMpS,
-//                     ShooterConstants.kNativeVelToSurfaceMpS,
-//                     GlobalConstants.kNominalVoltage,
-//                     GlobalConstants.kDt);
+    //     public final ShooterRight shooterRight =
+    //             new ShooterRight(
+    //                     ShooterConstants.kShooterTwo,
+    //                     ShooterConstants.kShooterTwoSlave,
+    //                     ShooterConstants.kNativeVelToSurfaceMpS,
+    //                     ShooterConstants.kNativeVelToSurfaceMpS,
+    //                     GlobalConstants.kNominalVoltage,
+    //                     GlobalConstants.kDt);
 
     public final Indexer indexer =
             new Indexer(

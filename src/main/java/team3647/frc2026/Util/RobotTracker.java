@@ -1,7 +1,9 @@
 package team3647.frc2026.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -11,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
+
+import team3647.frc2026.constants.FieldConstants;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
 
@@ -148,43 +152,78 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     //     return pose.exp(newTransform);
     // }
 
+    // Fixed-point iteration (old method, kept for reference)
     public Pose2d compensate(Pose2d pose) {
-        // Start with the current actual distance
         double currentDistance = periodicIO.distanceFromHub;
         double time = 0.0;
-        double speed = 0.0;
         Pose2d lookaheadPose = pose;
         ChassisSpeeds fieldRelSpeeds =
                 ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getPose().getRotation());
-        // ChassisSpeeds fieldRelSpeeds =
-        //         getChassisSpeeds();
+        double vx = fieldRelSpeeds.vxMetersPerSecond;
+        double vy = fieldRelSpeeds.vyMetersPerSecond;
 
-        // Iterate 5 times to converge on the accurate lookahead pose
         for (int i = 0; i < 5; i++) {
             time = timeOfFlightMap.get(currentDistance);
-
-            // Calculate how far the robot will travel during that Time of Flight
-            var transform =
-                    new Twist2d(
-                            fieldRelSpeeds.vxMetersPerSecond * time,
-                            fieldRelSpeeds.vyMetersPerSecond * time,
-                            0);
-
-            // Apply the offset to get the predicted position
-            lookaheadPose = pose.exp(transform);
-
-            // Update the distance based on this new position for the next loop
+            lookaheadPose = new Pose2d(pose.getX() + vx * time, pose.getY() + vy * time, pose.getRotation());
             currentDistance = getDistanceFromHub(lookaheadPose);
             Logger.recordOutput("SOTMAutoAlign/lookahead", lookaheadPose);
         }
 
-        // Log the final converged values
         Logger.recordOutput("SOTMValues/compensate time", time);
         Logger.recordOutput("SOTMValues/compensate distance", currentDistance);
-        Logger.recordOutput("SOTMValues/compensate speed", speed);
-
         return lookaheadPose;
     }
+
+    public double getSpeedToHub() {
+        ChassisSpeeds fieldRelSpeeds =
+                ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getPose().getRotation());
+        Translation2d toHub = hubPose.getTranslation().minus(getPose().getTranslation());
+        return (toHub.getX() * fieldRelSpeeds.vxMetersPerSecond
+                + toHub.getY() * fieldRelSpeeds.vyMetersPerSecond) / toHub.getNorm();
+    }
+
+    // Newton's method for dynamic shooting per:
+    // https://frc-docs--3242.org.readthedocs.build/en/3242/docs/software/advanced-controls/fire-control/newton-shooting.html
+    //
+    // Solves: E(τ) = τ - TOF(D(τ)) = 0
+    //   where D(τ) = distance from lookahead shooter position to hub
+    //
+    // E'(τ) = 1 - τ'(D) * dD/dτ
+    //   dD/dτ = -(dx*vx + dy*vy) / D   (analytic, from displacement vector)
+    //   τ'(D) = numerical derivative of TOF lookup table
+    //
+    // Initial guess: τ = D / (vp + |v|cos(θ))  where vp ≈ D/TOF(D)
+    // public Pose2d compensate(Pose2d pose) {
+    //     double currentDistance = periodicIO.distanceFromHub;
+    //     double time = currentDistance / (currentDistance / timeOfFlightMap.get(currentDistance) + getSpeedToHub());
+    //     Pose2d lookaheadPose = pose;
+    //     ChassisSpeeds fieldRelSpeeds =
+    //             ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getPose().getRotation());
+    //     double vx = fieldRelSpeeds.vxMetersPerSecond;
+    //     double vy = fieldRelSpeeds.vyMetersPerSecond;
+
+    //     for (int i = 0; i < 5; i++) {
+    //         currentDistance = getDistanceFromHub(lookaheadPose);
+    //         double error = time - timeOfFlightMap.get(currentDistance);
+    //         double distanceDerivative =
+    //                 (-(hubPose.getX() - lookaheadPose.getX()) * vx
+    //                         - (hubPose.getY() - lookaheadPose.getY()) * vy)/currentDistance;
+    //         double distanceDerivativeOfTime = time/currentDistance;
+    //         double errorDerivative = 1 - distanceDerivativeOfTime * distanceDerivative;
+    //         time = time - error / errorDerivative;
+    //         lookaheadPose = new Pose2d(pose.getX() + vx * time, pose.getY() + vy * time, pose.getRotation());
+    //         Logger.recordOutput("SOTMValues/time", time);
+    //         Logger.recordOutput("SOTMValues/error", error);
+    //         Logger.recordOutput("SOTMValues/error derivative", errorDerivative);
+    //     }
+
+    //     Pose2d compensatedPose = new Pose2d(pose.getX() + vx * time, pose.getY() + vy * time, pose.getRotation());
+    //     Logger.recordOutput("SOTMValues/compensated pose", compensatedPose);
+    //     Logger.recordOutput("SOTMAutoAlign/lookahead", lookaheadPose);
+    //     Logger.recordOutput("SOTMValues/compensate time", time);
+    //     Logger.recordOutput("SOTMValues/compensate distance", currentDistance);
+    //     return lookaheadPose;
+    // }
 
     public Pose2d compensateFeed(Pose2d pose) {
 
@@ -247,11 +286,11 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
         this.color = color;
 
-        hubPose = AllianceFlip.flip(hubPose, color);
+        hubPose = AllianceFlip.flip(FieldConstants.hubPose, color);
 
         feedPose = AllianceFlip.flip(feedPose, color);
 
-        feedPoseLeft = AllianceFlip.flip(feedPoseLeft, color);
-        feedPoseRight = AllianceFlip.flip(feedPoseRight, color);
+        feedPoseLeft = AllianceFlip.flip(FieldConstants.feedPoseLeft, color);
+        feedPoseRight = AllianceFlip.flip(FieldConstants.feedPoseRight, color);
     }
 }

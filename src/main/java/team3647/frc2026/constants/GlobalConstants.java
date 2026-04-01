@@ -52,8 +52,8 @@ public class GlobalConstants {
         public static final int kCanCoderId = 26;
     }
 
-    // public class ClimbIds {
-    //     public static final int kLeftId = 24;
-    //     public static final int kRightId = 25;
-    // }
+    public class ClimbIds {
+        public static final int kLeftId = 67; // these are not real
+        public static final int kRightId = 69;
+    }
 }

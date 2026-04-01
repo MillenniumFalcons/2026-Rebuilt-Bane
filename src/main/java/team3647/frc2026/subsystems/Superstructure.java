@@ -139,14 +139,12 @@ public class Superstructure {
 
     public Command shoot() {
         return Commands.parallel(
-                        logEverything(),
-                        prep(),
-                        Commands.sequence(
-                                deployIntake()
-                                        .until(readyToShoot)
-                                        .andThen(Commands.waitSeconds(1.25)),
-                                retractIntake()),
-                        indexWhenReady());
+                logEverything(),
+                prep(),
+                Commands.sequence(
+                        deployIntake().until(readyToShoot).andThen(Commands.waitSeconds(1.25)),
+                        retractIntake()),
+                indexWhenReady());
     }
 
     public Command bumpShot() {
@@ -172,10 +170,10 @@ public class Superstructure {
 
     public Command indexWhenReady() {
         return Commands.sequence(
-                        Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
-                        index().onlyWhile(readyToShoot)
-                                .repeatedly()
-                                .deadlineFor(ledStates.activateState(SuperstructureState.SHOOTING)));
+                Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
+                index().onlyWhile(readyToShoot)
+                        .repeatedly()
+                        .deadlineFor(ledStates.activateState(SuperstructureState.SHOOTING)));
     }
 
     public Command index() {

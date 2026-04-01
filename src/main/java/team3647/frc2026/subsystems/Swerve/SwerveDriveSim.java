@@ -122,7 +122,7 @@ public class SwerveDriveSim implements SwerveDrive {
 
         periodicIO.pose = simSwerve.getOdometryEstimatedPose();
         periodicIO.simPose = simSwerve.getActualPoseInSimulationWorld();
-        periodicIO.measuredSpeeds = simSwerve.getMeasuredSpeedsFieldRelative(true);
+        periodicIO.measuredSpeeds = simSwerve.getMeasuredSpeedsRobotRelative(true);
         periodicIO.actualSpeeds = simSwerve.getActualSpeedsFieldRelative();
         periodicIO.timestamp = Timer.getFPGATimestamp();
 

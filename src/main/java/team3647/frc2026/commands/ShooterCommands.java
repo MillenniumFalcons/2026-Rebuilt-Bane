@@ -13,9 +13,7 @@ public class ShooterCommands {
     }
 
     public Command setOpenLoop(double output) {
-        return Commands.run(
-                () -> shooter.setOpenLoop(output),
-                shooter);
+        return Commands.run(() -> shooter.setOpenLoop(output), shooter);
     }
 
     public Command kill() {
@@ -23,17 +21,13 @@ public class ShooterCommands {
     }
 
     public Command setVelocity(DoubleSupplier vel) {
-        return Commands.run(
-                () -> shooter.setVelocityVoltage(vel.getAsDouble()),
-                shooter);
+        return Commands.run(() -> shooter.setVelocityVoltage(vel.getAsDouble()), shooter);
     }
 
     public boolean isAtVelocity(DoubleSupplier velocity, double tolerance) {
         return Math.abs(shooter.getVelocity() - velocity.getAsDouble()) < tolerance;
     }
-    
 }
-    
 
 //     ShooterLeft shooterOne;
 //     ShooterRight shooterTwo;

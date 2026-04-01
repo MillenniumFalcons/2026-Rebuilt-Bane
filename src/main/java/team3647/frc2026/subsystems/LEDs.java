@@ -4,14 +4,9 @@ import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.EmptyControl;
 import com.ctre.phoenix6.hardware.CANdle;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
-
 import team3647.frc2026.constants.LEDConstants;
 import team3647.frc2026.util.LEDStates;
 import team3647.frc2026.util.LEDStates.SuperstructureState;
@@ -48,10 +43,10 @@ public class LEDs extends VirtualSubsystem implements AllianceObserver {
         if (currentState != highestState) {
             currentState = highestState;
             if (currentState == SuperstructureState.NONE) {
-                //candle.clearAllAnimations();
-            } 
-            //candle.setControl(masterRequest);
-            //candle.setControl(stateAnimations.getOrDefault(currentState, defaultAnimation));
+                // candle.clearAllAnimations();
+            }
+            // candle.setControl(masterRequest);
+            // candle.setControl(stateAnimations.getOrDefault(currentState, defaultAnimation));
         }
         masterRequest = stateAnimations.getOrDefault(currentState, defaultAnimation);
         Logger.recordOutput("led state", currentState);
@@ -61,7 +56,7 @@ public class LEDs extends VirtualSubsystem implements AllianceObserver {
     @Override
     public void periodic() {
         setAnimationWithState();
-        //candle.setControl(masterRequest);
+        // candle.setControl(masterRequest);
         ledStates.log();
     }
 

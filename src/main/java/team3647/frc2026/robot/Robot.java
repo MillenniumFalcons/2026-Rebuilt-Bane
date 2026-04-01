@@ -6,6 +6,7 @@ package team3647.frc2026.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import dev.doglog.DogLog;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotController;
@@ -32,6 +33,7 @@ public class Robot extends LoggedRobot {
     private final boolean isReplay = false;
 
     public Robot() {
+        NetworkTableInstance.getDefault().startServer();
         Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
 
         if (super.getRuntimeType().equals(RuntimeType.kRoboRIO2)) {
