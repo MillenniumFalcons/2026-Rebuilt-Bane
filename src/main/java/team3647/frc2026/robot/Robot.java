@@ -117,8 +117,12 @@ public class Robot extends LoggedRobot {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
-            CommandScheduler.getInstance().schedule(m_autonomousCommand);
-            // m_autonomousCommand.schedule();
+            System.out.println("AUTO: Scheduling command: " + m_autonomousCommand.getName());
+            System.out.println("AUTO: Command class: " + m_autonomousCommand.getClass().getName());
+            System.out.println("AUTO: Requirements: " + m_autonomousCommand.getRequirements());
+            m_autonomousCommand.schedule();
+        } else {
+            System.out.println("AUTO: Command is null!");
         }
     }
 

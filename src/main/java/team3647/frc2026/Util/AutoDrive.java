@@ -111,6 +111,10 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         return Commands.runOnce(() -> this.enabled = false);
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public boolean getAutoDriveEnabled() {
         return enabled;
     }

@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
+import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.lib.team9442.AllianceObserver;
 
@@ -115,5 +116,17 @@ public class SwerveDriveCommands implements AllianceObserver {
                     // }
                 },
                 swerve);
+    }
+
+    public Command driveButInAuto(AutoDrive autoDrive, Supplier<Twist2d> autoDriveVelocities) {
+        return Commands.sequence(
+                        Commands.runOnce(() -> swerve.drive(0, 0, 0)),
+                        autoDrive.enableAutoDrive(),
+                        Commands.run(
+                                () ->
+                                        swerve.driveFieldOriented(
+                                                0, 0, autoDriveVelocities.get().dtheta),
+                                swerve))
+                .finallyDo(() -> autoDrive.setEnabled(false));
     }
 }

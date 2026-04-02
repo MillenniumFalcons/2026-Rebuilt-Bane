@@ -5,8 +5,17 @@
 package team3647.frc2026.robot;
 
 import com.ctre.phoenix6.Utils;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PathFollowingController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -84,6 +93,64 @@ public class RobotContainer {
                         kicker,
                         // climb,
                         printer);
+    }
+
+    private void configurePathPlanner() {
+        RobotConfig ppConfig;
+        try {
+            ppConfig = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            DriverStation.reportError(
+                    "Failed to load PathPlanner config from GUI, using fallback",
+                    e.getStackTrace());
+            double halfWB = SwerveDriveConstants.kWheelBase / 2.0;
+            double halfTW = SwerveDriveConstants.kTrackWidth / 2.0;
+            ppConfig =
+                    new RobotConfig(
+                            52, // mass kg
+                            6.55, // MOI
+                            new ModuleConfig(
+                                    0.049, // wheel radius
+                                    SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
+                                    1.2, // wheel COF
+                                    DCMotor.getKrakenX60(1).withReduction(5.4),
+                                    60.0, // current limit
+                                    1),
+                            new Translation2d(halfWB, halfTW),
+                            new Translation2d(halfWB, -halfTW),
+                            new Translation2d(-halfWB, halfTW),
+                            new Translation2d(-halfWB, -halfTW));
+        }
+
+        PathFollowingController ppController =
+                new PPHolonomicDriveController(
+                        new com.pathplanner.lib.config.PIDConstants(2.0, 0, 0.05),
+                        new com.pathplanner.lib.config.PIDConstants(5.0, 0, 0.1));
+
+        AutoBuilder.configure(
+                swerve::getOdoPose,
+                swerve::resetPose,
+                swerve::getChassisSpeeds,
+                (speeds, feedforwards) -> {
+                    //     System.out.println(
+                    //             "PP OUTPUT: vx="
+                    //                     + speeds.vxMetersPerSecond
+                    //                     + " vy="
+                    //                     + speeds.vyMetersPerSecond
+                    //                     + " omega="
+                    //                     + speeds.omegaRadiansPerSecond);
+                    swerve.drive(
+                            speeds.vxMetersPerSecond,
+                            speeds.vyMetersPerSecond,
+                            speeds.omegaRadiansPerSecond);
+                },
+                ppController,
+                ppConfig,
+                () ->
+                        DriverStation.getAlliance()
+                                .map(a -> a == DriverStation.Alliance.Red)
+                                .orElse(false),
+                swerve);
     }
 
     private void configureAllianceObservers() {
@@ -345,6 +412,14 @@ public class RobotContainer {
     public final VisionIOHardwareLimelight visionIO = new VisionIOHardwareLimelight(visionState);
 
     public final VisionSubsystem visionSubsystem = new VisionSubsystem(visionIO, visionState);
+
+    {
+        NamedCommands.registerCommand("intake", superstructure.intakeWithDelay());
+        NamedCommands.registerCommand("shoot", superstructure.shoot());
+        NamedCommands.registerCommand(
+                "autoalign", swerveCommands.driveButInAuto(autoDrive, autoDrive::getVelocities));
+        configurePathPlanner();
+    }
 
     public final AutoCommands autoCommands =
             new AutoCommands(

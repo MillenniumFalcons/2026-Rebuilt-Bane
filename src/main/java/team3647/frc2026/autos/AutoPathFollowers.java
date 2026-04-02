@@ -4,23 +4,32 @@ import choreo.Choreo;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import com.ctre.phoenix6.Utils;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import java.io.IOException;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.autos.AutoCommands.ChoreoController;
 import team3647.frc2026.constants.AutoConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
+import team3647.frc2026.util.AllianceFlip;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.PoseUtils;
 import team3647.lib.team9442.AllianceObserver;
@@ -217,6 +226,21 @@ public class AutoPathFollowers implements AllianceObserver {
         return traj.getInitialPose(color == Alliance.Red).orElse(new Pose2d());
     }
 
+    public Pose2d getInitialPP(String pathName, Alliance color) {
+        Pose2d startPose;
+        try {
+            startPose =
+                    PathPlannerAuto.getPathGroupFromAutoFile(pathName)
+                            .get(0)
+                            .getStartingHolonomicPose()
+                            .get();
+        } catch (FileVersionException | IOException | ParseException e) {
+            startPose = new Pose2d();
+            e.printStackTrace();
+        }
+        return AllianceFlip.flip(startPose, color);
+    }
+
     @Override
     public void onAllianceFound(Alliance color) {
 
@@ -231,5 +255,44 @@ public class AutoPathFollowers implements AllianceObserver {
 
     public boolean isRed() {
         return this.isRed;
+    }
+
+    // =========================================================================
+    // PathPlanner path following
+    // =========================================================================
+
+    /** Follow a PathPlanner path by name (loads from deploy/pathplanner/paths/). */
+    public Command followPathPlannerPath(String pathName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+            return AutoBuilder.followPath(path);
+        } catch (Exception e) {
+            DriverStation.reportError(
+                    "Failed to load PathPlanner path: " + pathName, e.getStackTrace());
+            return Commands.none();
+        }
+    }
+
+    /** Run a full PathPlanner auto by name (loads from deploy/pathplanner/autos/). */
+    public Command followPathPlannerAuto(String autoName) {
+        try {
+            return AutoBuilder.buildAuto(autoName);
+        } catch (Exception e) {
+            DriverStation.reportError(
+                    "Failed to load PathPlanner auto: " + autoName, e.getStackTrace());
+            return Commands.none();
+        }
+    }
+
+    /** Pathfind to a pose using PathPlanner's dynamic pathfinding. */
+    public Command pathfindToPose(Pose2d targetPose, PathConstraints constraints) {
+        return AutoBuilder.pathfindToPose(targetPose, constraints);
+    }
+
+    /** Pathfind to a pose with default constraints. */
+    public Command pathfindToPose(Pose2d targetPose) {
+        return pathfindToPose(
+                targetPose,
+                new PathConstraints(3.0, 3.0, Math.toRadians(540), Math.toRadians(720)));
     }
 }

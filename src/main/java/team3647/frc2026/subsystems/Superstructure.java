@@ -187,10 +187,14 @@ public class Superstructure {
     }
 
     public Command intake() {
-        return Commands.parallel(
-                        wristCommands.deploy(),
-                        rollerCommands.intake(),
-                        kickerCommands.jamProtect())
+        return Commands.parallel(wristCommands.deploy(), rollerCommands.intake())
+                .deadlineFor(ledStates.activateState(SuperstructureState.INTAKING));
+    }
+
+    public Command intakeWithDelay() {
+        return Commands.sequence(
+                        Commands.waitSeconds(0.5),
+                        Commands.parallel(wristCommands.deploy(), rollerCommands.intake()))
                 .deadlineFor(ledStates.activateState(SuperstructureState.INTAKING));
     }
 

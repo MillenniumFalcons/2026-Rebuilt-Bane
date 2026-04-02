@@ -17,6 +17,15 @@ import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.util.AutoDrive;
 
 public class AutoCommands extends AutoPathFollowers {
+    // pathplanner autos
+    public Command leftMidRushPathPlanner() {
+        return followPathPlannerAuto("Left Mid Sweep");
+    }
+
+    public Command rightMidRushPathPlanner() {
+        return followPathPlannerAuto("Right Mid Sweep");
+    }
+
     // actual autos
 
     // preload only
@@ -68,10 +77,14 @@ public class AutoCommands extends AutoPathFollowers {
     public List<AutoMode> redAutosList;
     public List<AutoMode> blueAutosList;
 
+    public final AutoMode leftMidRushBluePP;
+    public final AutoMode leftMidRushRedPP;
+
+    public final AutoMode rightMidRushBluePP;
+    public final AutoMode rightMidRushRedPP;
+
     public final AutoMode blueEmpty;
     public final AutoMode preloadBlue;
-    public final AutoMode rightMidRushBlue;
-    public final AutoMode leftMidRushBlue;
     public final AutoMode rightDoubleMidRushBlue;
     public final AutoMode leftDoubleMidRushBlue;
     public final AutoMode rightDoubleMidRushLoopBlue;
@@ -79,8 +92,6 @@ public class AutoCommands extends AutoPathFollowers {
 
     public final AutoMode redEmpty;
     public final AutoMode preloadRed;
-    public final AutoMode rightMidRushRed;
-    public final AutoMode leftMidRushRed;
     public final AutoMode rightDoubleMidRushRed;
     public final AutoMode leftDoubleMidRushRed;
     public final AutoMode rightDoubleMidRushLoopRed;
@@ -94,22 +105,34 @@ public class AutoCommands extends AutoPathFollowers {
             AutoDrive autoDrive) {
         super(swerve, superstructure, autoDriveVelocities, hasTarget, autoDrive);
 
+        this.leftMidRushBluePP =
+                new AutoMode(
+                        leftMidRushPathPlanner(),
+                        getInitialPP("Left Mid Sweep", Alliance.Blue),
+                        "Left Mid Sweep");
+        this.leftMidRushRedPP =
+                new AutoMode(
+                        leftMidRushPathPlanner(),
+                        getInitialPP("Left Mid Sweep", Alliance.Red),
+                        "Left Mid Sweep");
+
+        this.rightMidRushBluePP =
+                new AutoMode(
+                        rightMidRushPathPlanner(),
+                        getInitialPP("Right Mid Sweep", Alliance.Blue),
+                        "Right Mid Sweep");
+        this.rightMidRushRedPP =
+                new AutoMode(
+                        rightMidRushPathPlanner(),
+                        getInitialPP("Right Mid Sweep", Alliance.Red),
+                        "Right Mid Sweep");
+
         this.preloadBlue = new AutoMode(preloadAuto(), new Pose2d(), "preload");
         this.preloadRed = new AutoMode(preloadAuto(), new Pose2d(), "preload");
 
         this.blueEmpty =
                 new AutoMode(
                         Commands.none(), Pose2d.kZero.rotateBy(Rotation2d.k180deg), "blue empty");
-        this.rightMidRushBlue =
-                new AutoMode(
-                        midRushAuto(rightMidRush),
-                        getInitial(getTraj(rightMidRush), Alliance.Blue),
-                        rightMidRush);
-        this.leftMidRushBlue =
-                new AutoMode(
-                        midRushAuto(leftMidRush),
-                        getInitial(getTraj(leftMidRush), Alliance.Blue),
-                        leftMidRush);
         this.rightDoubleMidRushBlue =
                 new AutoMode(
                         doubleMidRushAuto(rightMidRush),
@@ -132,16 +155,6 @@ public class AutoCommands extends AutoPathFollowers {
                         "doubleLoop" + leftMidRush);
 
         this.redEmpty = new AutoMode(Commands.none(), Pose2d.kZero, "red empty");
-        this.rightMidRushRed =
-                new AutoMode(
-                        midRushAuto(rightMidRush),
-                        getInitial(getTraj(rightMidRush), Alliance.Red),
-                        rightMidRush);
-        this.leftMidRushRed =
-                new AutoMode(
-                        midRushAuto(leftMidRush),
-                        getInitial(getTraj(leftMidRush), Alliance.Red),
-                        leftMidRush);
         this.rightDoubleMidRushRed =
                 new AutoMode(
                         doubleMidRushAuto(rightMidRush),
@@ -166,23 +179,23 @@ public class AutoCommands extends AutoPathFollowers {
         blueAutosList =
                 List.of(
                         blueEmpty,
+                        leftMidRushBluePP,
+                        rightMidRushBluePP,
                         rightDoubleMidRushBlue,
                         leftDoubleMidRushBlue,
                         rightDoubleMidRushLoopBlue,
                         leftDoubleMidRushLoopBlue,
-                        preloadBlue,
-                        rightMidRushBlue,
-                        leftMidRushBlue);
+                        preloadBlue);
         redAutosList =
                 List.of(
                         redEmpty,
+                        leftMidRushRedPP,
+                        rightMidRushRedPP,
                         rightDoubleMidRushRed,
                         leftDoubleMidRushRed,
                         rightDoubleMidRushLoopRed,
                         leftDoubleMidRushLoopRed,
-                        preloadRed,
-                        rightMidRushRed,
-                        leftMidRushRed);
+                        preloadRed);
     }
 
     public BooleanSupplier hasTarget() {
