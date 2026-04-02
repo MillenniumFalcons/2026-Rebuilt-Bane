@@ -21,7 +21,6 @@ import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.SwerveDriveCommands;
 import team3647.frc2026.commands.WristCommands;
 import team3647.frc2026.constants.AutoConstants;
-import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.IndexerConstants;
@@ -308,9 +307,7 @@ public class RobotContainer {
     private final GroupPrinter printer = GroupPrinter.getInstance();
 
     public final RobotTracker robotTracker =
-            new RobotTracker(
-                    swerve::getOdoPose,
-                    swerve::getChassisSpeeds);
+            new RobotTracker(swerve::getOdoPose, swerve::getChassisSpeeds);
 
     public final TargetingUtil targetingUtil = new TargetingUtil(robotTracker);
 
