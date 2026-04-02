@@ -4,6 +4,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class KickerConstants {
     // master is bottom right, 1 is top right, 2 is bottom left, 3 is top left (looking from front
@@ -35,9 +36,13 @@ public class KickerConstants {
         kMasterConfig.MotorOutput.Inverted =
                 InvertedValue.CounterClockwise_Positive; // might need to be changed
 
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 60.0;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = 40.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         kMaster.getConfigurator().apply(kMasterConfig);
+        kSlave1.getConfigurator().apply(kMasterConfig);
+        kSlave2.getConfigurator().apply(kMasterConfig);
+        kSlave3.getConfigurator().apply(kMasterConfig);
     }
 }

@@ -1,14 +1,13 @@
 package team3647.frc2026.constants;
 
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
@@ -26,7 +25,10 @@ public class ShooterConstants {
 
     public static final TalonFXConfiguration kShooterConfig = new TalonFXConfiguration();
 
-    public static final Transform2d robotToBetweenShooter = new Transform2d();
+    public static final TalonFXConfiguration kSlaveConfig = new TalonFXConfiguration();
+
+    public static final Transform2d robotToBetweenShooter =
+            new Transform2d(0, 0.25, Rotation2d.kZero);
 
     public static final double kGearboxReduction = 0.75; // 18:24 gears
     public static final double kWheelDiameterMeters = Units.inchesToMeters(3.5);
@@ -71,12 +73,6 @@ public class ShooterConstants {
         shootSpeedMap.put(7.5, 22.0 + tempOffset);
         shootSpeedMap.put(8.0, 22.5 + tempOffset);
 
-        kShooterConfig.MotorOutput.Inverted =
-                InvertedValue.Clockwise_Positive; // make sure this is right
-
-        MotorOutputConfigs shooterMotor = new MotorOutputConfigs();
-        CurrentLimitsConfigs shooterCurrent = new CurrentLimitsConfigs();
-
         kShooterConfig.Slot0.kP = kP;
         kShooterConfig.Slot0.kI = kI;
         kShooterConfig.Slot0.kD = kD;
@@ -84,22 +80,26 @@ public class ShooterConstants {
         kShooterConfig.Slot0.kV = kV;
         kShooterConfig.Slot0.kA = kA;
 
-        shooterMotor.NeutralMode = NeutralModeValue.Coast;
-        shooterMotor.PeakReverseDutyCycle = 0;
-        shooterMotor.Inverted = InvertedValue.Clockwise_Positive; // make sure this is right
+        kShooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        kShooterConfig.MotorOutput.PeakReverseDutyCycle = 0; // might want to remove this
+        kShooterConfig.MotorOutput.Inverted =
+                InvertedValue.CounterClockwise_Positive; // this should be right
 
-        shooterCurrent.StatorCurrentLimitEnable = true;
-        shooterCurrent.StatorCurrentLimit = kMaxCurrent;
+        kShooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        kShooterConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;
+
+        kSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        kSlaveConfig.MotorOutput.PeakReverseDutyCycle = 0;
+        kSlaveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+        kSlaveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        kSlaveConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;
 
         final TalonFXConfigurator kShooterConfigurator = kShooter.getConfigurator();
         kShooterConfigurator.apply(kShooterConfig);
-        kShooterConfigurator.apply(shooterCurrent);
-        kShooterConfigurator.apply(shooterMotor);
 
         final TalonFXConfigurator kShooterSlaveConfigurator = kShooterSlave.getConfigurator();
-        kShooterSlaveConfigurator.apply(kShooterConfig);
-        kShooterSlaveConfigurator.apply(shooterCurrent);
-        kShooterSlaveConfigurator.apply(shooterMotor);
+        kShooterSlaveConfigurator.apply(kSlaveConfig);
     }
 }
 

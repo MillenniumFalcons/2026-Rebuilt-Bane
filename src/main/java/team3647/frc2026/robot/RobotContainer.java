@@ -134,7 +134,7 @@ public class RobotContainer {
         // unjam
         mainController.rightBumper.whileTrue(superstructure.reverse());
         // bump shot
-        mainController.buttonB.whileTrue(superstructure.bumpShot());
+        // mainController.buttonB.whileTrue(superstructure.bumpShot()); commented out for sysid
         // intake feed
         mainController.leftTrigger.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.leftTrigger.whileTrue(superstructure.feed());
@@ -159,10 +159,10 @@ public class RobotContainer {
         // mainController.dPadDown.whileTrue(swerve.driveRoutineQuasiStatic());
         // mainController.dPadLeft.whileTrue(swerve.driveRoutineDynamicReverse());
         // mainController.dPadRight.whileTrue(swerve.driveRoutineQuasiStaticReverse());
-        // mainController.buttonY.whileTrue(shooterLeft.getSysIdDynamic());
-        // mainController.buttonA.whileTrue(shooterLeft.getSysIdQuasiStatic());
-        // mainController.buttonX.whileTrue(shooterLeft.getSysIdDynamicReverse());
-        // mainController.buttonB.whileTrue(shooterLeft.getSysIdQuasistaticReverse());
+        mainController.buttonY.onTrue(shooter.getSysIdDynamic());
+        mainController.buttonA.onTrue(shooter.getSysIdQuasiStatic());
+        mainController.buttonX.onTrue(shooter.getSysIdDynamicReverse());
+        mainController.buttonB.onTrue(shooter.getSysIdQuasistaticReverse());
     }
 
     public void updateRobotPoseForSmartdashboard() {
@@ -225,8 +225,7 @@ public class RobotContainer {
 
     public final Indexer indexer =
             new Indexer(
-                    IndexerConstants.kLeftMaster,
-                    IndexerConstants.kRightSlave,
+                    IndexerConstants.kMaster,
                     0,
                     1,
                     GlobalConstants.kNominalVoltage,
@@ -310,10 +309,6 @@ public class RobotContainer {
 
     public final RobotTracker robotTracker =
             new RobotTracker(
-                    FieldConstants.redHubPose,
-                    FieldConstants.feedPoseRight,
-                    FieldConstants.feedPoseLeft,
-                    ShooterConstants.robotToBetweenShooter,
                     swerve::getOdoPose,
                     swerve::getChassisSpeeds);
 

@@ -1,8 +1,6 @@
 package team3647.frc2026.util;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -14,25 +12,25 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-
 import team3647.frc2026.constants.FieldConstants;
+import team3647.frc2026.constants.ShooterConstants;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
 
 public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
-    private Pose2d hubPose;
-    private Pose2d feedPoseRight;
-    private Pose2d feedPoseLeft;
-    private Pose2d feedPose;
-    private Alliance color;
+    private Pose2d hubPose = FieldConstants.blueHubPose;
+    private Pose2d feedPoseRight = FieldConstants.blueFeedPoseRight;
+    private Pose2d feedPoseLeft = FieldConstants.blueFeedPoseLeft;
+    private Pose2d feedPose = feedPoseRight;
+    private Alliance color = Alliance.Blue;
 
     private final Field2d smartDashboardField;
 
     Supplier<Pose2d> drivePose;
     Supplier<ChassisSpeeds> driveSpeeds;
 
-    private final Transform2d robotToShooter;
+    private final Transform2d robotToShooter = ShooterConstants.robotToBetweenShooter;
 
     private PeriodicIO periodicIO = new PeriodicIO();
 
@@ -53,20 +51,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         private ChassisSpeeds speeds = new ChassisSpeeds();
     }
 
-    public RobotTracker(
-            Pose2d hubPose,
-            Pose2d feedPoseRight,
-            Pose2d feedPoseLeft,
-            Transform2d robotToShooter,
-            Supplier<Pose2d> drivePose,
-            Supplier<ChassisSpeeds> driveSpeeds) {
-        // this.color = Alliance.Red;
+    public RobotTracker(Supplier<Pose2d> drivePose, Supplier<ChassisSpeeds> driveSpeeds) {
 
-        this.hubPose = AllianceFlip.flip(hubPose, this.color);
-        this.robotToShooter = robotToShooter;
-        this.feedPoseRight = AllianceFlip.flip(feedPoseRight, this.color);
-        this.feedPoseLeft = AllianceFlip.flip(feedPoseLeft, this.color);
-        this.feedPose = feedPoseRight;
         this.drivePose = drivePose;
         this.driveSpeeds = driveSpeeds;
 
@@ -165,7 +151,9 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
         for (int i = 0; i < 10; i++) {
             time = timeOfFlightMap.get(currentDistance);
-            lookaheadPose = new Pose2d(pose.getX() + vx * time, pose.getY() + vy * time, pose.getRotation());
+            lookaheadPose =
+                    new Pose2d(
+                            pose.getX() + vx * time, pose.getY() + vy * time, pose.getRotation());
             currentDistance = getDistanceFromHub(lookaheadPose);
             Logger.recordOutput("SOTMAutoAlign/lookahead", lookaheadPose);
         }
@@ -180,7 +168,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
                 ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getPose().getRotation());
         Translation2d toHub = hubPose.getTranslation().minus(getPose().getTranslation());
         return (toHub.getX() * fieldRelSpeeds.vxMetersPerSecond
-                + toHub.getY() * fieldRelSpeeds.vyMetersPerSecond) / toHub.getNorm();
+                        + toHub.getY() * fieldRelSpeeds.vyMetersPerSecond)
+                / toHub.getNorm();
     }
 
     // Newton's method for dynamic shooting per:
@@ -199,7 +188,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     //     double time = timeOfFlightMap.get(currentDistance);
     //     Pose2d lookaheadPose = pose;
     //     ChassisSpeeds fieldRelSpeeds =
-    //             ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getPose().getRotation());
+    //             ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(),
+    // getPose().getRotation());
     //     double vx = fieldRelSpeeds.vxMetersPerSecond;
     //     double vy = fieldRelSpeeds.vyMetersPerSecond;
 
@@ -215,7 +205,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     //         // Limit time change to prevent divergence
     //         timeChange = MathUtil.clamp(timeChange, -0.2, 0.2);
     //         time = time - timeChange;
-    //         lookaheadPose = new Pose2d(pose.getX() + vx * time, pose.getY() + vy * time, pose.getRotation());
+    //         lookaheadPose = new Pose2d(pose.getX() + vx * time, pose.getY() + vy * time,
+    // pose.getRotation());
     //         Logger.recordOutput("SOTMValues/error", error);
     //         Logger.recordOutput("SOTMValues/error derivative", errorDerivative);
     //     }
