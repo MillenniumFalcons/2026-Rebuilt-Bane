@@ -82,6 +82,9 @@ public class ShooterConstants {
         kMasterConfig.Slot0.kV = kV;
         kMasterConfig.Slot0.kA = kA;
 
+        kMasterConfig.Slot1.kP = 999999;
+
+
         kSlaveConfig.Slot0.kP = kP;
         kSlaveConfig.Slot0.kI = kI;
         kSlaveConfig.Slot0.kD = kD;
@@ -89,7 +92,11 @@ public class ShooterConstants {
         kSlaveConfig.Slot0.kV = kV;
         kSlaveConfig.Slot0.kA = kA;
 
+        kMasterConfig.TorqueCurrent.PeakForwardTorqueCurrent = kMaxCurrent;
+        kMasterConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        kMasterConfig.MotorOutput.PeakForwardDutyCycle = 1;
         kMasterConfig.MotorOutput.PeakReverseDutyCycle = 0; // might want to remove this
         kMasterConfig.MotorOutput.Inverted =
                 InvertedValue.CounterClockwise_Positive; // this should be right
@@ -97,7 +104,11 @@ public class ShooterConstants {
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kMasterConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;
 
+        kSlaveConfig.TorqueCurrent.PeakForwardTorqueCurrent = kMaxCurrent;
+        kSlaveConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+
         kSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        kSlaveConfig.MotorOutput.PeakForwardDutyCycle = 1;
         kSlaveConfig.MotorOutput.PeakReverseDutyCycle = 0;
         kSlaveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 

@@ -234,6 +234,18 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
         velocityTorqueCurrentFOC.Velocity = velocity / velocityConversion;
     }
 
+    /**
+     * @param velocity in the units of velocityConversion (RPM?, Surface speed?)
+     * @param feedforward in amps
+     * @param slot PID slot to use (0-3)
+     */
+    protected void setVelocityFOC(double velocity, double feedforward, int slot) {
+        controlMode = velocityTorqueCurrentFOC;
+        velocityTorqueCurrentFOC.Slot = slot;
+        velocityTorqueCurrentFOC.FeedForward = feedforward;
+        velocityTorqueCurrentFOC.Velocity = velocity / velocityConversion;
+    }
+
     protected void setVelocityFOCMotionMagic(double velocity, double feedforward) {
         controlMode = motionMagicFOCVelocity;
         motionMagicFOCVelocity.Acceleration = velocity / velocityConversion * 2;
@@ -251,6 +263,19 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
         velocityDutyCycle.Acceleration = velocity / 2.0 / velocityConversion;
         velocityDutyCycle.FeedForward = feedforward / nominalVoltage;
         velocityDutyCycle.Velocity = velocity / velocityConversion;
+    }
+
+    /**
+     * @param velocity in the units of velocityConversion (RPM?, Surface speed?)
+     * @param feedforward in volts
+     * @param slot PID slot to use (0-3)
+     */
+    protected void setVelocity(double velocity, double feedforward, int slot) {
+        controlMode = velocityDutyCycle;
+        velocityDutyCycle.Acceleration = velocity / 2.0 / velocityConversion;
+        velocityDutyCycle.FeedForward = feedforward / nominalVoltage;
+        velocityDutyCycle.Velocity = velocity / velocityConversion;
+        velocityDutyCycle.Slot = slot;
     }
 
     /**

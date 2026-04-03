@@ -64,6 +64,14 @@ public class Shooter extends TalonFXSubsystem {
         super.setVelocityVoltage(velocity, 0);
     }
 
+    public void setVelocityDutyCycleBangBang(double velocity) {
+        super.setVelocity(velocity, 0, 1);
+    }
+
+    public void setVelocityFOCBangBang(double velocity) {
+        super.setVelocityFOC(velocity,0, 1);
+    }
+
     @Override
     public void setVoltage(double voltage) {
         super.setVoltage(voltage);

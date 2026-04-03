@@ -24,6 +24,18 @@ public class ShooterCommands {
         return Commands.run(() -> shooter.setVelocityVoltage(vel.getAsDouble()), shooter);
     }
 
+    public Command shootBangBang(DoubleSupplier vel) {
+        return Commands.run(
+            () -> {
+                if (this.isAtVelocity(vel, 2)) {
+                    shooter.setVelocityFOCBangBang(vel.getAsDouble());
+                } else {
+                    shooter.setVelocityDutyCycleBangBang(vel.getAsDouble());
+                }
+            }   
+        , shooter);
+    }
+    
     public boolean isAtVelocity(DoubleSupplier velocity, double tolerance) {
         return Math.abs(shooter.getVelocity() - velocity.getAsDouble()) < tolerance;
     }
