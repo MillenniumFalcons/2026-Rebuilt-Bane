@@ -40,7 +40,7 @@ public class Shooter extends TalonFXSubsystem {
             double nominalVoltage,
             double kDt) {
         super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
-        this.addFollower(slave, MotorAlignmentValue.Aligned);
+        this.addFollower(slave, MotorAlignmentValue.Opposed);
         configs =
                 new TunableSlotConfigs(
                         master,

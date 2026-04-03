@@ -90,7 +90,7 @@ public class ShooterConstants {
 
         kSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         kSlaveConfig.MotorOutput.PeakReverseDutyCycle = 0;
-        kSlaveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kSlaveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         kSlaveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kSlaveConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;

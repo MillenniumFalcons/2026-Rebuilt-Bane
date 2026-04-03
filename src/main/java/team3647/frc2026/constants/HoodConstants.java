@@ -3,14 +3,11 @@ package team3647.frc2026.constants;
 import static edu.wpi.first.units.Units.Degree;
 
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.units.measure.Angle;
 
@@ -22,21 +19,23 @@ public class HoodConstants {
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
-    public static final CANcoder kCanCoder =
-            new CANcoder(
-                    GlobalConstants.HoodIds.kCanCoderId,
-                    new CANBus(GlobalConstants.kSubsystemCanbusName));
+    //     public static final CANcoder kCanCoder =
+    //             new CANcoder(
+    //                     GlobalConstants.HoodIds.kCanCoderId,
+    //                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
-    public static final CANcoderConfiguration kCanCoderConfig = new CANcoderConfiguration();
+    //     public static final CANcoderConfiguration kCanCoderConfig = new CANcoderConfiguration();
 
     // CHANGE THESE VALUES
-    public static final Angle kMaxAngle = Degree.of(72);
-    public static final Angle kMinAngle = Degree.of(48);
+    public static final Angle kMaxAngle = Degree.of(45);
+    public static final Angle kMinAngle = Degree.of(0);
 
-    public static final Angle kInitialAngle = kMaxAngle;
+    public static final Angle kInitialAngle = kMinAngle;
 
     public static final double kNativeToDeg =
-            360; // this converts rotations to degrees so the units should be degrees/rotation
+            360 / 45; // this converts rotations to degrees so the units should be degrees/rotation
+    // divide 360 by gear ratio??
+    // 10T to 150T 12T to 36t
 
     public static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap();
 
@@ -56,7 +55,7 @@ public class HoodConstants {
         kMasterConfig.Slot0.withKI(0);
         kMasterConfig.Slot0.withKD(1);
 
-        kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         kMasterConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
@@ -66,8 +65,8 @@ public class HoodConstants {
                 kMinAngle.in(Degree) / kNativeToDeg;
         kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
-        kMasterConfig.Feedback.FeedbackRemoteSensorID = kCanCoder.getDeviceID();
-        kMasterConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        //  kMasterConfig.Feedback.FeedbackRemoteSensorID = kCanCoder.getDeviceID();
+        kMasterConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         kMasterConfig.Feedback.RotorToSensorRatio = 4.0;
 
         kMaster.getPosition().setUpdateFrequency(50);
@@ -76,8 +75,8 @@ public class HoodConstants {
         kMaster.getConfigurator().apply(kMasterConfig);
 
         // cancoder configs
-        kCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        kCanCoderConfig.MagnetSensor.MagnetOffset = 0.015;
-        kCanCoder.getConfigurator().apply(kCanCoderConfig);
+        // kCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        // kCanCoderConfig.MagnetSensor.MagnetOffset = 0.015;
+        // kCanCoder.getConfigurator().apply(kCanCoderConfig);
     }
 }

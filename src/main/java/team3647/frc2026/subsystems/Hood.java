@@ -3,15 +3,12 @@ package team3647.frc2026.subsystems;
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Radian;
 
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import java.util.List;
 import team3647.lib.TalonFXSubsystem;
 
 public class Hood extends TalonFXSubsystem {
-
-    private CANcoder canCoder;
 
     private final Angle maxAngle;
     private final Angle minAngle;
@@ -20,7 +17,6 @@ public class Hood extends TalonFXSubsystem {
 
     public Hood(
             TalonFX master,
-            CANcoder canCoder,
             Angle maxAngle,
             Angle minAngle,
             double positionConversion,
@@ -29,7 +25,6 @@ public class Hood extends TalonFXSubsystem {
             double kDt) {
         super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
 
-        this.canCoder = canCoder;
         this.maxAngle = maxAngle;
         this.minAngle = minAngle;
     }
@@ -54,9 +49,9 @@ public class Hood extends TalonFXSubsystem {
         this.setEncoder(angleDegs);
     }
 
-    public void setEncoderAngleCANcoder() {
-        this.setEncoder(canCoder.getPosition().getValueAsDouble() * 360);
-    }
+    // public void setEncoderAngleCANcoder() {
+    //     this.setEncoder(.getPosition().getValueAsDouble() * 360);
+    // }
 
     public double getAngleRads() {
         return getAngle().in(Radian);

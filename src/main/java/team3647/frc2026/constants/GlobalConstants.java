@@ -19,32 +19,32 @@ public class GlobalConstants {
     public static double kNominalVoltage = 11.0;
 
     public class WristIds {
-        public static final int kMasterId = 14;
+        public static final int kMasterId = 14; // 14
     }
 
     public class RollerIds {
-        public static final int kMasterId = 15;
+        public static final int kMasterId = 15; // 15
+        public static final int kSlaveId = 16; // 16
     }
 
     public class IndexerIds {
-        public static final int kIndexerMasterId = 16;
+        public static final int kIndexerMasterId = 17;
     }
 
     public class KickerIds {
-        public static final int kMasterId = 17;
-        public static final int kSlave1Id = 18;
-        public static final int kSlave2Id = 19;
-        public static final int kSlave3Id = 20;
+        public static final int kMasterId = 18;
+        public static final int kSlave1Id = 19;
+        public static final int kSlave2Id = 20;
+        public static final int kSlave3Id = 21;
     }
 
     public class ShooterIds {
-        public static final int kMasterId = 21;
-        public static final int kSlaveId = 22;
+        public static final int kMasterId = 22;
+        public static final int kSlaveId = 23;
     }
 
     public class HoodIds {
-        public static final int kMasterId = 23;
-        public static final int kCanCoderId = 24;
+        public static final int kMasterId = 24;
     }
 }
 
