@@ -156,7 +156,7 @@ public class Superstructure {
     }
 
     public Command skibidi() {
-        return Commands.sequence(Commands.waitSeconds(5), kickerCommands.kick());
+        return Commands.sequence(Commands.waitSeconds(5), kickerCommands.kick().alongWith(indexerCommands.index()));
     }
 
     public Command prep() {

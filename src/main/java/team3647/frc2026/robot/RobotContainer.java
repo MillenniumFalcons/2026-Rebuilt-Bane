@@ -165,15 +165,15 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        // swerve.setDefaultCommand(
-        //         swerveCommands.drive(
-        //                 mainController::getLeftStickX,
-        //                 mainController::getLeftStickY,
-        //                 mainController::getRightStickX,
-        //                 autoDrive::getVelocities,
-        //                 autoDrive::getWantedMode,
-        //                 autoDrive::getAutoDriveEnabled,
-        //                 mainController.rightJoyStickPress));
+        swerve.setDefaultCommand(
+                swerveCommands.drive(
+                        mainController::getLeftStickX,
+                        mainController::getLeftStickY,
+                        mainController::getRightStickX,
+                        autoDrive::getVelocities,
+                        autoDrive::getWantedMode,
+                        autoDrive::getAutoDriveEnabled,
+                        mainController.rightJoyStickPress));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         shooter.setDefaultCommand(shooterCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));

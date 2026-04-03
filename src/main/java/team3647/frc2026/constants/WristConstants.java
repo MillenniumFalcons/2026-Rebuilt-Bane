@@ -24,10 +24,11 @@ public class WristConstants {
 
     // 60 degrees per 4.4 rotations (this was full range of motion)
     public static final double kNativeToDeg =
-            70 / 10.2; // this converts rotations to degrees so the units should be degrees/rotation
+            360 / 41.666667; // this converts rotations to degrees so the units should be degrees/rotation
+            //48T to 16T, 50T to 10T, 50T to 18T
 
     static {
-        kMasterConfig.Slot0.withKP(10); // change these values
+        kMasterConfig.Slot0.withKP(5); // change these values
         kMasterConfig.Slot0.withKI(0);
         kMasterConfig.Slot0.withKD(0);
 

@@ -19,12 +19,12 @@ public class GlobalConstants {
     public static double kNominalVoltage = 11.0;
 
     public class WristIds {
-        public static final int kMasterId = 14; // 14
+        public static final int kMasterId = 14;
     }
 
     public class RollerIds {
-        public static final int kMasterId = 15; // 15
-        public static final int kSlaveId = 16; // 16
+        public static final int kMasterId = 15;
+        public static final int kSlaveId = 16;
     }
 
     public class IndexerIds {
