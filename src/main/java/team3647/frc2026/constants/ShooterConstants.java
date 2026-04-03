@@ -98,11 +98,11 @@ public class ShooterConstants {
         kSlaveConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;
 
         final TalonFXConfigurator kMasterConfigurator = kMaster.getConfigurator();
-        kMasterConfigurator.apply(kShooterConfig);
+        kMasterConfigurator.apply(kShooterConfig.Slot0);
         kMasterConfigurator.apply(kMasterConfig);
 
         final TalonFXConfigurator kSlaveConfigurator = kSlave.getConfigurator();
-        kSlaveConfigurator.apply(kShooterConfig);
+        kSlaveConfigurator.apply(kShooterConfig.Slot0);
         kSlaveConfigurator.apply(kSlaveConfig);
     }
 }
