@@ -25,15 +25,7 @@ public class ShooterCommands {
     }
 
     public Command shootBangBang(DoubleSupplier vel) {
-        return Commands.run(
-            () -> {
-                if (this.isAtVelocity(vel, 2)) {
-                    shooter.setVelocityFOCBangBang(vel.getAsDouble());
-                } else {
-                    shooter.setVelocityDutyCycleBangBang(vel.getAsDouble());
-                }
-            }   
-        , shooter);
+        return Commands.run(() -> shooter.setVelocityFOCBangBang(vel.getAsDouble()), shooter);
     }
     
     public boolean isAtVelocity(DoubleSupplier velocity, double tolerance) {
