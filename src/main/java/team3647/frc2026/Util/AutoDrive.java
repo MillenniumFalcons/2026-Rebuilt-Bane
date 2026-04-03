@@ -82,7 +82,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                     ? targeting.shootAtHubOnTheMove().pivot
                     : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
         }
-        return 72;
+        return 1;
     }
 
     public double getShotSpeed() {

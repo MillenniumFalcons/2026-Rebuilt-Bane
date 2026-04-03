@@ -12,7 +12,7 @@ public class KickerCommands {
     }
 
     public Command kick() {
-        return Commands.runEnd(() -> kicker.setOpenLoop(0.8), () -> kicker.setOpenLoop(0), kicker);
+        return Commands.runEnd(() -> kicker.setOpenLoop(0.25), () -> kicker.setOpenLoop(0), kicker);
     }
 
     public Command reverse() {

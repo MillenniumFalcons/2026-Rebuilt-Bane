@@ -39,12 +39,12 @@ public class ShooterConstants {
             kWheelRotationMeters / GlobalConstants.kFalconTicksPerRotation * kGearboxReduction;
 
     public static final double kNominalVoltage = 11.0;
-    public static final double kMaxCurrent = 70.0;
+    public static final double kMaxCurrent = 90.0;
 
     // need to sys these
-    public static final double kS = 0.0;
-    public static final double kV = 0.12;
-    public static final double kA = 0.0098105;
+    public static final double kS = 0.015988;
+    public static final double kV = 0.1344;
+    public static final double kA = 0.061633;
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
@@ -75,12 +75,19 @@ public class ShooterConstants {
         shootSpeedMap.put(7.5, 22.0 + tempOffset);
         shootSpeedMap.put(8.0, 22.5 + tempOffset);
 
-        kShooterConfig.Slot0.kP = kP;
-        kShooterConfig.Slot0.kI = kI;
-        kShooterConfig.Slot0.kD = kD;
-        kShooterConfig.Slot0.kS = kS;
-        kShooterConfig.Slot0.kV = kV;
-        kShooterConfig.Slot0.kA = kA;
+        kMasterConfig.Slot0.kP = kP;
+        kMasterConfig.Slot0.kI = kI;
+        kMasterConfig.Slot0.kD = kD;
+        kMasterConfig.Slot0.kS = kS;
+        kMasterConfig.Slot0.kV = kV;
+        kMasterConfig.Slot0.kA = kA;
+
+        kSlaveConfig.Slot0.kP = kP;
+        kSlaveConfig.Slot0.kI = kI;
+        kSlaveConfig.Slot0.kD = kD;
+        kSlaveConfig.Slot0.kS = kS;
+        kSlaveConfig.Slot0.kV = kV;
+        kSlaveConfig.Slot0.kA = kA;
 
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         kMasterConfig.MotorOutput.PeakReverseDutyCycle = 0; // might want to remove this
@@ -92,17 +99,15 @@ public class ShooterConstants {
 
         kSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         kSlaveConfig.MotorOutput.PeakReverseDutyCycle = 0;
-        kSlaveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kSlaveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         kSlaveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kSlaveConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;
 
         final TalonFXConfigurator kMasterConfigurator = kMaster.getConfigurator();
-        kMasterConfigurator.apply(kShooterConfig.Slot0);
         kMasterConfigurator.apply(kMasterConfig);
 
         final TalonFXConfigurator kSlaveConfigurator = kSlave.getConfigurator();
-        kSlaveConfigurator.apply(kShooterConfig.Slot0);
         kSlaveConfigurator.apply(kSlaveConfig);
     }
 }

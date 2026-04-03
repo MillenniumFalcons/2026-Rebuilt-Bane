@@ -31,18 +31,26 @@ public class KickerConstants {
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
+    public static final TalonFXConfiguration kSlaveConfig = new TalonFXConfiguration();
 
     static {
         kMasterConfig.MotorOutput.Inverted =
                 InvertedValue.Clockwise_Positive; // might need to be changed
 
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 40.0;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = 120.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+        kSlaveConfig.MotorOutput.Inverted =
+                InvertedValue.CounterClockwise_Positive; // might need to be changed
+
+        kSlaveConfig.CurrentLimits.StatorCurrentLimit = 60.0;
+        kSlaveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        kSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
         kMaster.getConfigurator().apply(kMasterConfig);
         kSlave1.getConfigurator().apply(kMasterConfig);
-        kSlave2.getConfigurator().apply(kMasterConfig);
-        kSlave3.getConfigurator().apply(kMasterConfig);
+        kSlave2.getConfigurator().apply(kSlaveConfig);
+        kSlave3.getConfigurator().apply(kSlaveConfig);
     }
 }

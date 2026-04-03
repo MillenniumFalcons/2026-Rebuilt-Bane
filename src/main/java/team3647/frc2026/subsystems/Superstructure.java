@@ -148,12 +148,15 @@ public class Superstructure {
     }
 
     public Command bumpShot() {
-        return Commands.parallel(
-                logEverything(),
-                prepForBump(),
-                hoodCommands.setAngle(Degrees.of(72)),
-                retractIntake(),
-                index());
+        return Commands.parallel(logEverything(), prepForBump(), retractIntake(), index());
+    }
+
+    public Command retardedShot() {
+        return Commands.parallel(logEverything(), prepForBump(), skibidi());
+    }
+
+    public Command skibidi() {
+        return Commands.sequence(Commands.waitSeconds(5), kickerCommands.kick());
     }
 
     public Command prep() {

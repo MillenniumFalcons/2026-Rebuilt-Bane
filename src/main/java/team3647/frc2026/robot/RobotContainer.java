@@ -78,6 +78,7 @@ public class RobotContainer {
         configureSmartDashboardLogging();
 
         wrist.setEncoderAngle(WristConstants.kInitialAngle);
+        hood.setEncoderAngle(HoodConstants.kInitialAngle);
 
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
 
@@ -164,15 +165,15 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(
-                swerveCommands.drive(
-                        mainController::getLeftStickX,
-                        mainController::getLeftStickY,
-                        mainController::getRightStickX,
-                        autoDrive::getVelocities,
-                        autoDrive::getWantedMode,
-                        autoDrive::getAutoDriveEnabled,
-                        mainController.rightJoyStickPress));
+        // swerve.setDefaultCommand(
+        //         swerveCommands.drive(
+        //                 mainController::getLeftStickX,
+        //                 mainController::getLeftStickY,
+        //                 mainController::getRightStickX,
+        //                 autoDrive::getVelocities,
+        //                 autoDrive::getWantedMode,
+        //                 autoDrive::getAutoDriveEnabled,
+        //                 mainController.rightJoyStickPress));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         shooter.setDefaultCommand(shooterCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
@@ -216,18 +217,20 @@ public class RobotContainer {
         mainController.dPadRight.onFalse(autoDrive.disableAutoDrive());
 
         // cocontroller
-        coController.rightTrigger.whileTrue(superstructure.prep());
-        coController.buttonB.onTrue(autoDrive.disableAutoDrive());
+        // coController.rightTrigger.whileTrue(superstructure.prep());
+        // coController.buttonB.onTrue(autoDrive.disableAutoDrive());
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
         // mainController.dPadDown.whileTrue(swerve.driveRoutineQuasiStatic());
         // mainController.dPadLeft.whileTrue(swerve.driveRoutineDynamicReverse());
         // mainController.dPadRight.whileTrue(swerve.driveRoutineQuasiStaticReverse());
-        mainController.buttonY.onTrue(shooter.getSysIdDynamic());
-        mainController.buttonA.onTrue(shooter.getSysIdQuasiStatic());
-        mainController.buttonX.onTrue(shooter.getSysIdDynamicReverse());
-        mainController.buttonB.onTrue(shooter.getSysIdQuasistaticReverse());
+        // mainController.buttonY.onTrue(shooter.getSysIdDynamic());
+        // mainController.buttonA.onTrue(shooter.getSysIdQuasiStatic());
+        // mainController.buttonX.onTrue(shooter.getSysIdDynamicReverse());
+        // mainController.buttonB.onTrue(shooter.getSysIdQuasistaticReverse());
+
+        mainController.buttonB.whileTrue(superstructure.retardedShot());
     }
 
     public void updateRobotPoseForSmartdashboard() {

@@ -79,8 +79,9 @@ public class Robot extends LoggedRobot {
         LiveWindow.setEnabled(false);
         SignalLogger.enableAutoLogging(false);
 
-        // SignalLogger.start();
-        SignalLogger.stop();
+        SignalLogger.start();
+        ModifiedSignalLogger.start();
+        // SignalLogger.stop();
         m_robotContainer = new RobotContainer();
         RobotController.setBrownoutVoltage(6.0);
     }
@@ -138,8 +139,8 @@ public class Robot extends LoggedRobot {
             m_autonomousCommand.cancel();
         }
 
-        // ModifiedSignalLogger.start();
-        ModifiedSignalLogger.stop();
+        ModifiedSignalLogger.start();
+        // ModifiedSignalLogger.stop();
         m_robotContainer.visionIO.setIMUMode(4);
     }
 

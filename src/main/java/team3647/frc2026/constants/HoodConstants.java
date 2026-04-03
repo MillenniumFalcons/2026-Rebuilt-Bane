@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.Degree;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -27,13 +26,14 @@ public class HoodConstants {
     //     public static final CANcoderConfiguration kCanCoderConfig = new CANcoderConfiguration();
 
     // CHANGE THESE VALUES
-    public static final Angle kMaxAngle = Degree.of(45);
-    public static final Angle kMinAngle = Degree.of(0);
+    public static final Angle kMaxAngle = Degree.of(46);
+    public static final Angle kMinAngle = Degree.of(1);
 
-    public static final Angle kInitialAngle = kMinAngle;
+    public static final Angle kInitialAngle = Degree.of(0);
 
     public static final double kNativeToDeg =
-            360 / 45; // this converts rotations to degrees so the units should be degrees/rotation
+            46 / 5.724122; // this converts rotations to degrees so the units should be
+    // degrees/rotation
     // divide 360 by gear ratio??
     // 10T to 150T 12T to 36t
 
@@ -51,9 +51,9 @@ public class HoodConstants {
         hoodAngleMap.put(4.5, 59.0);
         hoodAngleMap.put(5.0, 58.0);
 
-        kMasterConfig.Slot0.withKP(125); // change these values
+        kMasterConfig.Slot0.withKP(1); // change these values
         kMasterConfig.Slot0.withKI(0);
-        kMasterConfig.Slot0.withKD(1);
+        kMasterConfig.Slot0.withKD(0);
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -64,13 +64,6 @@ public class HoodConstants {
         kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
                 kMinAngle.in(Degree) / kNativeToDeg;
         kMasterConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-
-        //  kMasterConfig.Feedback.FeedbackRemoteSensorID = kCanCoder.getDeviceID();
-        kMasterConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-        kMasterConfig.Feedback.RotorToSensorRatio = 4.0;
-
-        kMaster.getPosition().setUpdateFrequency(50);
-        kMaster.getVelocity().setUpdateFrequency(50);
 
         kMaster.getConfigurator().apply(kMasterConfig);
 
