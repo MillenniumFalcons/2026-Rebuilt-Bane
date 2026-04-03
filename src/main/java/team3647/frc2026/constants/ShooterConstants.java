@@ -13,17 +13,19 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
 public class ShooterConstants {
-    public static final TalonFX kShooter =
+    public static final TalonFX kMaster =
             new TalonFX(
                     GlobalConstants.ShooterIds.kMasterId,
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
-    public static final TalonFX kShooterSlave =
+    public static final TalonFX kSlave =
             new TalonFX(
                     GlobalConstants.ShooterIds.kSlaveId,
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
     public static final TalonFXConfiguration kShooterConfig = new TalonFXConfiguration();
+
+    public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
     public static final TalonFXConfiguration kSlaveConfig = new TalonFXConfiguration();
 
@@ -80,13 +82,13 @@ public class ShooterConstants {
         kShooterConfig.Slot0.kV = kV;
         kShooterConfig.Slot0.kA = kA;
 
-        kShooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        kShooterConfig.MotorOutput.PeakReverseDutyCycle = 0; // might want to remove this
-        kShooterConfig.MotorOutput.Inverted =
+        kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        kMasterConfig.MotorOutput.PeakReverseDutyCycle = 0; // might want to remove this
+        kMasterConfig.MotorOutput.Inverted =
                 InvertedValue.CounterClockwise_Positive; // this should be right
 
-        kShooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        kShooterConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;
+        kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;
 
         kSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         kSlaveConfig.MotorOutput.PeakReverseDutyCycle = 0;
@@ -95,11 +97,13 @@ public class ShooterConstants {
         kSlaveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kSlaveConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;
 
-        final TalonFXConfigurator kShooterConfigurator = kShooter.getConfigurator();
-        kShooterConfigurator.apply(kShooterConfig);
+        final TalonFXConfigurator kMasterConfigurator = kMaster.getConfigurator();
+        kMasterConfigurator.apply(kShooterConfig);
+        kMasterConfigurator.apply(kMasterConfig);
 
-        final TalonFXConfigurator kShooterSlaveConfigurator = kShooterSlave.getConfigurator();
-        kShooterSlaveConfigurator.apply(kSlaveConfig);
+        final TalonFXConfigurator kSlaveConfigurator = kSlave.getConfigurator();
+        kSlaveConfigurator.apply(kShooterConfig);
+        kSlaveConfigurator.apply(kSlaveConfig);
     }
 }
 
