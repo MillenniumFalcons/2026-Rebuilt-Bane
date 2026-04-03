@@ -263,8 +263,8 @@ public class RobotContainer {
 
     public final Shooter shooter =
             new Shooter(
-                    ShooterConstants.kShooter,
-                    ShooterConstants.kShooterSlave,
+                    ShooterConstants.kMaster,
+                    ShooterConstants.kSlave,
                     ShooterConstants.kNativeVelToSurfaceMpS,
                     ShooterConstants.kNativeVelToSurfaceMpS,
                     GlobalConstants.kNominalVoltage,

@@ -61,7 +61,7 @@ public class Robot extends LoggedRobot {
                 setUseTiming(true);
                 // Force a specific folder for Sim logs
                 String simLogPath = "sim_logs";
-                Logger.addDataReceiver(new WPILOGWriter(simLogPath));
+                // Logger.addDataReceiver(new WPILOGWriter(simLogPath));
                 Logger.addDataReceiver(new NT4Publisher());
             }
         }
