@@ -4,9 +4,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.DoubleSupplier;
 import team3647.frc2026.subsystems.Shooter;
+import team3647.lib.tunables.TunableNumber;
 
 public class ShooterCommands {
     Shooter shooter;
+    TunableNumber interpSpeed = new TunableNumber("interp speed", 5.0);
 
     public ShooterCommands(Shooter shooter) {
         this.shooter = shooter;
@@ -30,6 +32,10 @@ public class ShooterCommands {
     
     public boolean isAtVelocity(DoubleSupplier velocity, double tolerance) {
         return Math.abs(shooter.getVelocity() - velocity.getAsDouble()) < tolerance;
+    }
+
+    public Command setVelocityTunable() {
+        return Commands.run(() -> shooter.setVelocityVoltage(interpSpeed.get()), shooter);
     }
 }
 

@@ -49,28 +49,29 @@ public class VisionConstants {
     public static final double kCameraHorizontalFOVDegrees = 81.0;
     public static final double kCameraVerticalFOVDegrees = 55.0;
 
-    // ---- 3D camera transforms ----
-    public static final Transform3d midMount =
-            new Transform3d(
-                    Inches.of(6.75),
-                    Inches.of(9),
-                    Inches.of(15),
-                    new Rotation3d(Degrees.of(0), Degrees.of(-19.653), Degrees.of(0)));
+    // ---- 3D camera transforms ---- (these are all fake)
+//     public static final Transform3d midMount =
+//             new Transform3d(
+//                     Inches.of(6.75),
+//                     Inches.of(9),
+//                     Inches.of(15),
+//                     new Rotation3d(Degrees.of(0), Degrees.of(-19.653), Degrees.of(0)));
 
-    public static final Transform3d leftMount =
-            new Transform3d(
-                    Inches.of(7.110),
-                    Inches.of(-11.201),
-                    Inches.of(19.995),
-                    new Rotation3d(Degrees.of(180), Degrees.of(28.1), Degrees.of(31)));
+//     public static final Transform3d leftMount =
+//             new Transform3d(
+//                     Inches.of(7.110),
+//                     Inches.of(-11.201),
+//                     Inches.of(19.995),
+//                     new Rotation3d(Degrees.of(180), Degrees.of(28.1), Degrees.of(31)));
 
-    public static final Transform3d rightMount =
-            new Transform3d(
-                    Inches.of(6.828),
-                    Inches.of(11.031),
-                    Inches.of(20.612),
-                    new Rotation3d(Degrees.of(0), Degrees.of(28.1), Degrees.of(-31)));
+//     public static final Transform3d rightMount =
+//             new Transform3d(
+//                     Inches.of(6.828),
+//                     Inches.of(11.031),
+//                     Inches.of(20.612),
+//                     new Rotation3d(Degrees.of(0), Degrees.of(28.1), Degrees.of(-31)));
 
+// so basically i named these facing the intake but the front is actually the shooter
     // ---- Camera A (Left Camera) - 254-style flat config for VisionIOHardwareLimelight ----
     public static final String kLimelightATableName = "limelight-left";
     public static final double kCameraAPitchDegrees = 0;

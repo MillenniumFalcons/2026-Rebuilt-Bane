@@ -26,7 +26,7 @@ public class Shooter extends TalonFXSubsystem {
                             Units.Seconds.of(8),
                             ModifiedSignalLogger.logState("shooter routine")),
                     new Mechanism(
-                            (Voltage volts) -> setVoltage(volts.in(Units.Volt)),
+                            (Voltage volts) -> setTorque(volts.in(Units.Volt)),
                             null,
                             this,
                             "Shooter"));
@@ -62,6 +62,10 @@ public class Shooter extends TalonFXSubsystem {
 
     public void setVelocityVoltage(double velocity) {
         super.setVelocityVoltage(velocity, 0);
+    }
+
+    public void setVelocityFOC(double velocity) {
+        super.setVelocityFOC(velocity, 0);
     }
 
     public void setVelocityDutyCycleBangBang(double velocity) {

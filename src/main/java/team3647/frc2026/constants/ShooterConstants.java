@@ -41,15 +41,20 @@ public class ShooterConstants {
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxCurrent = 90.0;
 
-    // need to sys these
+    // these are sysid voltage gains
     public static final double kS = 0.015988;
-    public static final double kV = 0.1344;
-    public static final double kA = 0.061633;
+    public static final double kV = 0.13528;
+    public static final double kA = 0.092748;
+
+    // these are sysid torquecurrent gains
+//     public static final double kS = 2.0;
+//     public static final double kV = 2.3376;
+//     public static final double kA = 23.006;
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
     // need to tune
-    public static final double kP = 3.0;
+    public static final double kP = 0.5;
     public static final double kI = 0;
     public static final double kD = 0.0025;
 

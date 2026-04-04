@@ -32,7 +32,7 @@ public class WristConstants {
         kMasterConfig.Slot0.withKI(0);
         kMasterConfig.Slot0.withKD(0);
 
-        kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 

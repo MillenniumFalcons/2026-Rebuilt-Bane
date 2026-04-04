@@ -9,8 +9,11 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.subsystems.Hood;
+import team3647.lib.tunables.TunableNumber;
 
 public class HoodCommands {
+
+    TunableNumber interpHoodAngle = new TunableNumber("interp hood angle", 5.0);
 
     public Command setAngle(Angle angle) {
         return Commands.run(() -> hood.setAngle(angle), hood);
@@ -26,6 +29,10 @@ public class HoodCommands {
 
     public Command setAngleDeg(double angle) {
         return Commands.run(() -> hood.setAngleDegs(angle), hood);
+    }
+
+    public Command setInterpAngle() {
+        return Commands.run(() -> hood.setAngleDegs(interpHoodAngle.get()), hood);
     }
 
     public boolean angleReached(DoubleSupplier angle, double tolerance) {

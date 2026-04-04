@@ -51,7 +51,7 @@ public class HoodConstants {
         hoodAngleMap.put(4.5, 59.0);
         hoodAngleMap.put(5.0, 58.0);
 
-        kMasterConfig.Slot0.withKP(1); // change these values
+        kMasterConfig.Slot0.withKP(5.0); // change these values
         kMasterConfig.Slot0.withKI(0);
         kMasterConfig.Slot0.withKD(0);
 
