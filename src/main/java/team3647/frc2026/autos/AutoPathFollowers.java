@@ -61,12 +61,14 @@ public class AutoPathFollowers implements AllianceObserver {
 
     public Command autoAlign() {
         return Commands.sequence(
-                Commands.runOnce(() -> swerve.drive(0, 0, 0)),
-                autoDrive.enableAutoDrive(),
-                Commands.run(
-                        () -> swerve.driveFieldOriented(0, 0, autoDriveVelocities.get().dtheta),
-                        swerve),
-                autoDrive.disableAutoDrive());
+                        Commands.runOnce(() -> swerve.drive(0, 0, 0)),
+                        autoDrive.enableAutoDrive(),
+                        Commands.run(
+                                () ->
+                                        swerve.driveFieldOriented(
+                                                0, 0, autoDriveVelocities.get().dtheta),
+                                swerve))
+                .finallyDo(() -> autoDrive.setEnabled(false));
     }
 
     // regular pathfollower

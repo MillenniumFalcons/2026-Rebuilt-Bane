@@ -149,9 +149,9 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         if (wantedMode == DriveMode.INTAKE_FEED) {
             if (color == Alliance.Blue) {
-                angleToTarget = new Rotation2d(Degrees.of(180));
-            } else {
                 angleToTarget = new Rotation2d(Degrees.of(0));
+            } else {
+                angleToTarget = new Rotation2d(Degrees.of(180));
             }
         }
 

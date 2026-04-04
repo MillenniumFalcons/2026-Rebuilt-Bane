@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
@@ -418,10 +419,20 @@ public class RobotContainer {
     public final VisionSubsystem visionSubsystem = new VisionSubsystem(visionIO, visionState);
 
     {
-        NamedCommands.registerCommand("intake", superstructure.intakeWithDelay());
-        NamedCommands.registerCommand("shoot", superstructure.shoot());
+        // NamedCommands.registerCommand("intake", superstructure.intakeWithDelay());
+        // NamedCommands.registerCommand("shoot", superstructure.shoot());
+        // NamedCommands.registerCommand(
+        //         "autoalign", swerveCommands.driveButInAuto(autoDrive,
+        // autoDrive::getVelocities));
         NamedCommands.registerCommand(
-                "autoalign", swerveCommands.driveButInAuto(autoDrive, autoDrive::getVelocities));
+                "intake", Commands.defer(superstructure::intakeWithDelay, java.util.Set.of()));
+        NamedCommands.registerCommand(
+                "shoot", Commands.defer(superstructure::shoot, java.util.Set.of()));
+        NamedCommands.registerCommand(
+                "autoalign",
+                Commands.defer(
+                        () -> swerveCommands.driveButInAuto(autoDrive, autoDrive::getVelocities),
+                        java.util.Set.of()));
         configurePathPlanner();
     }
 
