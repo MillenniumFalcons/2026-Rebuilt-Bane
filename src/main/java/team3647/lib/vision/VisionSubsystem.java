@@ -236,8 +236,9 @@ public class VisionSubsystem extends SubsystemBase {
             return Optional.empty();
         }
 
+        // yeah just only use megatag so this will now just return optional empty every time
         // Use Megatag directly when 2 or more tags are visible
-        if (poseEstimate.fiducialIds().length > 1) {
+        if (poseEstimate.fiducialIds().length > 0) {
             return Optional.empty();
         }
 
@@ -300,6 +301,7 @@ public class VisionSubsystem extends SubsystemBase {
             return Optional.empty();
         }
 
+
         // Single-tag extra checks
         if (poseEstimate.fiducialIds().length < 2) {
             for (var fiducial : cam.fiducialObservations) {
@@ -312,22 +314,23 @@ public class VisionSubsystem extends SubsystemBase {
                 return Optional.empty();
             }
 
-            var priorPose = state.getFieldToRobot(poseEstimate.timestampSeconds());
-            if (poseEstimate.avgTagArea() < VisionConstants.kTagAreaThresholdForYawCheck
-                    && priorPose.isPresent()) {
-                double yawDiff =
-                        Math.abs(
-                                MathUtil.angleModulus(
-                                        priorPose.get().getRotation().getRadians()
-                                                - poseEstimate
-                                                        .fieldToRobot()
-                                                        .getRotation()
-                                                        .getRadians()));
+            //might want to uncomment this and make the threshold bigger
+            // var priorPose = state.getFieldToRobot(poseEstimate.timestampSeconds());
+            // if (poseEstimate.avgTagArea() < VisionConstants.kTagAreaThresholdForYawCheck
+            //         && priorPose.isPresent()) {
+            //     double yawDiff =
+            //             Math.abs(
+            //                     MathUtil.angleModulus(
+            //                             priorPose.get().getRotation().getRadians()
+            //                                     - poseEstimate
+            //                                             .fieldToRobot()
+            //                                             .getRotation()
+            //                                             .getRadians()));
 
-                if (yawDiff > Units.degreesToRadians(VisionConstants.kDefaultYawDiffThreshold)) {
-                    return Optional.empty();
-                }
-            }
+            //     if (yawDiff > Units.degreesToRadians(VisionConstants.kDefaultYawDiffThreshold)) {
+            //         return Optional.empty();
+            //     }
+            // }
         }
 
         if (poseEstimate.fieldToRobot().getTranslation().getNorm()

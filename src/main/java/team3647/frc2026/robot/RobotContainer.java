@@ -92,7 +92,8 @@ public class RobotContainer {
                         rollers,
                         kicker,
                         // climb,
-                        printer);
+                        printer,
+                        visionSubsystem);
     }
 
     private void configurePathPlanner() {
@@ -404,10 +405,12 @@ public class RobotContainer {
     public final VisionState visionState =
             new VisionState(
                     (VisionFieldPoseEstimate est) -> {
+                        var dynamicStdDevs = est.getVisionMeasurementStdDevs();
+                        dynamicStdDevs.set(2,0,0.005);
                         swerve.addVisionMeasurement(
                                 est.getVisionRobotPoseMeters(),
-                                est.getTimestampSeconds(),
-                                est.getVisionMeasurementStdDevs());
+                                Utils.fpgaToCurrentTime(est.getTimestampSeconds()),
+                                dynamicStdDevs);
                     });
 
     public final VisionIOHardwareLimelight visionIO = new VisionIOHardwareLimelight(visionState);

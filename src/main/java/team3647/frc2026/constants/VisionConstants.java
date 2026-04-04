@@ -39,7 +39,7 @@ public class VisionConstants {
     public static final double kDefaultAmbiguityThreshold = 0.19;
     public static final double kDefaultYawDiffThreshold = 5.0; // degrees
     public static final double kTagAreaThresholdForYawCheck = 2.0;
-    public static final double kTagMinAreaForSingleTagMegatag = 1.0;
+    public static final double kTagMinAreaForSingleTagMegatag = 0.34;
     public static final double kDefaultZThreshold = 0.2; // meters
     public static final double kDefaultNormThreshold = 1.0; // meters
 
@@ -73,12 +73,12 @@ public class VisionConstants {
 
     // ---- Camera A (Left Camera) - 254-style flat config for VisionIOHardwareLimelight ----
     public static final String kLimelightATableName = "limelight-left";
-    public static final double kCameraAPitchDegrees = 28.1;
+    public static final double kCameraAPitchDegrees = 0;
     public static final double kCameraAPitchRads = Units.degreesToRadians(kCameraAPitchDegrees);
-    public static final double kCameraAHeightOffGroundMeters = Inches.of(19.995).in(Meters);
-    public static final double kRobotToCameraAForward = Inches.of(7.110).in(Meters);
-    public static final double kRobotToCameraASide = Inches.of(-11.201).in(Meters);
-    public static final Rotation2d kCameraAYawOffset = Rotation2d.fromDegrees(31.0);
+    public static final double kCameraAHeightOffGroundMeters = Inches.of(7.929).in(Meters);
+    public static final double kRobotToCameraAForward = Inches.of(4.373).in(Meters);
+    public static final double kRobotToCameraASide = Inches.of(13.419).in(Meters);
+    public static final Rotation2d kCameraAYawOffset = Rotation2d.fromDegrees(-90);
     public static final Transform2d kRobotToCameraA =
             new Transform2d(
                     new Translation2d(kRobotToCameraAForward, kRobotToCameraASide),
@@ -86,12 +86,12 @@ public class VisionConstants {
 
     // ---- Camera B (Right Camera) ----
     public static final String kLimelightBTableName = "limelight-right";
-    public static final double kCameraBPitchDegrees = 28.1;
+    public static final double kCameraBPitchDegrees = 0;
     public static final double kCameraBPitchRads = Units.degreesToRadians(kCameraBPitchDegrees);
-    public static final double kCameraBHeightOffGroundMeters = Inches.of(20.612).in(Meters);
-    public static final double kRobotToCameraBForward = Inches.of(6.828).in(Meters);
-    public static final double kRobotToCameraBSide = Inches.of(11.031).in(Meters);
-    public static final Rotation2d kCameraBYawOffset = Rotation2d.fromDegrees(-31.0);
+    public static final double kCameraBHeightOffGroundMeters = Inches.of(7.929).in(Meters);
+    public static final double kRobotToCameraBForward = Inches.of(4.373).in(Meters);
+    public static final double kRobotToCameraBSide = Inches.of(-13.419).in(Meters);
+    public static final Rotation2d kCameraBYawOffset = Rotation2d.fromDegrees(90);
     public static final Transform2d kRobotToCameraB =
             new Transform2d(
                     new Translation2d(kRobotToCameraBForward, kRobotToCameraBSide),
@@ -99,12 +99,12 @@ public class VisionConstants {
 
     // ---- Camera C (Mid/Shooter Camera) ----
     public static final String kLimelightCTableName = "limelight-mid";
-    public static final double kCameraCPitchDegrees = -19.653;
+    public static final double kCameraCPitchDegrees = 33.1;
     public static final double kCameraCPitchRads = Units.degreesToRadians(kCameraCPitchDegrees);
-    public static final double kCameraCHeightOffGroundMeters = Inches.of(15).in(Meters);
-    public static final double kRobotToCameraCForward = Inches.of(6.75).in(Meters);
-    public static final double kRobotToCameraCSide = Inches.of(9).in(Meters);
-    public static final Rotation2d kCameraCYawOffset = Rotation2d.fromDegrees(0.0);
+    public static final double kCameraCHeightOffGroundMeters = Inches.of(16.235).in(Meters);
+    public static final double kRobotToCameraCForward = Inches.of(11.786).in(Meters);
+    public static final double kRobotToCameraCSide = Inches.of(-0.116).in(Meters);
+    public static final Rotation2d kCameraCYawOffset = Rotation2d.fromDegrees(0);
     public static final Transform2d kRobotToCameraC =
             new Transform2d(
                     new Translation2d(kRobotToCameraCForward, kRobotToCameraCSide),

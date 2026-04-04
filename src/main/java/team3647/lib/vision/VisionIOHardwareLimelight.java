@@ -25,7 +25,6 @@ public class VisionIOHardwareLimelight implements VisionIO {
 
     public VisionIOHardwareLimelight(VisionState visionState) {
         this.visionState = visionState;
-        setLLSettings();
     }
 
     private void setLLSettings() {
@@ -65,6 +64,7 @@ public class VisionIOHardwareLimelight implements VisionIO {
 
     @Override
     public void readInputs(VisionIOInputs inputs) {
+        setLLSettings();
         readCameraData(tableA, inputs.cameraA, VisionConstants.kLimelightATableName);
         readCameraData(tableB, inputs.cameraB, VisionConstants.kLimelightBTableName);
         readCameraData(tableC, inputs.cameraC, VisionConstants.kLimelightCTableName);

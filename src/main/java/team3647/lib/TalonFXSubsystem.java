@@ -285,7 +285,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
     protected void setVelocityVoltage(double velocity, double feedforward) {
         controlMode = velocityVoltage;
         velocityVoltage.Slot = 0;
-        velocityDutyCycle.Acceleration = velocity / 2.0 / velocityConversion;
+        velocityVoltage.Acceleration = velocity / 2.0 / velocityConversion;
         velocityVoltage.Velocity = velocity / velocityConversion;
         velocityVoltage.FeedForward = feedforward / nominalVoltage;
     }

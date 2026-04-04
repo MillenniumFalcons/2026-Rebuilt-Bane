@@ -49,7 +49,7 @@ public class ShooterConstants {
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
     // need to tune
-    public static final double kP = 0.5;
+    public static final double kP = 3.0;
     public static final double kI = 0;
     public static final double kD = 0.0025;
 
@@ -82,7 +82,7 @@ public class ShooterConstants {
         kMasterConfig.Slot0.kV = kV;
         kMasterConfig.Slot0.kA = kA;
 
-        kMasterConfig.Slot1.kP = 999999;
+        // kMasterConfig.Slot1.kP = 999999;
 
 
         kSlaveConfig.Slot0.kP = kP;
@@ -92,11 +92,11 @@ public class ShooterConstants {
         kSlaveConfig.Slot0.kV = kV;
         kSlaveConfig.Slot0.kA = kA;
 
-        kMasterConfig.TorqueCurrent.PeakForwardTorqueCurrent = kMaxCurrent;
-        kMasterConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+        // kMasterConfig.TorqueCurrent.PeakForwardTorqueCurrent = kMaxCurrent;
+        // kMasterConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
 
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        kMasterConfig.MotorOutput.PeakForwardDutyCycle = 1;
+        // kMasterConfig.MotorOutput.PeakForwardDutyCycle = 1;
         kMasterConfig.MotorOutput.PeakReverseDutyCycle = 0; // might want to remove this
         kMasterConfig.MotorOutput.Inverted =
                 InvertedValue.CounterClockwise_Positive; // this should be right
@@ -104,11 +104,11 @@ public class ShooterConstants {
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kMasterConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;
 
-        kSlaveConfig.TorqueCurrent.PeakForwardTorqueCurrent = kMaxCurrent;
-        kSlaveConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+        // kSlaveConfig.TorqueCurrent.PeakForwardTorqueCurrent = kMaxCurrent;
+        // kSlaveConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;
 
         kSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        kSlaveConfig.MotorOutput.PeakForwardDutyCycle = 1;
+        // kSlaveConfig.MotorOutput.PeakForwardDutyCycle = 1;
         kSlaveConfig.MotorOutput.PeakReverseDutyCycle = 0;
         kSlaveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
