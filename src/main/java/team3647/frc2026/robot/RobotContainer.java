@@ -406,7 +406,7 @@ public class RobotContainer {
             new VisionState(
                     (VisionFieldPoseEstimate est) -> {
                         var dynamicStdDevs = est.getVisionMeasurementStdDevs();
-                        dynamicStdDevs.set(2,0,0.005);
+                        dynamicStdDevs.set(2, 0, 0.005);
                         swerve.addVisionMeasurement(
                                 est.getVisionRobotPoseMeters(),
                                 Utils.fpgaToCurrentTime(est.getTimestampSeconds()),

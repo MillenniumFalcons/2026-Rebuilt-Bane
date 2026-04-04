@@ -73,7 +73,7 @@ public class Shooter extends TalonFXSubsystem {
     }
 
     public void setVelocityFOCBangBang(double velocity) {
-        super.setVelocityFOC(velocity,0, 1);
+        super.setVelocityFOC(velocity, 0, 1);
     }
 
     @Override

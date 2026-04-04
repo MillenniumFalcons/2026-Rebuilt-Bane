@@ -1,6 +1,5 @@
 package team3647.lib.vision;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -9,7 +8,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -301,7 +299,6 @@ public class VisionSubsystem extends SubsystemBase {
             return Optional.empty();
         }
 
-
         // Single-tag extra checks
         if (poseEstimate.fiducialIds().length < 2) {
             for (var fiducial : cam.fiducialObservations) {
@@ -314,7 +311,7 @@ public class VisionSubsystem extends SubsystemBase {
                 return Optional.empty();
             }
 
-            //might want to uncomment this and make the threshold bigger
+            // might want to uncomment this and make the threshold bigger
             // var priorPose = state.getFieldToRobot(poseEstimate.timestampSeconds());
             // if (poseEstimate.avgTagArea() < VisionConstants.kTagAreaThresholdForYawCheck
             //         && priorPose.isPresent()) {

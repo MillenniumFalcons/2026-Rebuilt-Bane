@@ -1,6 +1,5 @@
 package team3647.frc2026.subsystems;
 
-import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.units.measure.Angle;
@@ -18,7 +17,6 @@ import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.WristCommands;
 import team3647.frc2026.util.LEDStates;
 import team3647.frc2026.util.LEDStates.SuperstructureState;
-import team3647.lib.tunables.TunableNumber;
 import team3647.frc2026.util.RobotTracker;
 
 public class Superstructure {
@@ -154,7 +152,8 @@ public class Superstructure {
     }
 
     public Command retardedShot() {
-        return Commands.parallel(logEverything(), prepForInterp(), skibidi(), hoodCommands.setInterpAngle());
+        return Commands.parallel(
+                logEverything(), prepForInterp(), skibidi(), hoodCommands.setInterpAngle());
     }
 
     public Command spinUpTest() {
@@ -162,7 +161,9 @@ public class Superstructure {
     }
 
     public Command skibidi() {
-        return Commands.sequence(Commands.waitSeconds(4.3), Commands.parallel(kickerCommands.kick(), indexerCommands.index()));
+        return Commands.sequence(
+                Commands.waitSeconds(4.3),
+                Commands.parallel(kickerCommands.kick(), indexerCommands.index()));
     }
 
     public Command prepForInterp() {

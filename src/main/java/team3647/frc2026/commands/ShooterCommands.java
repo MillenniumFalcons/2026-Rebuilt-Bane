@@ -29,7 +29,7 @@ public class ShooterCommands {
     public Command shootBangBang(DoubleSupplier vel) {
         return Commands.run(() -> shooter.setVelocityFOCBangBang(vel.getAsDouble()), shooter);
     }
-    
+
     public boolean isAtVelocity(DoubleSupplier velocity, double tolerance) {
         return Math.abs(shooter.getVelocity() - velocity.getAsDouble()) < tolerance;
     }

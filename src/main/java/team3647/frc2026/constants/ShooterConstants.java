@@ -47,9 +47,9 @@ public class ShooterConstants {
     public static final double kA = 0.092748;
 
     // these are sysid torquecurrent gains
-//     public static final double kS = 2.0;
-//     public static final double kV = 2.3376;
-//     public static final double kA = 23.006;
+    //     public static final double kS = 2.0;
+    //     public static final double kV = 2.3376;
+    //     public static final double kA = 23.006;
 
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
@@ -88,7 +88,6 @@ public class ShooterConstants {
         kMasterConfig.Slot0.kA = kA;
 
         // kMasterConfig.Slot1.kP = 999999;
-
 
         kSlaveConfig.Slot0.kP = kP;
         kSlaveConfig.Slot0.kI = kI;
