@@ -2,7 +2,6 @@ package team3647.frc2026.util;
 
 import static edu.wpi.first.units.Units.Degrees;
 
-import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -185,8 +184,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         Logger.recordOutput("SOTMAutoAlign/DEBUG/ff output", customFF);
         Logger.recordOutput("SOTMAutoAlign/DEBUG/pid output", rotFeedback);
 
-        double rotComp =
-                !Utils.isSimulation() ? -(rotFeedback + customFF) : (rotFeedback + customFF);
+        double rotComp = rotFeedback + customFF;
 
         return new Twist2d(0, 0, rotComp);
     }

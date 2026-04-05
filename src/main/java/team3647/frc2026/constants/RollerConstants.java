@@ -4,7 +4,6 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import team3647.lib.tunables.TunableDouble;
 import team3647.lib.tunables.TunableSlotConfigs;
 
 public class RollerConstants {

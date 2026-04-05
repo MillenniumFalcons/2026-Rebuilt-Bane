@@ -2,7 +2,6 @@ package team3647.frc2026.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import java.util.function.DoubleSupplier;
 import team3647.frc2026.subsystems.Rollers;
 
 public class RollerCommands {

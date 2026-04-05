@@ -35,8 +35,7 @@ public class ShooterConstants {
     public static final double kGearboxReduction = 0.75; // 18:24 gears
     public static final double kWheelDiameterMeters = Units.inchesToMeters(3.5);
     public static final double kWheelRotationMeters = kWheelDiameterMeters * Math.PI;
-    public static final double kNativeVelToSurfaceMpS =
-            kWheelRotationMeters * kGearboxReduction;
+    public static final double kNativeVelToSurfaceMpS = kWheelRotationMeters * kGearboxReduction;
 
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxCurrent = 90.0;

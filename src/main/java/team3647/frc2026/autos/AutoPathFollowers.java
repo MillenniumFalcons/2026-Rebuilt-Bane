@@ -3,7 +3,6 @@ package team3647.frc2026.autos;
 import choreo.Choreo;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
-import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
@@ -177,13 +176,9 @@ public class AutoPathFollowers implements AllianceObserver {
             double xFeedback = xController.calculate(pose.getX(), referenceState.getPose().getX());
             double yFeedback = yController.calculate(pose.getY(), referenceState.getPose().getY());
             double rotationFeedback =
-                    !Utils.isSimulation()
-                            ? -rotationController.calculate(
-                                    pose.getRotation().getRadians(),
-                                    referenceState.getPose().getRotation().getRadians())
-                            : rotationController.calculate(
-                                    pose.getRotation().getRadians(),
-                                    referenceState.getPose().getRotation().getRadians());
+                    rotationController.calculate(
+                            pose.getRotation().getRadians(),
+                            referenceState.getPose().getRotation().getRadians());
 
             Logger.recordOutput("AutoController/xFF", xFF);
             Logger.recordOutput("AutoController/referenceX", referenceState.getPose().getX());

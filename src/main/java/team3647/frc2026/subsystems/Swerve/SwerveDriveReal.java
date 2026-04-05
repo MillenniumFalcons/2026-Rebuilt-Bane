@@ -448,7 +448,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
             reset();
             return;
         }
-        SwerveSetpoint setpoint = generateRobotOriented(x, y, rotation);
+        SwerveSetpoint setpoint = generateRobotOriented(x, y, -rotation);
         this.robotCentric
                 .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
                 .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
@@ -486,7 +486,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
             reset();
             return;
         }
-        SwerveSetpoint setpoint = generate(x, y, rotation);
+        SwerveSetpoint setpoint = generate(x, y, -rotation);
         this.robotCentric
                 .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
                 .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
@@ -504,7 +504,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
             reset();
             return;
         }
-        SwerveSetpoint setpoint = generate(x.getAsDouble(), y, rotation);
+        SwerveSetpoint setpoint = generate(x.getAsDouble(), y, -rotation);
         this.robotCentric
                 .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
                 .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
@@ -518,7 +518,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
             return;
         }
         SwerveSetpoint setpoint =
-                generate(x.getAsDouble(), y.getAsDouble(), rotation.getAsDouble());
+                generate(x.getAsDouble(), y.getAsDouble(), -rotation.getAsDouble());
         this.robotCentric
                 .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
                 .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)

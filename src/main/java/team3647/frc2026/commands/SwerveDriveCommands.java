@@ -1,6 +1,5 @@
 package team3647.frc2026.commands;
 
-import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -69,13 +68,8 @@ public class SwerveDriveCommands implements AllianceObserver {
                     double motionTurnComponent = rot.getAsDouble() * kMaxRotRadPs * 0.6;
 
                     if (!isAutoDrive) {
-                        if (Utils.isSimulation()) {
-                            swerve.driveFieldOriented(
-                                    motionXComponent, motionYComponent, -motionTurnComponent);
-                        } else {
-                            swerve.driveFieldOriented(
-                                    motionXComponent, motionYComponent, motionTurnComponent);
-                        }
+                        swerve.driveFieldOriented(
+                                motionXComponent, motionYComponent, -motionTurnComponent);
                     } else if (isAutoDrive) {
                         if (getMode.get().equals(DriveMode.SHOOT_ON_THE_MOVE)
                                 || getMode.get().equals(DriveMode.FEED)) {
