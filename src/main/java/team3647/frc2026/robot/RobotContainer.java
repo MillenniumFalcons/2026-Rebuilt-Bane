@@ -4,6 +4,8 @@
 
 package team3647.frc2026.robot;
 
+import java.util.Set;
+
 import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -127,7 +129,7 @@ public class RobotContainer {
         PathFollowingController ppController =
                 new PPHolonomicDriveController(
                         new com.pathplanner.lib.config.PIDConstants(2.0, 0, 0.05),
-                        new com.pathplanner.lib.config.PIDConstants(5.0, 0, 0.1));
+                        new com.pathplanner.lib.config.PIDConstants(1.75, 0, 0.0));
 
         AutoBuilder.configure(
                 swerve::getOdoPose,
@@ -178,7 +180,7 @@ public class RobotContainer {
                         mainController.rightJoyStickPress));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         shooter.setDefaultCommand(shooterCommands.kill());
-        // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
+        hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
         wrist.setDefaultCommand(wristCommands.holdPositionAtCall());
@@ -315,6 +317,7 @@ public class RobotContainer {
     public final Rollers rollers =
             new Rollers(
                     RollerConstants.kMaster,
+                    RollerConstants.kSlave,
                     RollerConstants.kNativeToSurfaceRPS,
                     RollerConstants.kNativeToSurfaceRPS,
                     GlobalConstants.kNominalVoltage,
@@ -424,16 +427,16 @@ public class RobotContainer {
         // NamedCommands.registerCommand(
         //         "autoalign", swerveCommands.driveButInAuto(autoDrive,
         // autoDrive::getVelocities));
+        configurePathPlanner();
         NamedCommands.registerCommand(
-                "intake", Commands.defer(superstructure::intakeWithDelay, java.util.Set.of()));
+                "intake", Commands.defer(superstructure::intakeWithDelay, Set.of(wrist, rollers)));
         NamedCommands.registerCommand(
-                "shoot", Commands.defer(superstructure::shoot, java.util.Set.of()));
+                "shoot", Commands.defer(superstructure::shoot, Set.of(shooter, wrist, indexer, kicker, rollers)));
         NamedCommands.registerCommand(
                 "autoalign",
                 Commands.defer(
                         () -> swerveCommands.driveButInAuto(autoDrive, autoDrive::getVelocities),
-                        java.util.Set.of()));
-        configurePathPlanner();
+                        Set.of(swerve)));
     }
 
     public final AutoCommands autoCommands =

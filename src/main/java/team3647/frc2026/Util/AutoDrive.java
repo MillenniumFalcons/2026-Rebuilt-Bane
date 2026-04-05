@@ -30,7 +30,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     // public final PIDController rotController;
 
     // this is for real robot
-    public final PIDController rotController = new PIDController(6.0, 0, 0);
+    public final PIDController rotController = new PIDController(2.25, 0, 0);
 
     private Alliance color = Alliance.Red;
 

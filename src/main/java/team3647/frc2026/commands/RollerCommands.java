@@ -29,10 +29,6 @@ public class RollerCommands {
                 .repeatedly();
     }
 
-    public Command intakeSpeedScale(DoubleSupplier robotSpeed) {
-        return Commands.run(() -> rollers.setVelocityMoving(robotSpeed.getAsDouble()), rollers);
-    }
-
     public Command spit() {
         return Commands.run(() -> rollers.setOpenLoop(-1.0), rollers);
     }

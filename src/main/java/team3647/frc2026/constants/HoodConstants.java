@@ -41,15 +41,15 @@ public class HoodConstants {
 
     static {
         // also change these values
-        hoodAngleMap.put(1.0, 72.0);
-        hoodAngleMap.put(1.5, 69.0);
-        hoodAngleMap.put(2.0, 66.0);
-        hoodAngleMap.put(2.5, 65.0);
-        hoodAngleMap.put(3.0, 64.0);
-        hoodAngleMap.put(3.5, 62.0);
-        hoodAngleMap.put(4.0, 60.0);
-        hoodAngleMap.put(4.5, 59.0);
-        hoodAngleMap.put(5.0, 58.0);
+        hoodAngleMap.put(1.0, 3.0);
+        hoodAngleMap.put(1.5, 3.0);
+        hoodAngleMap.put(2.0, 5.0);
+        hoodAngleMap.put(2.5, 7.0);
+        hoodAngleMap.put(3.0, 14.0);
+        hoodAngleMap.put(3.5, 20.0);
+        hoodAngleMap.put(4.0, 25.0);
+        hoodAngleMap.put(4.5, 26.0);
+        hoodAngleMap.put(5.0, 29.0);
 
         kMasterConfig.Slot0.withKP(5.0); // change these values
         kMasterConfig.Slot0.withKI(0);

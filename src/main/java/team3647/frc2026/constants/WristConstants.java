@@ -24,7 +24,7 @@ public class WristConstants {
 
     // 60 degrees per 4.4 rotations (this was full range of motion)
     public static final double kNativeToDeg =
-            360 / 41.666667; // this converts rotations to degrees so the units should be
+            70 / 8.68; // this converts rotations to degrees so the units should be
 
     // degrees/rotation
 

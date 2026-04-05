@@ -141,9 +141,7 @@ public class Superstructure {
         return Commands.parallel(
                 logEverything(),
                 prep(),
-                Commands.sequence(
-                        deployIntake().until(readyToShoot).andThen(Commands.waitSeconds(1.25)),
-                        retractIntake()),
+                retractIntake(),
                 indexWhenReady());
     }
 

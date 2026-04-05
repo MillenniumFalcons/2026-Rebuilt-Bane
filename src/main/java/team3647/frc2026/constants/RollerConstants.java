@@ -13,6 +13,11 @@ public class RollerConstants {
                     GlobalConstants.RollerIds.kMasterId,
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
+    public static final TalonFX kSlave =
+            new TalonFX(
+                    GlobalConstants.RollerIds.kSlaveId,
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
+
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
     public static final double kNativeToSurfaceRPS = 1 / 3; // CHANGE THIS
@@ -20,12 +25,6 @@ public class RollerConstants {
     public static final double kP = 0.1; // CHANGE THESE
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-
-    public static final Double baseIntakeSpeed = 2.0; // CHANGE THIS
-    TunableDouble tunableBaseIntakeSpeed = new TunableDouble("baseIntakeSpeed", baseIntakeSpeed);
-    public static final Double intakeSpeedPerRobotSpeed = 1.0; // CHANGE THIS
-    TunableDouble tunableIntakeSpeedPerRobotSpeed =
-            new TunableDouble("intakeSpeedScale", intakeSpeedPerRobotSpeed);
 
     static {
         kMasterConfig.Slot0.kP = kP;
@@ -38,6 +37,7 @@ public class RollerConstants {
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         kMaster.getConfigurator().apply(kMasterConfig);
+        kSlave.getConfigurator().apply(kMasterConfig);
         TunableSlotConfigs tunableConfigs = new TunableSlotConfigs(kMaster, 0, null, null);
     }
 }

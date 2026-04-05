@@ -9,11 +9,12 @@ public class Rollers extends TalonFXSubsystem {
 
     public Rollers(
             TalonFX master,
+            TalonFX slave,
             double velocityConversion,
             double positionConversion,
             double nominalVoltage,
             double kDt) {
-        super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
+        super(List.of(master, slave), velocityConversion, positionConversion, nominalVoltage, kDt);
     }
 
     public void setOpenLoop(double percent) {
@@ -21,13 +22,6 @@ public class Rollers extends TalonFXSubsystem {
     }
 
     public void setVelocityVoltage(double velocity) {
-        super.setVelocityVoltage(velocity, 0);
-    }
-
-    public void setVelocityMoving(double robotSpeed) {
-        double velocity =
-                RollerConstants.baseIntakeSpeed
-                        + RollerConstants.intakeSpeedPerRobotSpeed * Math.max(0, robotSpeed);
         super.setVelocityVoltage(velocity, 0);
     }
 

@@ -36,7 +36,7 @@ public class ShooterConstants {
     public static final double kWheelDiameterMeters = Units.inchesToMeters(3.5);
     public static final double kWheelRotationMeters = kWheelDiameterMeters * Math.PI;
     public static final double kNativeVelToSurfaceMpS =
-            kWheelRotationMeters / GlobalConstants.kFalconTicksPerRotation * kGearboxReduction;
+            kWheelRotationMeters * kGearboxReduction;
 
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxCurrent = 90.0;
@@ -65,20 +65,20 @@ public class ShooterConstants {
     static {
         // need to reinterpolate
         shootSpeedMap.put(1.0, 13.5 + tempOffset);
-        shootSpeedMap.put(1.5, 14.0 + tempOffset);
-        shootSpeedMap.put(2.0, 15.0 + tempOffset);
-        shootSpeedMap.put(2.5, 15.75 + tempOffset);
-        shootSpeedMap.put(3.0, 16.0 + tempOffset);
-        shootSpeedMap.put(3.5, 17.0 + tempOffset);
-        shootSpeedMap.put(4.0, 18.0 + tempOffset);
-        shootSpeedMap.put(4.5, 18.75 + tempOffset);
-        shootSpeedMap.put(5.0, 19.25 + tempOffset);
-        shootSpeedMap.put(5.5, 20.0 + tempOffset);
-        shootSpeedMap.put(6.0, 20.5 + tempOffset);
-        shootSpeedMap.put(6.5, 21.0 + tempOffset);
-        shootSpeedMap.put(7.0, 21.5 + tempOffset);
-        shootSpeedMap.put(7.5, 22.0 + tempOffset);
-        shootSpeedMap.put(8.0, 22.5 + tempOffset);
+        shootSpeedMap.put(1.5, 8.5 + tempOffset);
+        shootSpeedMap.put(2.0, 8.5 + tempOffset);
+        shootSpeedMap.put(2.5, 9.5 + tempOffset);
+        shootSpeedMap.put(3.0, 9.5 + tempOffset);
+        shootSpeedMap.put(3.5, 9.5 + tempOffset);
+        shootSpeedMap.put(4.0, 9.5 + tempOffset);
+        shootSpeedMap.put(4.5, 9.5 + tempOffset);
+        shootSpeedMap.put(5.0, 9.5 + tempOffset);
+        shootSpeedMap.put(5.5, 9.5 + tempOffset);
+        shootSpeedMap.put(6.0, 9.5 + tempOffset);
+        shootSpeedMap.put(6.5, 9.5 + tempOffset);
+        shootSpeedMap.put(7.0, 9.5 + tempOffset);
+        shootSpeedMap.put(7.5, 9.5 + tempOffset);
+        shootSpeedMap.put(8.0, 9.5 + tempOffset);
 
         kMasterConfig.Slot0.kP = kP;
         kMasterConfig.Slot0.kI = kI;
