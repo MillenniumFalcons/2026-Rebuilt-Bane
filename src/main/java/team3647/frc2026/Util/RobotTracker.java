@@ -1,7 +1,6 @@
 package team3647.frc2026.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -13,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.constants.FieldConstants;
-import team3647.frc2026.constants.ShooterConstants;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
 
@@ -29,8 +27,6 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
     Supplier<Pose2d> drivePose;
     Supplier<ChassisSpeeds> driveSpeeds;
-
-    private final Transform2d robotToShooter = ShooterConstants.robotToBetweenShooter;
 
     private PeriodicIO periodicIO = new PeriodicIO();
 
@@ -230,9 +226,7 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
     public void setDistanceFromHub() {
         var currentPose = periodicIO.pose;
-        var shooterPose = currentPose.transformBy(robotToShooter);
-        var shooterDistance = hubPose.minus(shooterPose);
-        periodicIO.distanceFromHub = shooterDistance.getTranslation().getNorm();
+        periodicIO.distanceFromHub = hubPose.minus(currentPose).getTranslation().getNorm();
     }
 
     public double getDistanceFromHub() {
@@ -240,7 +234,7 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     }
 
     public double getDistanceFromHub(Pose2d pose) {
-        return pose.transformBy(robotToShooter).minus(hubPose).getTranslation().getNorm();
+        return pose.minus(hubPose).getTranslation().getNorm();
     }
 
     public Pose2d getPose() {

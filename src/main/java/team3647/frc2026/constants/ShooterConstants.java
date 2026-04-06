@@ -7,8 +7,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
@@ -28,9 +26,6 @@ public class ShooterConstants {
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
     public static final TalonFXConfiguration kSlaveConfig = new TalonFXConfiguration();
-
-    public static final Transform2d robotToBetweenShooter =
-            new Transform2d(0, 0.25, Rotation2d.kZero);
 
     public static final double kGearboxReduction = 0.75; // 18:24 gears
     public static final double kWheelDiameterMeters = Units.inchesToMeters(3.5);
