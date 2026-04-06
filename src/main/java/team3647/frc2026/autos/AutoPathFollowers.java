@@ -262,7 +262,17 @@ public class AutoPathFollowers implements AllianceObserver {
     public Command followPathPlannerPath(String pathName) {
         try {
             PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-            return AutoBuilder.followPath(path);
+            Pose2d finalPose =
+                    AllianceFlip.flip(
+                            path.getPathPoses().get(path.getPathPoses().size() - 1),
+                            isRed() ? Alliance.Red : Alliance.Blue);
+            Command ppCommand = AutoBuilder.followPath(path);
+            return new FunctionalCommand(
+                    ppCommand::initialize,
+                    ppCommand::execute,
+                    ppCommand::end,
+                    () -> PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 3.0),
+                    swerve);
         } catch (Exception e) {
             DriverStation.reportError(
                     "Failed to load PathPlanner path: " + pathName, e.getStackTrace());
