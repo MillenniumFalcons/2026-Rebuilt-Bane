@@ -142,7 +142,10 @@ public class Superstructure {
     }
 
     public Command bumpShot() {
-        return Commands.parallel(logEverything(), prepForBump(), Commands.sequence(Commands.waitSeconds(2.0), index()));
+        return Commands.parallel(
+                logEverything(),
+                prepForBump(),
+                Commands.sequence(Commands.waitSeconds(2.0), index()));
     }
 
     public Command retardedShot() {
@@ -185,8 +188,14 @@ public class Superstructure {
     }
 
     public Command index() {
-        return Commands.parallel(retractIntake(), Commands.sequence(Commands.waitSeconds(0.1), Commands.parallel(
-                indexerCommands.index(), kickerCommands.kick(), rollerCommands.intake())));
+        return Commands.parallel(
+                retractIntake(),
+                Commands.sequence(
+                        Commands.waitSeconds(0.1),
+                        Commands.parallel(
+                                indexerCommands.index(),
+                                kickerCommands.matchShooterSpeed(shotSpeed),
+                                rollerCommands.intake())));
     }
 
     public Command reverse() {

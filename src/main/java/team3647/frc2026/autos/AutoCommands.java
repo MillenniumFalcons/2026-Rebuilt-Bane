@@ -24,14 +24,20 @@ public class AutoCommands extends AutoPathFollowers {
 
     public Command bruh() {
         return Commands.sequence(
-                Commands.deadline(followPathPlannerPath("Left Mid Sweep 1"), superstructure.intake()),
-                Commands.sequence(followPathPlannerPath("Left Mid Sweep 2"),
-                Commands.deadline(Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
-                Commands.deadline(followPathPlannerPath("Left Mid Sweep 3"), superstructure.intake()),
-                Commands.sequence(followPathPlannerPath("Left Mid Sweep 2"),
-                Commands.deadline(Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
-                Commands.deadline(followPathPlannerPath("Left Mid Sweep 4"), superstructure.intake())
-                );
+                Commands.deadline(
+                        followPathPlannerPath("Left Mid Sweep 1"), superstructure.intake()),
+                Commands.sequence(
+                        followPathPlannerPath("Left Mid Sweep 2"),
+                        Commands.deadline(
+                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
+                Commands.deadline(
+                        followPathPlannerPath("Left Mid Sweep 3"), superstructure.intake()),
+                Commands.sequence(
+                        followPathPlannerPath("Left Mid Sweep 2"),
+                        Commands.deadline(
+                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
+                Commands.deadline(
+                        followPathPlannerPath("Left Mid Sweep 4"), superstructure.intake()));
     }
 
     public Command rightMidRushPathPlanner() {
@@ -119,14 +125,10 @@ public class AutoCommands extends AutoPathFollowers {
 
         this.leftMidRushBluePP =
                 new AutoMode(
-                        bruh(),
-                        getInitialPP("Left Mid Sweep", Alliance.Blue),
-                        "Left Mid Sweep");
+                        bruh(), getInitialPP("Left Mid Sweep", Alliance.Blue), "Left Mid Sweep");
         this.leftMidRushRedPP =
                 new AutoMode(
-                        bruh(),
-                        getInitialPP("Left Mid Sweep", Alliance.Red),
-                        "Left Mid Sweep");
+                        bruh(), getInitialPP("Left Mid Sweep", Alliance.Red), "Left Mid Sweep");
 
         this.rightMidRushBluePP =
                 new AutoMode(

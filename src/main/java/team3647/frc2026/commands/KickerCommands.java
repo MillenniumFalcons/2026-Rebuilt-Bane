@@ -2,6 +2,7 @@ package team3647.frc2026.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import java.util.function.DoubleSupplier;
 import team3647.frc2026.subsystems.Kicker;
 
 public class KickerCommands {
@@ -15,9 +16,11 @@ public class KickerCommands {
         return Commands.runEnd(() -> kicker.setOpenLoop(0.25), () -> kicker.setOpenLoop(0), kicker);
     }
 
-    public Command setVelocity(double velocity) {
+    public Command matchShooterSpeed(DoubleSupplier shooterSpeed) {
         return Commands.runEnd(
-                () -> kicker.setVelocityFOC(velocity), () -> kicker.setOpenLoop(0), kicker);
+                () -> kicker.setVelocityFOC(shooterSpeed.getAsDouble() * 0.9),
+                () -> kicker.setOpenLoop(0),
+                kicker);
     }
 
     public Command reverse() {
