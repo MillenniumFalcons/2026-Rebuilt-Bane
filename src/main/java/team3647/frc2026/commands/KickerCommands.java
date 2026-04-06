@@ -15,6 +15,11 @@ public class KickerCommands {
         return Commands.runEnd(() -> kicker.setOpenLoop(0.25), () -> kicker.setOpenLoop(0), kicker);
     }
 
+    public Command setVelocity(double velocity) {
+        return Commands.runEnd(
+                () -> kicker.setVelocityFOC(velocity), () -> kicker.setOpenLoop(0), kicker);
+    }
+
     public Command reverse() {
         return Commands.run(() -> kicker.setOpenLoop(-0.75), kicker);
     }

@@ -233,7 +233,7 @@ public class RobotContainer {
         // mainController.buttonX.onTrue(shooter.getSysIdDynamicReverse());
         // mainController.buttonB.onTrue(shooter.getSysIdQuasistaticReverse());
 
-        mainController.buttonB.whileTrue(superstructure.retardedShot());
+        mainController.buttonB.whileTrue(superstructure.bumpShot());
     }
 
     public void updateRobotPoseForSmartdashboard() {
@@ -308,8 +308,8 @@ public class RobotContainer {
                     KickerConstants.kSlave1,
                     KickerConstants.kSlave2,
                     KickerConstants.kSlave3,
-                    0,
-                    1,
+                    KickerConstants.kNativeVelToSurfaceMpS,
+                    KickerConstants.kNativeVelToSurfaceMpS,
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 

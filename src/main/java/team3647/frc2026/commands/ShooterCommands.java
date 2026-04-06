@@ -23,7 +23,7 @@ public class ShooterCommands {
     }
 
     public Command setVelocity(DoubleSupplier vel) {
-        return Commands.run(() -> shooter.setVelocityVoltage(vel.getAsDouble()), shooter);
+        return Commands.run(() -> shooter.setVelocityFOC(vel.getAsDouble()), shooter);
     }
 
     public Command shootBangBang(DoubleSupplier vel) {

@@ -30,6 +30,10 @@ public class Kicker extends TalonFXSubsystem {
         super.setOpenloop(percent);
     }
 
+    public void setVelocityFOC(double velocity) {
+        super.setVelocityFOC(velocity, 0);
+    }
+
     public double getMasterCurrent() {
         return super.getMasterCurrent();
     }
