@@ -78,8 +78,7 @@ public class Superstructure {
         this.wristCommands = new WristCommands(this.wrist);
         this.rollerCommands = new RollerCommands(this.rollers);
 
-        this.atShotVel =
-                new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed, 0.1));
+        this.atShotVel = new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed, 0.1));
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
 
@@ -96,7 +95,7 @@ public class Superstructure {
 
     public Command feed() {
         return Commands.sequence(
-                Commands.waitSeconds(0.75), Commands.parallel(deployIntake(), reverse()));
+                Commands.waitUntil(readyToShoot), Commands.parallel(deployIntake(), reverse()));
     }
 
     public Command logEverything() {
@@ -165,8 +164,8 @@ public class Superstructure {
         return Commands.sequence(
                 Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
                 index()
-                // .onlyWhile(readyToShoot)
-                //         .repeatedly()
+                        // .onlyWhile(readyToShoot)
+                        //         .repeatedly()
                         .deadlineFor(ledStates.activateState(SuperstructureState.SHOOTING)));
     }
 
@@ -210,5 +209,12 @@ public class Superstructure {
 
     public Command prepForInterp() {
         return shooterCommands.setVelocityTunable();
+    }
+
+    public Command interpShot() {
+        return Commands.parallel(
+                prepForInterp(),
+                hoodCommands.setInterpAngle(),
+                Commands.sequence(Commands.waitSeconds(4.0), index()));
     }
 }

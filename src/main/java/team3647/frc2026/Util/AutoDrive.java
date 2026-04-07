@@ -67,18 +67,25 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                 (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                         ? targeting.shootAtHubOnTheMove().rotation
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
+        if (wantedMode == DriveMode.INTAKE_FEED) {
+            if (color == Alliance.Blue) {
+                angleToTarget = new Rotation2d(Degrees.of(180));
+            } else {
+                angleToTarget = new Rotation2d(Degrees.of(0));
+            }
+        }
         Logger.recordOutput(
                 "Shooting/Rotation/robot rotation", robotPose.getRotation().getDegrees());
         Logger.recordOutput("Shooting/Rotation/wanted rotation", angleToTarget.getDegrees());
         Logger.recordOutput(
                 "Shooting/Rotation/difference in angle",
                 Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()));
-        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 7.0;
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 5.0;
     }
 
     public double getHoodAngle() {
         if (enabled) {
-            return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
+            return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE || wantedMode == DriveMode.SHOOT)
                     ? targeting.shootAtHubOnTheMove().pivot
                     : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
         }
@@ -168,9 +175,9 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         if (wantedMode == DriveMode.INTAKE_FEED) {
             if (color == Alliance.Blue) {
-                angleToTarget = new Rotation2d(Degrees.of(0));
-            } else {
                 angleToTarget = new Rotation2d(Degrees.of(180));
+            } else {
+                angleToTarget = new Rotation2d(Degrees.of(0));
             }
         }
 

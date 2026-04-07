@@ -18,30 +18,58 @@ import team3647.frc2026.util.AutoDrive;
 
 public class AutoCommands extends AutoPathFollowers {
     // pathplanner autos
-    public Command leftMidRushPathPlanner() {
-        return followPathPlannerAuto("Left Mid Sweep");
-    }
+    //     public Command leftMidRushPathPlanner() {
+    //         return followPathPlannerAuto("Left Mid Sweep");
+    //     }
 
-    public Command bruh() {
+    //     public Command rightMidRushPathPlanner() {
+    //         return followPathPlannerAuto("Right Mid Sweep");
+    //     }
+
+    public Command leftMidRushPathPlanner() {
         return Commands.sequence(
                 Commands.deadline(
-                        followPathPlannerPath("Left Mid Sweep 1"), superstructure.intake()),
+                        followPathPlannerPath("Left Mid Sweep 1"),
+                        superstructure.intakeWithDelay()),
                 Commands.sequence(
-                        followPathPlannerPath("Left Mid Sweep 2"),
+                        Commands.parallel(
+                                followPathPlannerPath("Left Mid Sweep 2"), superstructure.prep()),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
                 Commands.deadline(
-                        followPathPlannerPath("Left Mid Sweep 3"), superstructure.intake()),
+                        followPathPlannerPath("Left Mid Sweep 3"),
+                        superstructure.intakeWithDelay()),
                 Commands.sequence(
-                        followPathPlannerPath("Left Mid Sweep 2"),
+                        Commands.parallel(
+                                followPathPlannerPath("Left Mid Sweep 2"), superstructure.prep()),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
                 Commands.deadline(
-                        followPathPlannerPath("Left Mid Sweep 4"), superstructure.intake()));
+                        followPathPlannerPath("Left Mid Sweep 4"),
+                        superstructure.intakeWithDelay()));
     }
 
     public Command rightMidRushPathPlanner() {
-        return followPathPlannerAuto("Right Mid Sweep");
+        return Commands.sequence(
+                Commands.deadline(
+                        followPathPlannerPath("Right Mid Sweep 1"),
+                        superstructure.intakeWithDelay()),
+                Commands.sequence(
+                        Commands.parallel(
+                                followPathPlannerPath("Right Mid Sweep 2"), superstructure.prep()),
+                        Commands.deadline(
+                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
+                Commands.deadline(
+                        followPathPlannerPath("Right Mid Sweep 3"),
+                        superstructure.intakeWithDelay()),
+                Commands.sequence(
+                        Commands.parallel(
+                                followPathPlannerPath("Right Mid Sweep 2"), superstructure.prep()),
+                        Commands.deadline(
+                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
+                Commands.deadline(
+                        followPathPlannerPath("Right Mid Sweep 4"),
+                        superstructure.intakeWithDelay()));
     }
 
     // actual autos
@@ -125,10 +153,14 @@ public class AutoCommands extends AutoPathFollowers {
 
         this.leftMidRushBluePP =
                 new AutoMode(
-                        bruh(), getInitialPP("Left Mid Sweep", Alliance.Blue), "Left Mid Sweep");
+                        leftMidRushPathPlanner(),
+                        getInitialPP("Left Mid Sweep", Alliance.Blue),
+                        "Left Mid Sweep");
         this.leftMidRushRedPP =
                 new AutoMode(
-                        bruh(), getInitialPP("Left Mid Sweep", Alliance.Red), "Left Mid Sweep");
+                        leftMidRushPathPlanner(),
+                        getInitialPP("Left Mid Sweep", Alliance.Red),
+                        "Left Mid Sweep");
 
         this.rightMidRushBluePP =
                 new AutoMode(

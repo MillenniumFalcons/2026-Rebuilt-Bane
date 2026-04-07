@@ -193,37 +193,33 @@ public class RobotContainer {
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(rollerCommands.kill());
         mainController.buttonX.onTrue(superstructure.retractIntake());
-
         // shooting / feeding (pose-based: past trench = feed, otherwise = shoot)
-        mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.whileTrue(
                 Commands.run(() -> autoDrive.updateDriveModeByPose())
                         .alongWith(superstructure.shoot()));
+        mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
-        mainController.rightTrigger.onFalse(rollerCommands.kill());
-
-        // unjam
-        mainController.rightBumper.whileTrue(superstructure.reverse());
-        // bump shot
+        // bump shot (will probably not work)
         mainController.buttonB.whileTrue(superstructure.bumpShot());
-        // intake feed
-        mainController.leftTrigger.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
-        mainController.leftTrigger.whileTrue(superstructure.feed());
-        mainController.leftTrigger.onTrue(autoDrive.enableAutoDrive());
-        mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
-        // shoot feed (now handled by right trigger pose-based logic)
-        // mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
-        // mainController.dPadLeft.onTrue(autoDrive.enableAutoDrive());
-        // mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
+        // feed out of intake
+        mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
+        mainController.rightBumper.whileTrue(superstructure.feed());
+        mainController.rightBumper.onTrue(autoDrive.enableAutoDrive());
+        mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
+        // pre align feed + spin up (no indexing)
+        mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
+        mainController.dPadRight.whileTrue(superstructure.prep());
+        mainController.dPadLeft.onTrue(autoDrive.enableAutoDrive());
+        mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
         // pre align + spin up (no indexing)
         mainController.dPadRight.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT));
-        mainController.dPadRight.onTrue(autoDrive.enableAutoDrive());
         mainController.dPadRight.whileTrue(superstructure.prep());
+        mainController.dPadRight.onTrue(autoDrive.enableAutoDrive());
         mainController.dPadRight.onFalse(autoDrive.disableAutoDrive());
 
         // cocontroller
-        // coController.rightTrigger.whileTrue(superstructure.prep());
-        // coController.buttonB.onTrue(autoDrive.disableAutoDrive());
+        coController.rightTrigger.whileTrue(superstructure.prep());
+        coController.buttonB.onTrue(autoDrive.disableAutoDrive());
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
