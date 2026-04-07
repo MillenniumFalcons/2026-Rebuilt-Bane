@@ -79,7 +79,7 @@ public class Superstructure {
         this.rollerCommands = new RollerCommands(this.rollers);
 
         this.atShotVel =
-                new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed, 0.4)).debounce(0.05);
+                new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed, 0.1));
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
 
@@ -164,8 +164,9 @@ public class Superstructure {
     public Command indexWhenReady() {
         return Commands.sequence(
                 Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
-                index().onlyWhile(readyToShoot)
-                        .repeatedly()
+                index()
+                // .onlyWhile(readyToShoot)
+                //         .repeatedly()
                         .deadlineFor(ledStates.activateState(SuperstructureState.SHOOTING)));
     }
 
