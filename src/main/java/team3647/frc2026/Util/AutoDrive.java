@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
+import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.util.TargetingUtil.AimingParameters;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
@@ -54,16 +55,16 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     public enum DriveMode {
-        SHOOT_ON_THE_MOVE,
-        SHOOT,
-        FEED,
-        INTAKE_FEED
+        SHOOT_ON_THE_MOVE, // regular
+        SHOOT, // prealign shoot
+        FEED, // shoot feed
+        INTAKE_FEED // reverse intake feed
     }
 
     public boolean rotAligned() {
         final Pose2d robotPose = getPose();
         Rotation2d angleToTarget =
-                (wantedMode == DriveMode.SHOOT_ON_THE_MOVE || wantedMode == DriveMode.SHOOT)
+                (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                         ? targeting.shootAtHubOnTheMove().rotation
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
         Logger.recordOutput(
@@ -77,7 +78,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     public double getHoodAngle() {
         if (enabled) {
-            return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE || wantedMode == DriveMode.SHOOT)
+            return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                     ? targeting.shootAtHubOnTheMove().pivot
                     : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
         }
@@ -120,6 +121,25 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     public Command setDriveMode(DriveMode mode) {
         return Commands.runOnce(() -> this.wantedMode = mode).ignoringDisable(false);
+    }
+
+    /** Returns true if the robot is beyond the trench line (in mid). */
+    public boolean isInMid() {
+        double robotX = getPose().getX();
+        if (color == Alliance.Blue) {
+            return robotX > FieldConstants.kBlueTrenchX;
+        } else {
+            return robotX < FieldConstants.kRedTrenchX;
+        }
+    }
+
+    /** Updates drive mode based on robot pose: feed if in mid, shoot if not. */
+    public void updateDriveModeByPose() {
+        if (isInMid()) {
+            this.wantedMode = DriveMode.FEED;
+        } else {
+            this.wantedMode = DriveMode.SHOOT_ON_THE_MOVE;
+        }
     }
 
     public DriveMode getWantedMode() {

@@ -15,6 +15,9 @@ public class FieldConstants {
     public static final Distance kFieldWidth = Meters.of(8.0692);
     public static final double kFieldWidthM = kFieldWidth.in(Meters);
 
+    public static final double kBlueTrenchX = 4.8;
+    public static final double kRedTrenchX = kFieldLengthM - kBlueTrenchX;
+
     public static final Pose2d blueHubPose = new Pose2d(4.624, 4.034, new Rotation2d());
     public static final Pose2d redHubPose =
             new Pose2d(kFieldLengthM - 4.624, kFieldWidthM - 4.034, new Rotation2d());

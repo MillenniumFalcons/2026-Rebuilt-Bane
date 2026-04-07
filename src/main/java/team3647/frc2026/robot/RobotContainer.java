@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
@@ -193,26 +194,27 @@ public class RobotContainer {
         mainController.leftBumper.onFalse(rollerCommands.kill());
         mainController.buttonX.onTrue(superstructure.retractIntake());
 
-        // shooting
-        mainController.rightTrigger.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE));
-        mainController.rightTrigger.whileTrue(superstructure.shoot());
+        // shooting / feeding (pose-based: past trench = feed, otherwise = shoot)
         mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
+        mainController.rightTrigger.whileTrue(
+                Commands.run(() -> autoDrive.updateDriveModeByPose())
+                        .alongWith(superstructure.shoot()));
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         mainController.rightTrigger.onFalse(rollerCommands.kill());
 
         // unjam
         mainController.rightBumper.whileTrue(superstructure.reverse());
         // bump shot
-        // mainController.buttonB.whileTrue(superstructure.bumpShot()); commented out for sysid
+        mainController.buttonB.whileTrue(superstructure.bumpShot());
         // intake feed
         mainController.leftTrigger.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.leftTrigger.whileTrue(superstructure.feed());
         mainController.leftTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.leftTrigger.onFalse(autoDrive.disableAutoDrive());
-        // shoot feed
-        mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
-        mainController.dPadLeft.onTrue(autoDrive.enableAutoDrive());
-        mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
+        // shoot feed (now handled by right trigger pose-based logic)
+        // mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
+        // mainController.dPadLeft.onTrue(autoDrive.enableAutoDrive());
+        // mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
         // pre align + spin up (no indexing)
         mainController.dPadRight.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT));
         mainController.dPadRight.onTrue(autoDrive.enableAutoDrive());
@@ -232,8 +234,6 @@ public class RobotContainer {
         // mainController.buttonA.onTrue(shooter.getSysIdQuasiStatic());
         // mainController.buttonX.onTrue(shooter.getSysIdDynamicReverse());
         // mainController.buttonB.onTrue(shooter.getSysIdQuasistaticReverse());
-
-        mainController.buttonB.whileTrue(superstructure.bumpShot());
     }
 
     public void updateRobotPoseForSmartdashboard() {
@@ -445,4 +445,41 @@ public class RobotContainer {
                     swerve, superstructure, autoDrive::getVelocities, () -> false, autoDrive);
 
     public final AutoChooser autoChooser = new AutoChooser(autoCommands, swerve::setRobotPose);
+
+    /**
+     * Returns true when our alliance's goal is in an active period (can score). Uses FMS game data
+     * to determine auto winner, then checks shift timing. Always returns true during transition
+     * (>130s) and endgame (<30s).
+     */
+    public final BooleanSupplier isActivePeriod =
+            () -> {
+                double matchTime = Timer.getMatchTime();
+
+                // Transition period or endgame — always active
+                if (matchTime > 130 || matchTime <= 30) return true;
+
+                // Determine which shift we're in (odd = 1,3; even = 2,4)
+                boolean isOddShift;
+                if (matchTime > 105) isOddShift = true; // Shift 1: 105-130
+                else if (matchTime > 80) isOddShift = false; // Shift 2: 80-105
+                else if (matchTime > 55) isOddShift = true; // Shift 3: 55-80
+                else isOddShift = false; // Shift 4: 30-55
+
+                // Game data: "R" or "B" = alliance that LOST auto
+                // Won auto → active in odd shifts (1,3)
+                // Lost auto → active in even shifts (2,4)
+                String gameData = DriverStation.getGameSpecificMessage();
+                if (gameData == null || gameData.isEmpty()) return true;
+
+                DriverStation.Alliance ourAlliance =
+                        DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+                boolean wonAuto;
+                if (ourAlliance == DriverStation.Alliance.Red) {
+                    wonAuto = gameData.equals("B"); // Blue lost → Red won
+                } else {
+                    wonAuto = gameData.equals("R"); // Red lost → Blue won
+                }
+
+                return wonAuto ? isOddShift : !isOddShift;
+            };
 }

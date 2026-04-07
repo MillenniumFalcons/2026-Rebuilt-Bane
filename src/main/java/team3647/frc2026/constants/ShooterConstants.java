@@ -36,8 +36,8 @@ public class ShooterConstants {
     public static final double kMaxCurrent = 90.0;
 
     // tuned w pramit
-    public static final double kS = 5;
-    public static final double kV = 0.47;
+    public static final double kS = 4.3;
+    public static final double kV = 0.37;
     public static final double kA = 0;
 
     // these are sysid torquecurrent gains
@@ -48,9 +48,9 @@ public class ShooterConstants {
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
     // need to tune
-    public static final double kP = 3;
+    public static final double kP = 2.3;
     public static final double kI = 0;
-    public static final double kD = 0.0025;
+    public static final double kD = 0;
 
     public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
 
@@ -58,7 +58,7 @@ public class ShooterConstants {
 
     static {
         // need to reinterpolate
-        shootSpeedMap.put(1.0, 13.5 + tempOffset);
+        shootSpeedMap.put(1.0, 8.0 + tempOffset);
         shootSpeedMap.put(1.5, 8.5 + tempOffset);
         shootSpeedMap.put(2.0, 8.5 + tempOffset);
         shootSpeedMap.put(2.5, 9.5 + tempOffset);

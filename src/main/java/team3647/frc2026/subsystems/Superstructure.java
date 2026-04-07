@@ -42,7 +42,7 @@ public class Superstructure {
 
     public final RobotTracker robotTracker;
 
-    public final BooleanSupplier atShotVel;
+    public final Trigger atShotVel;
     public final BooleanSupplier atHoodAngle;
     public final Trigger readyToShoot;
 
@@ -78,7 +78,8 @@ public class Superstructure {
         this.wristCommands = new WristCommands(this.wrist);
         this.rollerCommands = new RollerCommands(this.rollers);
 
-        this.atShotVel = () -> shooterCommands.isAtVelocity(this.shotSpeed, 0.5);
+        this.atShotVel =
+                new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed, 0.4)).debounce(0.05);
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
 
@@ -141,36 +142,17 @@ public class Superstructure {
         return Commands.parallel(logEverything(), prep(), indexWhenReady());
     }
 
+    public Command prep() {
+        return shooterCommands
+                .setVelocity(shotSpeed)
+                .deadlineFor(ledStates.activateState(SuperstructureState.PREPPING));
+    }
+
     public Command bumpShot() {
         return Commands.parallel(
                 logEverything(),
                 prepForBump(),
                 Commands.sequence(Commands.waitSeconds(2.0), index()));
-    }
-
-    public Command retardedShot() {
-        return Commands.parallel(
-                logEverything(), prepForInterp(), skibidi(), hoodCommands.setInterpAngle());
-    }
-
-    public Command spinUpTest() {
-        return Commands.parallel(shooterCommands.setOpenLoop(1));
-    }
-
-    public Command skibidi() {
-        return Commands.sequence(
-                Commands.waitSeconds(4.3),
-                Commands.parallel(kickerCommands.kick(), indexerCommands.index()));
-    }
-
-    public Command prepForInterp() {
-        return shooterCommands.setVelocityTunable();
-    }
-
-    public Command prep() {
-        return shooterCommands
-                .setVelocity(shotSpeed)
-                .deadlineFor(ledStates.activateState(SuperstructureState.PREPPING));
     }
 
     public Command prepForBump() {
@@ -190,12 +172,10 @@ public class Superstructure {
     public Command index() {
         return Commands.parallel(
                 retractIntake(),
-                Commands.sequence(
-                        Commands.waitSeconds(0.1),
-                        Commands.parallel(
-                                indexerCommands.index(),
-                                kickerCommands.matchShooterSpeed(shotSpeed),
-                                rollerCommands.intake())));
+                Commands.parallel(
+                        indexerCommands.index(),
+                        kickerCommands.matchShooterSpeed(shotSpeed),
+                        rollerCommands.intake()));
     }
 
     public Command reverse() {
@@ -221,5 +201,13 @@ public class Superstructure {
 
     public Command deployIntake() {
         return Commands.parallel(wristCommands.deploy());
+    }
+
+    public Command spinUpTest() {
+        return Commands.parallel(shooterCommands.setOpenLoop(1));
+    }
+
+    public Command prepForInterp() {
+        return shooterCommands.setVelocityTunable();
     }
 }
