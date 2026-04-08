@@ -31,7 +31,7 @@ public class ShooterCommands {
     }
 
     public boolean isAtVelocity(DoubleSupplier velocity, double tolerance) {
-        return Math.abs(shooter.getVelocity() - velocity.getAsDouble()) < tolerance;
+        return shooter.getVelocity() > velocity.getAsDouble();
     }
 
     public Command setVelocityTunable() {

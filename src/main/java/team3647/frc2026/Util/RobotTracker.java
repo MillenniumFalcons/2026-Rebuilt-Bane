@@ -67,29 +67,6 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
         Logger.recordOutput("Field/hubPose", this.hubPose);
         Logger.recordOutput("Field/feedpose", this.feedPose);
         smartDashboardField.setRobotPose(periodicIO.pose);
-
-        boolean wonAuto = false;
-        String gameData = DriverStation.getGameSpecificMessage();
-        if (gameData.length() > 0) {
-            switch (gameData.charAt(0)) {
-                case 'B':
-                    //
-                    if (this.color == Alliance.Blue) {
-                        wonAuto = true;
-                    }
-                    break;
-                case 'R':
-                    //
-                    if (this.color == Alliance.Red) {
-                        wonAuto = true;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        SmartDashboard.putBoolean("won auto", wonAuto);
     }
 
     public void setPose() {

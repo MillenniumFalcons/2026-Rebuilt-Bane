@@ -78,7 +78,7 @@ public class Superstructure {
         this.wristCommands = new WristCommands(this.wrist);
         this.rollerCommands = new RollerCommands(this.rollers);
 
-        this.atShotVel = new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed, 0.1));
+        this.atShotVel = new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed, 0.02));
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
 

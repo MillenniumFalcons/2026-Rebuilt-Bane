@@ -189,6 +189,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        // interp
+        mainController.buttonY.whileTrue(superstructure.interpShot());
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(rollerCommands.kill());
@@ -208,7 +210,7 @@ public class RobotContainer {
         mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
         // pre align feed + spin up (no indexing)
         mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
-        mainController.dPadRight.whileTrue(superstructure.prep());
+        mainController.dPadLeft.whileTrue(superstructure.prep());
         mainController.dPadLeft.onTrue(autoDrive.enableAutoDrive());
         mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
         // pre align + spin up (no indexing)
