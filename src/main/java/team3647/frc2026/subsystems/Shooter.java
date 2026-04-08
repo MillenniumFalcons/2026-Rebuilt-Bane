@@ -2,6 +2,7 @@ package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,8 +39,8 @@ public class Shooter extends TalonFXSubsystem {
             double positionConversion,
             double nominalVoltage,
             double kDt) {
-        super(List.of(master, slave), velocityConversion, positionConversion, nominalVoltage, kDt);
-        // this.addFollower(slave, MotorAlignmentValue.Opposed);
+        super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
+        this.addFollower(slave, MotorAlignmentValue.Opposed);
         configs =
                 new TunableSlotConfigs(
                         master,

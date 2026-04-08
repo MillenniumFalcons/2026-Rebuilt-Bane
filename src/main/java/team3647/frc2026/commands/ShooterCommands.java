@@ -35,7 +35,7 @@ public class ShooterCommands {
     }
 
     public Command setVelocityTunable() {
-        return Commands.run(() -> shooter.setVelocityVoltage(interpSpeed.get()), shooter);
+        return Commands.run(() -> shooter.setVelocityFOC(interpSpeed.get()), shooter);
     }
 }
 

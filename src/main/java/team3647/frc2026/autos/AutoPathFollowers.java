@@ -271,7 +271,7 @@ public class AutoPathFollowers implements AllianceObserver {
                     ppCommand::initialize,
                     ppCommand::execute,
                     ppCommand::end,
-                    () -> PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 3.0),
+                    () -> PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 4.5),
                     swerve);
         } catch (Exception e) {
             DriverStation.reportError(

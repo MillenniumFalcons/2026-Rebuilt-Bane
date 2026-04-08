@@ -46,7 +46,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
             new MotionMagicVelocityTorqueCurrentFOC(0);
     private final TorqueCurrentFOC torqueCurrentFOC = new TorqueCurrentFOC(0);
     public ControlRequest controlMode = new EmptyControl();
-    private Follower masterOutput;
+    private final List<Follower> followerOutputs = new ArrayList<>();
     protected final double positionConversion;
     protected final double velocityConversion;
     private final double nominalVoltage;
@@ -108,8 +108,8 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
             master.setControl(controlMode);
         }
         // master.setControl(controlMode);
-        for (var follower : followers) {
-            follower.setControl(masterOutput);
+        for (int i = 0; i < followers.size(); i++) {
+            followers.get(i).setControl(followerOutputs.get(i));
         }
     }
 
@@ -382,7 +382,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
     }
 
     protected void addFollower(TalonFX follower, MotorAlignmentValue opposeMaster) {
-        this.masterOutput = new Follower(this.masters.get(0).getDeviceID(), opposeMaster);
+        followerOutputs.add(new Follower(this.masters.get(0).getDeviceID(), opposeMaster));
         followers.add(follower);
     }
 

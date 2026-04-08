@@ -57,21 +57,21 @@ public class KickerConstants {
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        kSlaveConfig.MotorOutput.Inverted =
-                InvertedValue.CounterClockwise_Positive; // might need to be changed
+        // kSlaveConfig.MotorOutput.Inverted =
+        //         InvertedValue.CounterClockwise_Positive; // might need to be changed
 
-        kSlaveConfig.Slot0.kP = kP;
-        kSlaveConfig.Slot0.kI = kI;
-        kSlaveConfig.Slot0.kD = kD;
-        kSlaveConfig.Slot0.kS = kS;
+        // kSlaveConfig.Slot0.kP = kP;
+        // kSlaveConfig.Slot0.kI = kI;
+        // kSlaveConfig.Slot0.kD = kD;
+        // kSlaveConfig.Slot0.kS = kS;
 
-        kSlaveConfig.CurrentLimits.StatorCurrentLimit = 60.0;
-        kSlaveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        kSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        // kSlaveConfig.CurrentLimits.StatorCurrentLimit = 60.0;
+        // kSlaveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        // kSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         kMaster.getConfigurator().apply(kMasterConfig);
-        kSlave1.getConfigurator().apply(kMasterConfig);
-        kSlave2.getConfigurator().apply(kSlaveConfig);
-        kSlave3.getConfigurator().apply(kSlaveConfig);
+        // kSlave1.getConfigurator().apply(kMasterConfig);
+        // kSlave2.getConfigurator().apply(kSlaveConfig);
+        // kSlave3.getConfigurator().apply(kSlaveConfig);
     }
 }

@@ -129,7 +129,7 @@ public class RobotContainer {
         PathFollowingController ppController =
                 new PPHolonomicDriveController(
                         new com.pathplanner.lib.config.PIDConstants(2.0, 0, 0.05),
-                        new com.pathplanner.lib.config.PIDConstants(1.75, 0, 0.0));
+                        new com.pathplanner.lib.config.PIDConstants(2.75, 0, 0.0));
 
         AutoBuilder.configure(
                 swerve::getOdoPose,
