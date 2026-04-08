@@ -32,7 +32,7 @@ public class AutoCommands extends AutoPathFollowers {
                         followPathPlannerPath("Left Mid Sweep 1"),
                         superstructure.intakeWithDelay()),
                 Commands.sequence(
-                        Commands.parallel(
+                        Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"), superstructure.prep()),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
@@ -40,7 +40,7 @@ public class AutoCommands extends AutoPathFollowers {
                         followPathPlannerPath("Left Mid Sweep 3"),
                         superstructure.intakeWithDelay()),
                 Commands.sequence(
-                        Commands.parallel(
+                        Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"), superstructure.prep()),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
@@ -55,7 +55,7 @@ public class AutoCommands extends AutoPathFollowers {
                         followPathPlannerPath("Right Mid Sweep 1"),
                         superstructure.intakeWithDelay()),
                 Commands.sequence(
-                        Commands.parallel(
+                        Commands.deadline(
                                 followPathPlannerPath("Right Mid Sweep 2"), superstructure.prep()),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
@@ -63,7 +63,7 @@ public class AutoCommands extends AutoPathFollowers {
                         followPathPlannerPath("Right Mid Sweep 3"),
                         superstructure.intakeWithDelay()),
                 Commands.sequence(
-                        Commands.parallel(
+                        Commands.deadline(
                                 followPathPlannerPath("Right Mid Sweep 2"), superstructure.prep()),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),

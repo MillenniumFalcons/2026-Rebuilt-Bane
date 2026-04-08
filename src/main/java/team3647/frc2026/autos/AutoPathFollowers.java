@@ -10,6 +10,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -262,16 +264,25 @@ public class AutoPathFollowers implements AllianceObserver {
     public Command followPathPlannerPath(String pathName) {
         try {
             PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+            Translation2d finalTranslation =
+                    path.getPathPoses().get(path.getPathPoses().size() - 1).getTranslation();
+            Rotation2d finalRotation = path.getGoalEndState().rotation();
             Pose2d finalPose =
                     AllianceFlip.flip(
-                            path.getPathPoses().get(path.getPathPoses().size() - 1),
+                            new Pose2d(finalTranslation, finalRotation),
                             isRed() ? Alliance.Red : Alliance.Blue);
             Command ppCommand = AutoBuilder.followPath(path);
+            Timer pathTimer = new Timer();
             return new FunctionalCommand(
-                    ppCommand::initialize,
+                    () -> {
+                        pathTimer.restart();
+                        ppCommand.initialize();
+                    },
                     ppCommand::execute,
                     ppCommand::end,
-                    () -> PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 4.5),
+                    () ->
+                            pathTimer.hasElapsed(1.5)
+                                    && PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 3),
                     swerve);
         } catch (Exception e) {
             DriverStation.reportError(
