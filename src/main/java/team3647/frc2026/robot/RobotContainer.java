@@ -179,6 +179,7 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         mainController.rightJoyStickPress));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
+        // shooter.setDefaultCommand(shooterCommands.setVelocity(() -> 10));
         shooter.setDefaultCommand(shooterCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
@@ -194,7 +195,8 @@ public class RobotContainer {
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(rollerCommands.kill());
-        mainController.buttonX.onTrue(superstructure.retractIntake());
+        mainController.leftTrigger.onTrue(superstructure.jerkOff());
+        mainController.buttonB.onTrue(superstructure.retractIntake());
         // shooting / feeding (pose-based: past trench = feed, otherwise = shoot)
         mainController.rightTrigger.whileTrue(
                 Commands.run(() -> autoDrive.updateDriveModeByPose())
@@ -202,15 +204,15 @@ public class RobotContainer {
         mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         // bump shot (will probably not work)
-        mainController.buttonB.whileTrue(superstructure.bumpShot());
+        // mainController.buttonB.whileTrue(superstructure.bumpShot());
         // feed out of intake
         mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.rightBumper.whileTrue(superstructure.feed());
         mainController.rightBumper.onTrue(autoDrive.enableAutoDrive());
         mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
-        // pre align feed + spin up (no indexing)
-        mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.FEED));
-        mainController.dPadLeft.whileTrue(superstructure.prep());
+        // intake autoalign facing other wall
+        mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.INTAKE));
+        mainController.dPadLeft.whileTrue(superstructure.intake());
         mainController.dPadLeft.onTrue(autoDrive.enableAutoDrive());
         mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
         // pre align + spin up (no indexing)

@@ -17,10 +17,7 @@ public class KickerCommands {
     }
 
     public Command matchShooterSpeed(DoubleSupplier shooterSpeed) {
-        return Commands.runEnd(
-                () -> kicker.setVelocityFOC(shooterSpeed.getAsDouble() * 0.5),
-                () -> kicker.setOpenLoop(0),
-                kicker);
+        return Commands.runEnd(() -> kicker.setVelocityFOC(4), () -> kicker.setOpenLoop(0), kicker);
     }
 
     public Command reverse() {

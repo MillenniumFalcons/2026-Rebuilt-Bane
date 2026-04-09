@@ -267,10 +267,7 @@ public class AutoPathFollowers implements AllianceObserver {
             Translation2d finalTranslation =
                     path.getPathPoses().get(path.getPathPoses().size() - 1).getTranslation();
             Rotation2d finalRotation = path.getGoalEndState().rotation();
-            Pose2d finalPose =
-                    AllianceFlip.flip(
-                            new Pose2d(finalTranslation, finalRotation),
-                            isRed() ? Alliance.Red : Alliance.Blue);
+            Pose2d rawFinalPose = new Pose2d(finalTranslation, finalRotation);
             Command ppCommand = AutoBuilder.followPath(path);
             Timer pathTimer = new Timer();
             return new FunctionalCommand(
@@ -280,9 +277,13 @@ public class AutoPathFollowers implements AllianceObserver {
                     },
                     ppCommand::execute,
                     ppCommand::end,
-                    () ->
-                            pathTimer.hasElapsed(1.5)
-                                    && PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 3),
+                    () -> {
+                        Pose2d finalPose =
+                                AllianceFlip.flip(
+                                        rawFinalPose, isRed() ? Alliance.Red : Alliance.Blue);
+                        return ppCommand.isFinished()
+                                && PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.15, 3);
+                    },
                     swerve);
         } catch (Exception e) {
             DriverStation.reportError(

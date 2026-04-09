@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.constants.FieldConstants;
+import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.util.TargetingUtil.AimingParameters;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
@@ -58,7 +59,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         SHOOT_ON_THE_MOVE, // regular
         SHOOT, // prealign shoot
         FEED, // shoot feed
-        INTAKE_FEED // reverse intake feed
+        INTAKE_FEED, // reverse intake feed
+        INTAKE
     }
 
     public boolean rotAligned() {
@@ -67,6 +69,13 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                 (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                         ? targeting.shootAtHubOnTheMove().rotation
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
+        if (wantedMode == DriveMode.INTAKE) {
+            if (color == Alliance.Blue) {
+                angleToTarget = new Rotation2d(Degrees.of(180));
+            } else {
+                angleToTarget = new Rotation2d(Degrees.of(0));
+            }
+        }
         if (wantedMode == DriveMode.INTAKE_FEED) {
             if (color == Alliance.Blue) {
                 angleToTarget = new Rotation2d(Degrees.of(0));
@@ -86,9 +95,13 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public double getHoodAngle() {
         if (enabled) {
             if (wantedMode == DriveMode.FEED) {
-                return 43.0;
+                return HoodConstants.kFeedAngle.magnitude();
+            } else if (wantedMode == DriveMode.INTAKE_FEED
+                    || wantedMode == DriveMode.INTAKE
+                    || wantedMode == DriveMode.SHOOT) {
+                return 1;
             }
-            return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE || wantedMode == DriveMode.SHOOT)
+            return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                     ? targeting.shootAtHubOnTheMove().pivot
                     : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
         }
@@ -176,11 +189,19 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         double distanceToTarget = targetData.effectiveDistance;
         Rotation2d angleToTarget = targetData.rotation;
 
-        if (wantedMode == DriveMode.INTAKE_FEED) {
+        if (wantedMode == DriveMode.INTAKE) {
             if (color == Alliance.Blue) {
                 angleToTarget = new Rotation2d(Degrees.of(180));
             } else {
                 angleToTarget = new Rotation2d(Degrees.of(0));
+            }
+        }
+
+        if (wantedMode == DriveMode.INTAKE_FEED) {
+            if (color == Alliance.Blue) {
+                angleToTarget = new Rotation2d(Degrees.of(0));
+            } else {
+                angleToTarget = new Rotation2d(Degrees.of(180));
             }
         }
 

@@ -22,12 +22,12 @@ public class Shooter extends TalonFXSubsystem {
     SysIdRoutine sysIdRoutine =
             new SysIdRoutine(
                     new Config(
-                            Units.Volts.of(6).per(Units.Second),
-                            Units.Volts.of(30),
+                            Units.Volts.of(3).per(Units.Second),
+                            Units.Volts.of(15),
                             Units.Seconds.of(8),
                             ModifiedSignalLogger.logState("shooter routine")),
                     new Mechanism(
-                            (Voltage volts) -> setTorque(volts.in(Units.Volt)),
+                            (Voltage volts) -> setVoltage(volts.in(Units.Volt)),
                             null,
                             this,
                             "Shooter"));

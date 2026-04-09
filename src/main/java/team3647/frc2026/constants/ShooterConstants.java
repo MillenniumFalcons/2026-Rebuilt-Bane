@@ -35,9 +35,8 @@ public class ShooterConstants {
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxCurrent = 90.0;
 
-    // tuned w pramit
     public static final double kS = 4.3;
-    public static final double kV = 0.37;
+    public static final double kV = 0.43;
     public static final double kA = 0;
 
     // these are sysid torquecurrent gains
@@ -48,7 +47,7 @@ public class ShooterConstants {
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
     // need to tune
-    public static final double kP = 2.3;
+    public static final double kP = 9.2;
     public static final double kI = 0;
     public static final double kD = 0;
 
@@ -58,15 +57,16 @@ public class ShooterConstants {
 
     static {
         // need to reinterpolate
-        shootSpeedMap.put(1.0, 8.0 + tempOffset);
+        shootSpeedMap.put(1.0, 8.5 + tempOffset); // made up
         shootSpeedMap.put(1.5, 8.5 + tempOffset);
         shootSpeedMap.put(2.0, 8.5 + tempOffset);
-        shootSpeedMap.put(2.5, 9.5 + tempOffset);
-        shootSpeedMap.put(3.0, 9.5 + tempOffset);
-        shootSpeedMap.put(3.5, 9.5 + tempOffset);
-        shootSpeedMap.put(4.0, 9.5 + tempOffset);
-        shootSpeedMap.put(4.5, 9.5 + tempOffset);
-        shootSpeedMap.put(5.0, 9.5 + tempOffset);
+        shootSpeedMap.put(2.5, 9.0 + tempOffset);
+        shootSpeedMap.put(3.0, 10.0 + tempOffset);
+        shootSpeedMap.put(3.5, 10.0 + tempOffset);
+        shootSpeedMap.put(4.0, 11.0 + tempOffset);
+        shootSpeedMap.put(4.5, 12.0 + tempOffset); // made up
+        shootSpeedMap.put(5.0, 13.0 + tempOffset); // made up
+        shootSpeedMap.put(8.0, 14.5 + tempOffset); // made up
 
         kMasterConfig.Slot0.kP = kP;
         kMasterConfig.Slot0.kI = kI;

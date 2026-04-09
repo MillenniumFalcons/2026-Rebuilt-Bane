@@ -20,7 +20,7 @@ public class WristConstants {
     public static final Angle kMaxAngle = Degree.of(70); // these need changing
     public static final Angle kMinAngle = Degree.of(0);
 
-    public static final Angle kInitialAngle = kMaxAngle;
+    public static final Angle kInitialAngle = kMinAngle;
 
     // 60 degrees per 4.4 rotations (this was full range of motion)
     public static final double kNativeToDeg =

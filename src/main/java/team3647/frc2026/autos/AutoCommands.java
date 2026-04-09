@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.util.AutoDrive;
@@ -31,11 +32,15 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 1"),
                         superstructure.intakeWithDelay()),
+                Commands.run(() -> Logger.recordOutput("finished first path", 1.0)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"), superstructure.prep()),
                         Commands.deadline(
-                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
+                                Commands.waitSeconds(2.5),
+                                autoAlign(),
+                                superstructure.shoot(),
+                                superstructure.jerkOff())),
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 3"),
                         superstructure.intakeWithDelay()),
@@ -43,7 +48,10 @@ public class AutoCommands extends AutoPathFollowers {
                         Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"), superstructure.prep()),
                         Commands.deadline(
-                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
+                                Commands.waitSeconds(2.5),
+                                autoAlign(),
+                                superstructure.shoot(),
+                                superstructure.jerkOff())),
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 4"),
                         superstructure.intakeWithDelay()));

@@ -171,11 +171,7 @@ public class Superstructure {
 
     public Command index() {
         return Commands.parallel(
-                retractIntake(),
-                Commands.parallel(
-                        indexerCommands.index(),
-                        kickerCommands.matchShooterSpeed(shotSpeed),
-                        rollerCommands.intake()));
+                indexerCommands.index(), kickerCommands.matchShooterSpeed(shotSpeed));
     }
 
     public Command reverse() {
@@ -216,5 +212,12 @@ public class Superstructure {
                 prepForInterp(),
                 hoodCommands.setInterpAngle(),
                 Commands.sequence(Commands.waitSeconds(4.0), index()));
+    }
+
+    public Command jerkOff() {
+        return Commands.sequence(
+                        Commands.parallel(deployIntake(), rollerCommands.intake()).withTimeout(0.5),
+                        retractIntake().withTimeout(0.5))
+                .repeatedly();
     }
 }

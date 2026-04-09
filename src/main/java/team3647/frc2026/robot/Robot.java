@@ -72,8 +72,8 @@ public class Robot extends LoggedRobot {
         Logger.start(); // Start logging! No more data receivers, replay sources, or metadata
         // values may
         // be added.
-        SignalLogger.setPath("/home/lvuser/logs");
-        ModifiedSignalLogger.setPath("/home/lvuser/logs");
+        // SignalLogger.setPath("/home/lvuser/logs");
+        // ModifiedSignalLogger.setPath("/home/lvuser/logs");
 
         LiveWindow.disableAllTelemetry();
         LiveWindow.setEnabled(false);
