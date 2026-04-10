@@ -76,9 +76,11 @@ public class RobotContainer {
 
     public Field2d smartDashboardField = new Field2d();
 
-    public DoubleSupplier idleSpeed=()->10;
+    public DoubleSupplier idleSpeed;
 
     public RobotContainer() {
+        idleSpeed = () -> 10;
+
         configureBindings();
         configureDefaultCommands();
         configureAllianceObservers();
@@ -88,8 +90,6 @@ public class RobotContainer {
         hood.setEncoderAngle(HoodConstants.kInitialAngle);
 
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
-
-        idleSpeed = () -> 10;
 
         CommandScheduler.getInstance()
                 .registerSubsystem(
@@ -231,8 +231,8 @@ public class RobotContainer {
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
         coController.leftTrigger.onTrue(superstructure.jerkOff());
-        coController.buttonY.onTrue(Commands.run(() -> idleSpeed = () -> 12));
-        coController.buttonA.onTrue(Commands.run(() -> idleSpeed = () -> 10));
+        coController.buttonY.onTrue(Commands.runOnce(() -> idleSpeed = () -> 12));
+        coController.buttonA.onTrue(Commands.runOnce(() -> idleSpeed = () -> 10));
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
