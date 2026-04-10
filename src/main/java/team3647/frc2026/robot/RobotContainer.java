@@ -79,7 +79,7 @@ public class RobotContainer {
     public DoubleSupplier idleSpeed;
 
     public RobotContainer() {
-        idleSpeed = () -> 10;
+        idleSpeed = shooter::getIdleSpeed;
 
         configureBindings();
         configureDefaultCommands();
@@ -197,7 +197,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         // interp
-        mainController.buttonY.whileTrue(superstructure.interpShot());
+        // mainController.buttonY.whileTrue(superstructure.interpShot());
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(rollerCommands.kill());
@@ -213,7 +213,7 @@ public class RobotContainer {
         // mainController.rightTrigger.onTrue(visionSubsystem.setHubOnlyFilter());
         // mainController.rightTrigger.onFalse(visionSubsystem.clearTagFilter());
         // bump shot (will probably not work)
-        // mainController.buttonB.whileTrue(superstructure.bumpShot());
+        mainController.buttonB.whileTrue(superstructure.bumpShot());
         // feed out of intake
         mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.rightBumper.whileTrue(superstructure.feed());
@@ -232,14 +232,15 @@ public class RobotContainer {
         mainController.dPadRight.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT));
         mainController.dPadRight.whileTrue(superstructure.prep());
         mainController.dPadRight.onTrue(autoDrive.enableAutoDrive());
-        mainController.dPadRight.onFalse(autoDrive.disableAutoDrive());
+        mainController.dPadRight.onFalse(autoDrive.disableAutoDrive().onlyIf(() -> {return (autoDrive.getWantedMode() != DriveMode.SHOOT_ON_THE_MOVE);}));
 
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
         coController.leftTrigger.onTrue(superstructure.jerkOff());
-        coController.buttonY.onTrue(Commands.runOnce(() -> idleSpeed = () -> 12));
-        coController.buttonA.onTrue(Commands.runOnce(() -> idleSpeed = () -> 10));
+        coController.dPadUp.onTrue(Commands.runOnce(() -> shooter.increaseIdleSpeed()));
+        coController.dPadDown.onTrue(Commands.runOnce(() -> shooter.decreaseIdleSpeed()));
+        coController.buttonB.onTrue(superstructure.retractIntake());
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());

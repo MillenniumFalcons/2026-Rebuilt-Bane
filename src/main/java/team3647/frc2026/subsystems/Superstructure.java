@@ -151,7 +151,7 @@ public class Superstructure {
         return Commands.parallel(
                 logEverything(),
                 prepForBump(),
-                Commands.sequence(Commands.waitSeconds(2.0), index()));
+                index());
     }
 
     public Command prepForBump() {

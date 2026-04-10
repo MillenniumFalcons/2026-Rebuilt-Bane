@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import java.util.List;
+
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.lib.ModifiedSignalLogger;
 import team3647.lib.TalonFXSubsystem;
@@ -18,6 +19,7 @@ import team3647.lib.tunables.TunableSlotConfigs;
 
 public class Shooter extends TalonFXSubsystem {
 
+    public double idleSpeed = 10;
     TunableSlotConfigs configs;
     SysIdRoutine sysIdRoutine =
             new SysIdRoutine(
@@ -47,6 +49,18 @@ public class Shooter extends TalonFXSubsystem {
                         0,
                         "Shooter KV Tunable",
                         SlotConfigs.from(ShooterConstants.kShooterConfig.Slot0));
+    }
+
+    public double getIdleSpeed() {
+        return idleSpeed;
+    }
+
+    public void increaseIdleSpeed() {
+        idleSpeed = 12;
+    }
+
+    public void decreaseIdleSpeed() {
+        idleSpeed = 10;
     }
 
     public void setOpenLoop(double percent) {
