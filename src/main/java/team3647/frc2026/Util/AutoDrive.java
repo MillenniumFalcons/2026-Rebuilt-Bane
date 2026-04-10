@@ -64,6 +64,9 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     public boolean rotAligned() {
+        if (wantedMode == DriveMode.FEED) {
+            return true;
+        }
         final Pose2d robotPose = getPose();
         Rotation2d angleToTarget =
                 (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.lib.ModifiedSignalLogger;

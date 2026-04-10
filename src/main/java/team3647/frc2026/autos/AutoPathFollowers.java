@@ -282,7 +282,7 @@ public class AutoPathFollowers implements AllianceObserver {
                                 AllianceFlip.flip(
                                         rawFinalPose, isRed() ? Alliance.Red : Alliance.Blue);
                         return ppCommand.isFinished()
-                                && PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.15, 3);
+                                && PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
                     },
                     swerve);
         } catch (Exception e) {

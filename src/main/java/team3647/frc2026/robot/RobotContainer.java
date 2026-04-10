@@ -134,7 +134,7 @@ public class RobotContainer {
 
         PathFollowingController ppController =
                 new PPHolonomicDriveController(
-                        new com.pathplanner.lib.config.PIDConstants(2.0, 0, 0.05),
+                        new com.pathplanner.lib.config.PIDConstants(4.5, 0, 0.0),
                         new com.pathplanner.lib.config.PIDConstants(2.75, 0, 0.0));
 
         AutoBuilder.configure(
@@ -240,7 +240,7 @@ public class RobotContainer {
         coController.leftTrigger.onTrue(superstructure.jerkOff());
         coController.dPadUp.onTrue(Commands.runOnce(() -> shooter.increaseIdleSpeed()));
         coController.dPadDown.onTrue(Commands.runOnce(() -> shooter.decreaseIdleSpeed()));
-        coController.buttonB.onTrue(superstructure.retractIntake());
+        coController.buttonX.onTrue(superstructure.retractIntake());
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());

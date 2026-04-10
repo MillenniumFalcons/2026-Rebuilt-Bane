@@ -19,7 +19,7 @@ public class RollerConstants {
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
-    public static final double kNativeToSurfaceRPS = 1 / 3; // CHANGE THIS
+    public static final double kNativeToSurfaceRPS = 1;
 
     public static final double kP = 0.1; // CHANGE THESE
     public static final double kI = 0.0;
