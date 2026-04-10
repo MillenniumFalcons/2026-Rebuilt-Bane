@@ -70,10 +70,12 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                         ? targeting.shootAtHubOnTheMove().rotation
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
         if (wantedMode == DriveMode.INTAKE) {
+            // Past the trench, face the opposite wall (swap 0 and 180).
+            boolean past = isInMid();
             if (color == Alliance.Blue) {
-                angleToTarget = new Rotation2d(Degrees.of(180));
+                angleToTarget = new Rotation2d(Degrees.of(past ? 0 : 180));
             } else {
-                angleToTarget = new Rotation2d(Degrees.of(0));
+                angleToTarget = new Rotation2d(Degrees.of(past ? 180 : 0));
             }
         }
         if (wantedMode == DriveMode.INTAKE_FEED) {
@@ -190,10 +192,12 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         Rotation2d angleToTarget = targetData.rotation;
 
         if (wantedMode == DriveMode.INTAKE) {
+            // Past the trench, face the opposite wall (swap 0 and 180).
+            boolean past = isInMid();
             if (color == Alliance.Blue) {
-                angleToTarget = new Rotation2d(Degrees.of(180));
+                angleToTarget = new Rotation2d(Degrees.of(past ? 0 : 180));
             } else {
-                angleToTarget = new Rotation2d(Degrees.of(0));
+                angleToTarget = new Rotation2d(Degrees.of(past ? 180 : 0));
             }
         }
 

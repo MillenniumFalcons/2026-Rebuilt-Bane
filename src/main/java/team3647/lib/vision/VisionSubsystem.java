@@ -11,6 +11,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -377,5 +379,35 @@ public class VisionSubsystem extends SubsystemBase {
 
     public void setUseVision(boolean useVision) {
         this.useVision = useVision;
+    }
+
+    private static final int[] kRedHubTags = {2, 3, 4, 5, 8, 9, 10, 11};
+    private static final int[] kBlueHubTags = {18, 19, 20, 21, 24, 25, 26, 27};
+    private static final int[] kAllTags = {};
+
+    private void applyTagFilter(int[] ids) {
+        LimelightHelpers.SetFiducialIDFiltersOverride(VisionConstants.kLimelightATableName, ids);
+        LimelightHelpers.SetFiducialIDFiltersOverride(VisionConstants.kLimelightBTableName, ids);
+        LimelightHelpers.SetFiducialIDFiltersOverride(VisionConstants.kLimelightCTableName, ids);
+    }
+
+    /** Restricts all limelights to the current alliance's hub AprilTags. */
+    public Command setHubOnlyFilter() {
+        return Commands.runOnce(
+                        () -> {
+                            int[] ids =
+                                    DriverStation.getAlliance()
+                                                    .orElse(DriverStation.Alliance.Red)
+                                            == DriverStation.Alliance.Red
+                                            ? kRedHubTags
+                                            : kBlueHubTags;
+                            applyTagFilter(ids);
+                        })
+                .ignoringDisable(true);
+    }
+
+    /** Clears the AprilTag filter on all limelights (accept all tags). */
+    public Command clearTagFilter() {
+        return Commands.runOnce(() -> applyTagFilter(kAllTags)).ignoringDisable(true);
     }
 }

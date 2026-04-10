@@ -209,6 +209,9 @@ public class RobotContainer {
                         .alongWith(superstructure.shoot()));
         mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        // Restrict vision to hub tags while shooting, restore on release.
+        // mainController.rightTrigger.onTrue(visionSubsystem.setHubOnlyFilter());
+        // mainController.rightTrigger.onFalse(visionSubsystem.clearTagFilter());
         // bump shot (will probably not work)
         // mainController.buttonB.whileTrue(superstructure.bumpShot());
         // feed out of intake
@@ -216,10 +219,14 @@ public class RobotContainer {
         mainController.rightBumper.whileTrue(superstructure.feed());
         mainController.rightBumper.onTrue(autoDrive.enableAutoDrive());
         mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
-        // intake autoalign facing other wall
+        // intake autoalign facing other wall — auto-disables once rotation aligned
         mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.INTAKE));
         mainController.dPadLeft.whileTrue(superstructure.intake());
-        mainController.dPadLeft.onTrue(autoDrive.enableAutoDrive());
+        mainController.dPadLeft.onTrue(
+                autoDrive
+                        .enableAutoDrive()
+                        .andThen(Commands.waitUntil(autoDrive::rotAligned))
+                        .andThen(autoDrive.disableAutoDrive()));
         mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
         // pre align + spin up (no indexing)
         mainController.dPadRight.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT));
