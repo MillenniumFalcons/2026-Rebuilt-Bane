@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
@@ -74,6 +76,8 @@ public class RobotContainer {
 
     public Field2d smartDashboardField = new Field2d();
 
+    public DoubleSupplier idleSpeed=()->10;
+
     public RobotContainer() {
         configureBindings();
         configureDefaultCommands();
@@ -84,6 +88,8 @@ public class RobotContainer {
         hood.setEncoderAngle(HoodConstants.kInitialAngle);
 
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
+
+        idleSpeed = () -> 10;
 
         CommandScheduler.getInstance()
                 .registerSubsystem(
@@ -179,8 +185,8 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         mainController.rightJoyStickPress));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        // shooter.setDefaultCommand(shooterCommands.setVelocity(() -> 10));
-        shooter.setDefaultCommand(shooterCommands.kill());
+        shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
+        // shooter.setDefaultCommand(shooterCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
@@ -224,6 +230,9 @@ public class RobotContainer {
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
+        coController.leftTrigger.onTrue(superstructure.jerkOff());
+        coController.buttonY.onTrue(Commands.run(() -> idleSpeed = () -> 12));
+        coController.buttonA.onTrue(Commands.run(() -> idleSpeed = () -> 10));
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
@@ -409,7 +418,8 @@ public class RobotContainer {
             new VisionState(
                     (VisionFieldPoseEstimate est) -> {
                         var dynamicStdDevs = est.getVisionMeasurementStdDevs();
-                        dynamicStdDevs.set(2, 0, 0.005);
+                        dynamicStdDevs.set(0, 0, 0.05);
+                        dynamicStdDevs.set(1, 0, 0.05);
                         swerve.addVisionMeasurement(
                                 est.getVisionRobotPoseMeters(),
                                 Utils.fpgaToCurrentTime(est.getTimestampSeconds()),
