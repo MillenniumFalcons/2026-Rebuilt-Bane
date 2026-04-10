@@ -11,14 +11,9 @@ public class RollerCommands {
         this.rollers = rollers;
     }
 
-    public Command intakeFast() {
-        return Commands.runEnd(
-                () -> rollers.setOpenLoop(1.0), () -> rollers.setOpenLoop(0), rollers);
-    }
-
     public Command intake() {
         return Commands.runEnd(
-                () -> rollers.setOpenLoop(1.0), () -> rollers.setOpenLoop(0), rollers);
+                () -> rollers.setVelocityTorque(80), () -> rollers.setOpenLoop(0), rollers);
     }
 
     public Command jerkOff() {

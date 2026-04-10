@@ -21,7 +21,7 @@ public class RollerConstants {
 
     public static final double kNativeToSurfaceRPS = 1;
 
-    public static final double kP = 0.1; // CHANGE THESE
+    public static final double kP = 15.0; // CHANGE THESE
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
@@ -32,11 +32,10 @@ public class RollerConstants {
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 55.0;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = 90.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         kMaster.getConfigurator().apply(kMasterConfig);
         kSlave.getConfigurator().apply(kMasterConfig);
-        TunableSlotConfigs tunableConfigs = new TunableSlotConfigs(kMaster, 0, null, null);
     }
 }

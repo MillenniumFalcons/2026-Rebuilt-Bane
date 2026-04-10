@@ -24,6 +24,10 @@ public class Rollers extends TalonFXSubsystem {
         super.setVelocityVoltage(velocity, 0);
     }
 
+    public void setVelocityTorque(double velocity) {
+        super.setVelocityFOC(velocity, 0);
+    }
+
     public double getMasterCurrent() {
         return super.getMasterCurrent();
     }

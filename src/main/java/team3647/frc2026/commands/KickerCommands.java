@@ -12,20 +12,12 @@ public class KickerCommands {
         this.kicker = kicker;
     }
 
-    public Command kick() {
-        return Commands.runEnd(() -> kicker.setOpenLoop(0.25), () -> kicker.setOpenLoop(0), kicker);
-    }
-
     public Command matchShooterSpeed(DoubleSupplier shooterSpeed) {
         return Commands.runEnd(() -> kicker.setVelocityFOC(4), () -> kicker.setOpenLoop(0), kicker);
     }
 
     public Command reverse() {
-        return Commands.run(() -> kicker.setOpenLoop(-0.75), kicker);
-    }
-
-    public Command jamProtect() {
-        return Commands.run(() -> kicker.setOpenLoop(-0.25), kicker);
+        return Commands.run(() -> kicker.setVelocityFOC(-5), kicker);
     }
 
     public boolean currentGreater(double current) {

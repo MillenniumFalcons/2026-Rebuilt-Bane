@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
@@ -79,6 +78,7 @@ public class RobotContainer {
     public DoubleSupplier idleSpeed;
 
     public RobotContainer() {
+        shooter.setInMidSupplier(autoDrive::isInMid);
         idleSpeed = shooter::getIdleSpeed;
 
         configureBindings();
@@ -185,8 +185,8 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         mainController.rightJoyStickPress));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
-        // shooter.setDefaultCommand(shooterCommands.kill());
+        // shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
+        shooter.setDefaultCommand(shooterCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
@@ -209,11 +209,15 @@ public class RobotContainer {
                         .alongWith(superstructure.shoot()));
         mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        // Manual feed
+        mainController.buttonY.whileTrue(
+                Commands.run(() -> autoDrive.updateDriveModeByPose())
+                        .alongWith(superstructure.shoot()));
         // Restrict vision to hub tags while shooting, restore on release.
         // mainController.rightTrigger.onTrue(visionSubsystem.setHubOnlyFilter());
         // mainController.rightTrigger.onFalse(visionSubsystem.clearTagFilter());
         // bump shot (will probably not work)
-        mainController.buttonB.whileTrue(superstructure.bumpShot());
+        mainController.buttonA.whileTrue(superstructure.bumpShot());
         // feed out of intake
         mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.rightBumper.whileTrue(superstructure.feed());
@@ -232,7 +236,14 @@ public class RobotContainer {
         mainController.dPadRight.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT));
         mainController.dPadRight.whileTrue(superstructure.prep());
         mainController.dPadRight.onTrue(autoDrive.enableAutoDrive());
-        mainController.dPadRight.onFalse(autoDrive.disableAutoDrive().onlyIf(() -> {return (autoDrive.getWantedMode() != DriveMode.SHOOT_ON_THE_MOVE);}));
+        mainController.dPadRight.onFalse(
+                autoDrive
+                        .disableAutoDrive()
+                        .onlyIf(
+                                () -> {
+                                    return (autoDrive.getWantedMode()
+                                            != DriveMode.SHOOT_ON_THE_MOVE);
+                                }));
 
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
@@ -241,6 +252,7 @@ public class RobotContainer {
         coController.dPadUp.onTrue(Commands.runOnce(() -> shooter.increaseIdleSpeed()));
         coController.dPadDown.onTrue(Commands.runOnce(() -> shooter.decreaseIdleSpeed()));
         coController.buttonX.onTrue(superstructure.retractIntake());
+        coController.rightBumper.whileTrue(superstructure.reverse());
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());

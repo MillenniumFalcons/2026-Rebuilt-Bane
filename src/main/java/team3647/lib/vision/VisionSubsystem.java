@@ -396,9 +396,8 @@ public class VisionSubsystem extends SubsystemBase {
         return Commands.runOnce(
                         () -> {
                             int[] ids =
-                                    DriverStation.getAlliance()
-                                                    .orElse(DriverStation.Alliance.Red)
-                                            == DriverStation.Alliance.Red
+                                    DriverStation.getAlliance().orElse(DriverStation.Alliance.Red)
+                                                    == DriverStation.Alliance.Red
                                             ? kRedHubTags
                                             : kBlueHubTags;
                             applyTagFilter(ids);

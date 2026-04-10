@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.lib.ModifiedSignalLogger;
 import team3647.lib.TalonFXSubsystem;
@@ -21,6 +20,8 @@ import team3647.lib.tunables.TunableSlotConfigs;
 public class Shooter extends TalonFXSubsystem {
 
     public double idleSpeed = 10;
+    public double idleSpeedInMid = 12;
+    private BooleanSupplier isInMidSupplier = () -> false;
     TunableSlotConfigs configs;
     SysIdRoutine sysIdRoutine =
             new SysIdRoutine(
@@ -53,7 +54,11 @@ public class Shooter extends TalonFXSubsystem {
     }
 
     public double getIdleSpeed() {
-        return idleSpeed;
+        return isInMidSupplier.getAsBoolean() ? idleSpeedInMid : idleSpeed;
+    }
+
+    public void setInMidSupplier(BooleanSupplier supplier) {
+        this.isInMidSupplier = supplier;
     }
 
     public void increaseIdleSpeed() {

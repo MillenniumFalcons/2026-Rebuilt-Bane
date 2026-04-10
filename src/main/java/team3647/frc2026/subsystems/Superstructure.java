@@ -148,10 +148,7 @@ public class Superstructure {
     }
 
     public Command bumpShot() {
-        return Commands.parallel(
-                logEverything(),
-                prepForBump(),
-                index());
+        return Commands.parallel(logEverything(), prepForBump(), index());
     }
 
     public Command prepForBump() {
