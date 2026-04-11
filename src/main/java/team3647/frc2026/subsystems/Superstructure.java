@@ -77,6 +77,7 @@ public class Superstructure {
         this.hoodCommands = new HoodCommands(this.hood);
         this.wristCommands = new WristCommands(this.wrist);
         this.rollerCommands = new RollerCommands(this.rollers);
+        this.rollerCommands.setVxSupplier(this.robotTracker::getIntakeDirectionSpeed);
 
         this.atShotVel = new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed, 0.02));
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
@@ -212,9 +213,10 @@ public class Superstructure {
     }
 
     public Command jerkOff() {
-        return Commands.sequence(
-                        Commands.parallel(deployIntake(), rollerCommands.intake()).withTimeout(0.5),
-                        retractIntake().withTimeout(0.5))
+        return Commands.parallel(
+                        Commands.sequence(
+                                deployIntake().withTimeout(0.5), retractIntake().withTimeout(0.5)),
+                        rollerCommands.intake())
                 .repeatedly();
     }
 }

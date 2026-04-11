@@ -4,7 +4,6 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import team3647.lib.tunables.TunableSlotConfigs;
 
 public class RollerConstants {
     public static final TalonFX kMaster =
@@ -20,6 +19,11 @@ public class RollerConstants {
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
     public static final double kNativeToSurfaceRPS = 1;
+
+    // Intake speed scaling with drivetrain forward velocity.
+    // Final intake speed = kIntakeBaseSpeed + kIntakeVxGain * max(0, vx_m_s)
+    public static final double kIntakeBaseSpeed = 65.0;
+    public static final double kIntakeVxGain = 10.0;
 
     public static final double kP = 15.0; // CHANGE THESE
     public static final double kI = 0.0;
