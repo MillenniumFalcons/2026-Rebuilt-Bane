@@ -31,7 +31,7 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 1"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> 10)),
+                        superstructure.shooterCommands.setVelocity(() -> 6)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"),
@@ -41,7 +41,7 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 3"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> 10)),
+                        superstructure.shooterCommands.setVelocity(() -> 6)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"),
@@ -55,7 +55,7 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.deadline(
                         followPathPlannerPath("Right Mid Sweep 1"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> 10)),
+                        superstructure.shooterCommands.setVelocity(() -> 6)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Right Mid Sweep 2"),
@@ -65,7 +65,7 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.deadline(
                         followPathPlannerPath("Right Mid Sweep 3"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> 10)),
+                        superstructure.shooterCommands.setVelocity(() -> 6)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Right Mid Sweep 2"),

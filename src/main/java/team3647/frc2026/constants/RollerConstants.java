@@ -22,10 +22,10 @@ public class RollerConstants {
 
     // Intake speed scaling with drivetrain forward velocity.
     // Final intake speed = kIntakeBaseSpeed + kIntakeVxGain * max(0, vx_m_s)
-    public static final double kIntakeBaseSpeed = 65.0;
-    public static final double kIntakeVxGain = 10.0;
+    public static final double kIntakeBaseSpeed = 75.0;
+    public static final double kIntakeVxGain = 3.0;
 
-    public static final double kP = 15.0; // CHANGE THESE
+    public static final double kP = 15.0; 
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
@@ -36,8 +36,8 @@ public class RollerConstants {
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 90.0;
-        kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 60.0;
+        kMasterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         kMaster.getConfigurator().apply(kMasterConfig);
         kSlave.getConfigurator().apply(kMasterConfig);

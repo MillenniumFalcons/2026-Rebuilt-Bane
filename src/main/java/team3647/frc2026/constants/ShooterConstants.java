@@ -21,6 +21,11 @@ public class ShooterConstants {
                     GlobalConstants.ShooterIds.kSlaveId,
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
+        public static final TalonFX kSlave1 =
+            new TalonFX(
+                    GlobalConstants.ShooterIds.kSlave1Id,
+                    new CANBus(GlobalConstants.kSubsystemCanbusName));
+
     public static final TalonFXConfiguration kShooterConfig = new TalonFXConfiguration();
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
@@ -109,6 +114,10 @@ public class ShooterConstants {
 
         final TalonFXConfigurator kMasterConfigurator = kMaster.getConfigurator();
         kMasterConfigurator.apply(kMasterConfig);
+        final TalonFXConfigurator kSlaveConfigurator = kSlave.getConfigurator();
+        kSlaveConfigurator.apply(kMasterConfig);
+        final TalonFXConfigurator kSlave1Configurator = kSlave1.getConfigurator();
+        kSlave1Configurator.apply(kMasterConfig);
 
         // final TalonFXConfigurator kSlaveConfigurator = kSlave.getConfigurator();
         // kSlaveConfigurator.apply(kSlaveConfig);

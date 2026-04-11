@@ -185,8 +185,8 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         mainController.rightJoyStickPress));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
-        // shooter.setDefaultCommand(shooterCommands.kill());
+        // shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
+        shooter.setDefaultCommand(shooterCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
@@ -197,7 +197,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         // interp
-        // mainController.buttonY.whileTrue(superstructure.interpShot());
+        mainController.buttonX.whileTrue(superstructure.interpShot());
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(rollerCommands.kill());
@@ -300,28 +300,11 @@ public class RobotContainer {
             new Shooter(
                     ShooterConstants.kMaster,
                     ShooterConstants.kSlave,
+                    ShooterConstants.kSlave1,
                     ShooterConstants.kNativeVelToSurfaceMpS,
                     ShooterConstants.kNativeVelToSurfaceMpS,
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
-
-    //     public final ShooterLeft shooterLeft =
-    //             new ShooterLeft(
-    //                     ShooterConstants.kShooterOne,
-    //                     ShooterConstants.kShooterOneSlave,
-    //                     ShooterConstants.kNativeVelToSurfaceMpS,
-    //                     ShooterConstants.kNativeVelToSurfaceMpS,
-    //                     GlobalConstants.kNominalVoltage,
-    //                     GlobalConstants.kDt);
-
-    //     public final ShooterRight shooterRight =
-    //             new ShooterRight(
-    //                     ShooterConstants.kShooterTwo,
-    //                     ShooterConstants.kShooterTwoSlave,
-    //                     ShooterConstants.kNativeVelToSurfaceMpS,
-    //                     ShooterConstants.kNativeVelToSurfaceMpS,
-    //                     GlobalConstants.kNominalVoltage,
-    //                     GlobalConstants.kDt);
 
     public final Indexer indexer =
             new Indexer(
@@ -334,7 +317,6 @@ public class RobotContainer {
     public final Kicker kicker =
             new Kicker(
                     KickerConstants.kMaster,
-                    KickerConstants.kSlave1,
                     KickerConstants.kSlave2,
                     KickerConstants.kSlave3,
                     KickerConstants.kNativeVelToSurfaceMpS,

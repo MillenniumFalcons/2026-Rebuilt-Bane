@@ -33,7 +33,6 @@ public class GlobalConstants {
 
     public class KickerIds {
         public static final int kMasterId = 18;
-        public static final int kSlave1Id = 19;
         public static final int kSlave2Id = 20;
         public static final int kSlave3Id = 21;
     }
@@ -41,6 +40,7 @@ public class GlobalConstants {
     public class ShooterIds {
         public static final int kMasterId = 22;
         public static final int kSlaveId = 23;
+        public static final int kSlave1Id = 19;
     }
 
     public class HoodIds {

@@ -19,8 +19,8 @@ import team3647.lib.tunables.TunableSlotConfigs;
 
 public class Shooter extends TalonFXSubsystem {
 
-    public double idleSpeed = 8;
-    public double idleSpeedInMid = 8;
+    public double idleSpeed = 6;
+    public double idleSpeedInMid = 6;
     private BooleanSupplier isInMidSupplier = () -> false;
     TunableSlotConfigs configs;
     SysIdRoutine sysIdRoutine =
@@ -39,12 +39,14 @@ public class Shooter extends TalonFXSubsystem {
     public Shooter(
             TalonFX master,
             TalonFX slave,
+            TalonFX slave1,
             double velocityConversion,
             double positionConversion,
             double nominalVoltage,
             double kDt) {
         super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
         this.addFollower(slave, MotorAlignmentValue.Opposed);
+        this.addFollower(slave1, MotorAlignmentValue.Aligned);
         configs =
                 new TunableSlotConfigs(
                         master,

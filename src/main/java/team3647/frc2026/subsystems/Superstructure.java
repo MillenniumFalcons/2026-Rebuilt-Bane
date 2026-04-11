@@ -139,7 +139,7 @@ public class Superstructure {
     }
 
     public Command shoot() {
-        return Commands.parallel(logEverything(), prep(), indexWhenReady(), jerkOff());
+        return Commands.parallel(logEverything(), prep(), indexWhenReady());
     }
 
     public Command prep() {
@@ -169,7 +169,7 @@ public class Superstructure {
 
     public Command index() {
         return Commands.parallel(
-                indexerCommands.index(), kickerCommands.matchShooterSpeed(shotSpeed));
+                indexerCommands.index(), kickerCommands.matchShooterSpeed(shotSpeed), jerkOff());
     }
 
     public Command reverse() {

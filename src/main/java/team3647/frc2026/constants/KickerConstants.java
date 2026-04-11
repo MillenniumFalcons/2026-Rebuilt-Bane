@@ -16,11 +16,6 @@ public class KickerConstants {
                     GlobalConstants.KickerIds.kMasterId,
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
-    public static final TalonFX kSlave1 =
-            new TalonFX(
-                    GlobalConstants.KickerIds.kSlave1Id,
-                    new CANBus(GlobalConstants.kSubsystemCanbusName));
-
     public static final TalonFX kSlave2 =
             new TalonFX(
                     GlobalConstants.KickerIds.kSlave2Id,
@@ -39,7 +34,7 @@ public class KickerConstants {
     public static final double kD = 0;
     public static final double kS = 2.6;
 
-    public static final double kGearboxReduction = 0.5;
+    public static final double kGearboxReduction = 0.25;
     public static final double kWheelDiameterMeters = Units.inchesToMeters(5);
     public static final double kWheelRotationMeters = kWheelDiameterMeters * Math.PI;
     public static final double kNativeVelToSurfaceMpS = kWheelRotationMeters * kGearboxReduction;
@@ -53,7 +48,7 @@ public class KickerConstants {
         kMasterConfig.Slot0.kD = kD;
         kMasterConfig.Slot0.kS = kS;
 
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 70.0;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = 100.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
@@ -70,8 +65,7 @@ public class KickerConstants {
         // kSlaveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         kMaster.getConfigurator().apply(kMasterConfig);
-        // kSlave1.getConfigurator().apply(kMasterConfig);
-        // kSlave2.getConfigurator().apply(kSlaveConfig);
-        // kSlave3.getConfigurator().apply(kSlaveConfig);
+        kSlave2.getConfigurator().apply(kMasterConfig);
+        kSlave3.getConfigurator().apply(kMasterConfig);
     }
 }

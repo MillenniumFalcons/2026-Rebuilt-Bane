@@ -9,7 +9,6 @@ public class Kicker extends TalonFXSubsystem {
 
     public Kicker(
             TalonFX master,
-            TalonFX slave1,
             TalonFX slave2,
             TalonFX slave3,
             double velocityConversion,
@@ -17,7 +16,6 @@ public class Kicker extends TalonFXSubsystem {
             double nominalVoltage,
             double kDt) {
         super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
-        addFollower(slave1, MotorAlignmentValue.Aligned);
         addFollower(slave2, MotorAlignmentValue.Opposed);
         addFollower(slave3, MotorAlignmentValue.Opposed);
     }
