@@ -99,7 +99,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -77.2
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Left Mid Sweep Paths",

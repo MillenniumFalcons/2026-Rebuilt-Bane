@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 5.670208499545809,
-        "y": 0.7263450000000001
+        "y": 0.72634542568957
       },
       "isLocked": false,
       "linkedName": null
@@ -20,15 +20,36 @@
         "y": 0.7292
       },
       "prevControl": {
-        "x": 4.183671155043079,
-        "y": 0.732559
+        "x": 4.247004911161204,
+        "y": 0.7292
+      },
+      "nextControl": {
+        "x": 2.8325377883713605,
+        "y": 0.7292
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.33,
+        "y": 1.8322
+      },
+      "prevControl": {
+        "x": 3.281277777777778,
+        "y": 1.4813999999999995
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 77.2
+    "rotation": 56.336
   },
   "reversed": false,
   "folder": "Right Mid Sweep Paths",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 77.2
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

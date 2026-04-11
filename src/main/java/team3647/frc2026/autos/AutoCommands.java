@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.util.AutoDrive;
@@ -35,27 +34,20 @@ public class AutoCommands extends AutoPathFollowers {
                         superstructure.shooterCommands.setVelocity(() -> 10)),
                 Commands.sequence(
                         Commands.deadline(
-                                followPathPlannerPath("Left Mid Sweep 2"), superstructure.prep()),
+                                followPathPlannerPath("Left Mid Sweep 2"),
+                                superstructure.shooterCommands.setVelocity(() -> 10)),
                         Commands.deadline(
-                                Commands.waitSeconds(2.5),
-                                autoAlign(),
-                                superstructure.shoot(),
-                                superstructure.jerkOff())),
+                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 3"),
                         superstructure.intakeWithDelay(),
                         superstructure.shooterCommands.setVelocity(() -> 10)),
                 Commands.sequence(
                         Commands.deadline(
-                                followPathPlannerPath("Left Mid Sweep 2"), superstructure.prep()),
+                                followPathPlannerPath("Left Mid Sweep 2"),
+                                superstructure.shooterCommands.setVelocity(() -> 10)),
                         Commands.deadline(
-                                Commands.waitSeconds(2.5),
-                                autoAlign(),
-                                superstructure.shoot(),
-                                superstructure.jerkOff())),
-                Commands.deadline(
-                        followPathPlannerPath("Left Mid Sweep 4"),
-                        superstructure.intakeWithDelay()));
+                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())));
     }
 
     public Command rightMidRushPathPlanner() {
@@ -66,7 +58,8 @@ public class AutoCommands extends AutoPathFollowers {
                         superstructure.shooterCommands.setVelocity(() -> 10)),
                 Commands.sequence(
                         Commands.deadline(
-                                followPathPlannerPath("Right Mid Sweep 2"), superstructure.prep()),
+                                followPathPlannerPath("Right Mid Sweep 2"),
+                                superstructure.shooterCommands.setVelocity(() -> 10)),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
                 Commands.deadline(
@@ -75,12 +68,10 @@ public class AutoCommands extends AutoPathFollowers {
                         superstructure.shooterCommands.setVelocity(() -> 10)),
                 Commands.sequence(
                         Commands.deadline(
-                                followPathPlannerPath("Right Mid Sweep 2"), superstructure.prep()),
+                                followPathPlannerPath("Right Mid Sweep 2"),
+                                superstructure.shooterCommands.setVelocity(() -> 10)),
                         Commands.deadline(
-                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
-                Commands.deadline(
-                        followPathPlannerPath("Right Mid Sweep 4"),
-                        superstructure.intakeWithDelay()));
+                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())));
     }
 
     // actual autos

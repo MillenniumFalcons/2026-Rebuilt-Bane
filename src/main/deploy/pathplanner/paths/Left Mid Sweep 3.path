@@ -3,12 +3,28 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.873,
-        "y": 7.34
+        "x": 3.33,
+        "y": 6.237
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.123,
+        "x": 2.520777777777778,
+        "y": 7.591722222222222
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.9921888888888892,
+        "y": 7.34
+      },
+      "prevControl": {
+        "x": 3.7421888888888892,
+        "y": 7.34
+      },
+      "nextControl": {
+        "x": 4.242188888888889,
         "y": 7.34
       },
       "isLocked": false,
@@ -94,15 +110,19 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": -77.2
+      "waypointRelativePos": 1,
+      "rotationDegrees": -90.0
     },
     {
-      "waypointRelativePos": 2.4764150943396186,
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 3.4764150943396186,
       "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 4.0,
+      "waypointRelativePos": 5.0,
       "rotationDegrees": -90.0
     }
   ],
@@ -119,13 +139,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -77.2
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Left Mid Sweep Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -77.2
+    "rotation": -56.336
   },
   "useDefaultConstraints": true
 }
