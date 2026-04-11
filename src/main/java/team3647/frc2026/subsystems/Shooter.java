@@ -19,8 +19,8 @@ import team3647.lib.tunables.TunableSlotConfigs;
 
 public class Shooter extends TalonFXSubsystem {
 
-    public double idleSpeed = 10;
-    public double idleSpeedInMid = 12;
+    public double idleSpeed = 8;
+    public double idleSpeedInMid = 8;
     private BooleanSupplier isInMidSupplier = () -> false;
     TunableSlotConfigs configs;
     SysIdRoutine sysIdRoutine =

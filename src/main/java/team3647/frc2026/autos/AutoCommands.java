@@ -31,8 +31,8 @@ public class AutoCommands extends AutoPathFollowers {
         return Commands.sequence(
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 1"),
-                        superstructure.intakeWithDelay()),
-                Commands.run(() -> Logger.recordOutput("finished first path", 1.0)),
+                        superstructure.intakeWithDelay(),
+                        superstructure.shooterCommands.setVelocity(() -> 10)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"), superstructure.prep()),
@@ -43,7 +43,8 @@ public class AutoCommands extends AutoPathFollowers {
                                 superstructure.jerkOff())),
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 3"),
-                        superstructure.intakeWithDelay()),
+                        superstructure.intakeWithDelay(),
+                        superstructure.shooterCommands.setVelocity(() -> 10)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"), superstructure.prep()),
@@ -61,7 +62,8 @@ public class AutoCommands extends AutoPathFollowers {
         return Commands.sequence(
                 Commands.deadline(
                         followPathPlannerPath("Right Mid Sweep 1"),
-                        superstructure.intakeWithDelay()),
+                        superstructure.intakeWithDelay(),
+                        superstructure.shooterCommands.setVelocity(() -> 10)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Right Mid Sweep 2"), superstructure.prep()),
@@ -69,7 +71,8 @@ public class AutoCommands extends AutoPathFollowers {
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
                 Commands.deadline(
                         followPathPlannerPath("Right Mid Sweep 3"),
-                        superstructure.intakeWithDelay()),
+                        superstructure.intakeWithDelay(),
+                        superstructure.shooterCommands.setVelocity(() -> 10)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Right Mid Sweep 2"), superstructure.prep()),
