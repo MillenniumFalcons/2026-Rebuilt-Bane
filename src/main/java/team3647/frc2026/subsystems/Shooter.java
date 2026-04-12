@@ -63,12 +63,14 @@ public class Shooter extends TalonFXSubsystem {
         this.isInMidSupplier = supplier;
     }
 
-    public void increaseIdleSpeed() {
-        idleSpeed = 12;
+    public void disableIdle() {
+        idleSpeedInMid = 0;
+        idleSpeed = 0;
     }
 
-    public void decreaseIdleSpeed() {
-        idleSpeed = 10;
+    public void enableIdle() {
+        idleSpeedInMid = 6;
+        idleSpeed = 6;
     }
 
     public void setOpenLoop(double percent) {

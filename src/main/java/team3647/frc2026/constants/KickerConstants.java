@@ -29,7 +29,7 @@ public class KickerConstants {
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
     public static final TalonFXConfiguration kSlaveConfig = new TalonFXConfiguration();
 
-    public static final double kP = 10.0;
+    public static final double kP = 6.5;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 2.6;

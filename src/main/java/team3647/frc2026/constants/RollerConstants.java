@@ -25,7 +25,7 @@ public class RollerConstants {
     public static final double kIntakeBaseSpeed = 75.0;
     public static final double kIntakeVxGain = 3.0;
 
-    public static final double kP = 15.0; 
+    public static final double kP = 15.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 

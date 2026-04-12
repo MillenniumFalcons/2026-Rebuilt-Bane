@@ -21,7 +21,7 @@ public class ShooterConstants {
                     GlobalConstants.ShooterIds.kSlaveId,
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
 
-        public static final TalonFX kSlave1 =
+    public static final TalonFX kSlave1 =
             new TalonFX(
                     GlobalConstants.ShooterIds.kSlave1Id,
                     new CANBus(GlobalConstants.kSubsystemCanbusName));
@@ -52,7 +52,7 @@ public class ShooterConstants {
     public static final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(kS, kV, kA);
 
     // need to tune
-    public static final double kP = 9.2;
+    public static final double kP = 16.0;
     public static final double kI = 0;
     public static final double kD = 0;
 

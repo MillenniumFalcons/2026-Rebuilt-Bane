@@ -185,8 +185,8 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         mainController.rightJoyStickPress));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        // shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
-        shooter.setDefaultCommand(shooterCommands.kill());
+        shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
+        // shooter.setDefaultCommand(shooterCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
@@ -233,24 +233,18 @@ public class RobotContainer {
                         .andThen(autoDrive.disableAutoDrive()));
         mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
         // pre align + spin up (no indexing)
-        mainController.dPadRight.onTrue(autoDrive.setDriveMode(DriveMode.SHOOT));
-        mainController.dPadRight.whileTrue(superstructure.prep());
-        mainController.dPadRight.onTrue(autoDrive.enableAutoDrive());
-        mainController.dPadRight.onFalse(
-                autoDrive
-                        .disableAutoDrive()
-                        .onlyIf(
-                                () -> {
-                                    return (autoDrive.getWantedMode()
-                                            != DriveMode.SHOOT_ON_THE_MOVE);
-                                }));
-
+        // Gate on !rightTrigger so that when rightTrigger is released while dPadRight is still
+        // held, prep() gets re-scheduled (whileTrue only fires on rising edges of the trigger).
+        mainController
+                .dPadRight
+                .and(mainController.rightTrigger.negate())
+                .whileTrue(superstructure.prep());
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
         coController.leftTrigger.onTrue(superstructure.jerkOff());
-        coController.dPadUp.onTrue(Commands.runOnce(() -> shooter.increaseIdleSpeed()));
-        coController.dPadDown.onTrue(Commands.runOnce(() -> shooter.decreaseIdleSpeed()));
+        coController.dPadUp.onTrue(Commands.runOnce(() -> shooter.enableIdle()));
+        coController.dPadDown.onTrue(Commands.runOnce(() -> shooter.disableIdle()));
         coController.buttonX.onTrue(superstructure.retractIntake());
         coController.rightBumper.whileTrue(superstructure.reverse());
 
