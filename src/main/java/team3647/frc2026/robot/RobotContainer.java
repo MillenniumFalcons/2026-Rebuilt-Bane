@@ -213,11 +213,6 @@ public class RobotContainer {
         mainController.buttonY.whileTrue(
                 Commands.run(() -> autoDrive.updateDriveModeByPose())
                         .alongWith(superstructure.shoot()));
-        // Restrict vision to hub tags while shooting, restore on release.
-        // mainController.rightTrigger.onTrue(visionSubsystem.setHubOnlyFilter());
-        // mainController.rightTrigger.onFalse(visionSubsystem.clearTagFilter());
-        // bump shot (will probably not work)
-        mainController.buttonA.whileTrue(superstructure.bumpShot());
         // feed out of intake
         mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.rightBumper.whileTrue(superstructure.feed());
@@ -247,6 +242,9 @@ public class RobotContainer {
         coController.dPadDown.onTrue(Commands.runOnce(() -> shooter.disableIdle()));
         coController.buttonX.onTrue(superstructure.retractIntake());
         coController.rightBumper.whileTrue(superstructure.reverse());
+        //defense mode
+        coController.buttonA.onTrue(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.9)));
+        coController.buttonA.onFalse(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.6)));
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());

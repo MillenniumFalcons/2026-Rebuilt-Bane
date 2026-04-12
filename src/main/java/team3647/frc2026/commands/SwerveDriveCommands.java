@@ -18,6 +18,7 @@ public class SwerveDriveCommands implements AllianceObserver {
     private final SwerveDrive swerve;
     private final double kMaxSpeedMps;
     private final double kMaxRotRadPs;
+    private double rotMultiplier = 0.6;
 
     @SuppressWarnings("unused")
     private Alliance color = Alliance.Red;
@@ -65,7 +66,7 @@ public class SwerveDriveCommands implements AllianceObserver {
 
                     double motionXComponent = ySquared * invert * kMaxSpeedMps;
                     double motionYComponent = -xSquared * invert * kMaxSpeedMps;
-                    double motionTurnComponent = rot.getAsDouble() * kMaxRotRadPs * 0.6;
+                    double motionTurnComponent = rot.getAsDouble() * kMaxRotRadPs * rotMultiplier;
 
                     if (!isAutoDrive) {
                         swerve.driveFieldOriented(
@@ -114,6 +115,10 @@ public class SwerveDriveCommands implements AllianceObserver {
                     // }
                 },
                 swerve);
+    }
+
+    public void setRotMultiplier(double multiplier) {
+        this.rotMultiplier = multiplier;
     }
 
     public Command driveButInAuto(AutoDrive autoDrive, Supplier<Twist2d> autoDriveVelocities) {

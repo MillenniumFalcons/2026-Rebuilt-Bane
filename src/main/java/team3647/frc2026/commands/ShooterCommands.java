@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.DoubleSupplier;
 import team3647.frc2026.subsystems.Shooter;
-import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.lib.tunables.TunableNumber;
 
 public class ShooterCommands {
