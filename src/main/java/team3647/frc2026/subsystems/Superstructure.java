@@ -79,7 +79,7 @@ public class Superstructure {
         this.rollerCommands = new RollerCommands(this.rollers);
         this.rollerCommands.setVxSupplier(this.robotTracker::getIntakeDirectionSpeed);
 
-        this.atShotVel = new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed, 0.02));
+        this.atShotVel = new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed));
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
 

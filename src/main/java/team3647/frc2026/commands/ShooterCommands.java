@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.DoubleSupplier;
 import team3647.frc2026.subsystems.Shooter;
+import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.lib.tunables.TunableNumber;
 
 public class ShooterCommands {
@@ -30,7 +31,10 @@ public class ShooterCommands {
         return Commands.run(() -> shooter.setVelocityFOCBangBang(vel.getAsDouble()), shooter);
     }
 
-    public boolean isAtVelocity(DoubleSupplier velocity, double tolerance) {
+    public boolean isAtVelocity(DoubleSupplier velocity) {
+        if (velocity.getAsDouble() > 12.0) {
+            return Math.abs(shooter.getVelocity() - velocity.getAsDouble()) < 1;
+        }
         return shooter.getVelocity() > velocity.getAsDouble();
     }
 

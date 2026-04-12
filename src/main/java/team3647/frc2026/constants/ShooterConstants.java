@@ -72,6 +72,7 @@ public class ShooterConstants {
         shootSpeedMap.put(4.5, 12.0 + tempOffset); // made up
         shootSpeedMap.put(5.0, 13.0 + tempOffset); // made up
         shootSpeedMap.put(8.0, 14.5 + tempOffset); // made up
+        shootSpeedMap.put(14.0, 14.5);
 
         kMasterConfig.Slot0.kP = kP;
         kMasterConfig.Slot0.kI = kI;
