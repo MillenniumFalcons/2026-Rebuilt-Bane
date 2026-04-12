@@ -74,6 +74,13 @@ public class AutoCommands extends AutoPathFollowers {
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())));
     }
 
+    public Command depot() {
+        return Commands.sequence(
+                Commands.deadline(followPathPlannerPath("Depot 1"), superstructure.intake()),
+                followPathPlannerPath("Depot 2"),
+                Commands.parallel(autoAlign(), superstructure.shoot()));
+    }
+
     // actual autos
 
     // preload only
@@ -131,19 +138,14 @@ public class AutoCommands extends AutoPathFollowers {
     public final AutoMode rightMidRushBluePP;
     public final AutoMode rightMidRushRedPP;
 
+    public final AutoMode depotBlue;
+    public final AutoMode depotRed;
+
     public final AutoMode blueEmpty;
     public final AutoMode preloadBlue;
-    public final AutoMode rightDoubleMidRushBlue;
-    public final AutoMode leftDoubleMidRushBlue;
-    public final AutoMode rightDoubleMidRushLoopBlue;
-    public final AutoMode leftDoubleMidRushLoopBlue;
 
     public final AutoMode redEmpty;
     public final AutoMode preloadRed;
-    public final AutoMode rightDoubleMidRushRed;
-    public final AutoMode leftDoubleMidRushRed;
-    public final AutoMode rightDoubleMidRushLoopRed;
-    public final AutoMode leftDoubleMidRushLoopRed;
 
     public AutoCommands(
             SwerveDrive swerve,
@@ -175,75 +177,21 @@ public class AutoCommands extends AutoPathFollowers {
                         getInitialPP("Right Mid Sweep", Alliance.Red),
                         "Right Mid Sweep");
 
+        this.depotBlue = new AutoMode(depot(), getInitialPP("Depot", Alliance.Blue), "Depot");
+        this.depotRed = new AutoMode(depot(), getInitialPP("Depot", Alliance.Red), "Depot");
+
         this.preloadBlue = new AutoMode(preloadAuto(), new Pose2d(), "preload");
         this.preloadRed = new AutoMode(preloadAuto(), new Pose2d(), "preload");
 
         this.blueEmpty =
                 new AutoMode(
                         Commands.none(), Pose2d.kZero.rotateBy(Rotation2d.k180deg), "blue empty");
-        this.rightDoubleMidRushBlue =
-                new AutoMode(
-                        doubleMidRushAuto(rightMidRush),
-                        getInitial(getTraj(rightMidRush), Alliance.Blue),
-                        "double" + rightMidRush);
-        this.leftDoubleMidRushBlue =
-                new AutoMode(
-                        doubleMidRushAuto(leftMidRush),
-                        getInitial(getTraj(leftMidRush), Alliance.Blue),
-                        "double" + leftMidRush);
-        this.rightDoubleMidRushLoopBlue =
-                new AutoMode(
-                        doubleMidRushLoopAuto(rightMidRush),
-                        getInitial(getTraj(rightMidRush), Alliance.Blue),
-                        "doubleLoop" + rightMidRush);
-        this.leftDoubleMidRushLoopBlue =
-                new AutoMode(
-                        doubleMidRushLoopAuto(leftMidRush),
-                        getInitial(getTraj(leftMidRush), Alliance.Blue),
-                        "doubleLoop" + leftMidRush);
 
         this.redEmpty = new AutoMode(Commands.none(), Pose2d.kZero, "red empty");
-        this.rightDoubleMidRushRed =
-                new AutoMode(
-                        doubleMidRushAuto(rightMidRush),
-                        getInitial(getTraj(rightMidRush), Alliance.Red),
-                        "double" + rightMidRush);
-        this.leftDoubleMidRushRed =
-                new AutoMode(
-                        doubleMidRushAuto(leftMidRush),
-                        getInitial(getTraj(leftMidRush), Alliance.Red),
-                        "double" + leftMidRush);
-        this.rightDoubleMidRushLoopRed =
-                new AutoMode(
-                        doubleMidRushLoopAuto(rightMidRush),
-                        getInitial(getTraj(rightMidRush), Alliance.Red),
-                        "doubleLoop" + rightMidRush);
-        this.leftDoubleMidRushLoopRed =
-                new AutoMode(
-                        doubleMidRushLoopAuto(leftMidRush),
-                        getInitial(getTraj(leftMidRush), Alliance.Red),
-                        "doubleLoop" + leftMidRush);
 
         blueAutosList =
-                List.of(
-                        blueEmpty,
-                        leftMidRushBluePP,
-                        rightMidRushBluePP,
-                        rightDoubleMidRushBlue,
-                        leftDoubleMidRushBlue,
-                        rightDoubleMidRushLoopBlue,
-                        leftDoubleMidRushLoopBlue,
-                        preloadBlue);
-        redAutosList =
-                List.of(
-                        redEmpty,
-                        leftMidRushRedPP,
-                        rightMidRushRedPP,
-                        rightDoubleMidRushRed,
-                        leftDoubleMidRushRed,
-                        rightDoubleMidRushLoopRed,
-                        leftDoubleMidRushLoopRed,
-                        preloadRed);
+                List.of(blueEmpty, leftMidRushBluePP, rightMidRushBluePP, preloadBlue, depotBlue);
+        redAutosList = List.of(redEmpty, leftMidRushRedPP, rightMidRushRedPP, preloadRed, depotRed);
     }
 
     public BooleanSupplier hasTarget() {
