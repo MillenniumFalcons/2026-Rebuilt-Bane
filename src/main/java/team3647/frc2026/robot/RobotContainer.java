@@ -190,7 +190,6 @@ public class RobotContainer {
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
-        wrist.setDefaultCommand(wristCommands.holdPositionAtCall());
         kicker.setDefaultCommand(kickerCommands.kill());
         // climb.setDefaultCommand(climbCommands.kill());
     }
@@ -242,7 +241,7 @@ public class RobotContainer {
         coController.dPadDown.onTrue(Commands.runOnce(() -> shooter.disableIdle()));
         coController.buttonX.onTrue(superstructure.retractIntake());
         coController.rightBumper.whileTrue(superstructure.reverse());
-        //defense mode
+        // defense mode
         coController.buttonA.onTrue(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.9)));
         coController.buttonA.onFalse(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.6)));
 
