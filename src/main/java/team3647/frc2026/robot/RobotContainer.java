@@ -237,8 +237,10 @@ public class RobotContainer {
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
         coController.leftTrigger.onTrue(superstructure.jerkOff());
-        coController.dPadUp.onTrue(Commands.runOnce(() -> shooter.enableIdle()));
-        coController.dPadDown.onTrue(Commands.runOnce(() -> shooter.disableIdle()));
+        coController.dPadRight.onTrue(Commands.runOnce(() -> shooter.enableIdle()));
+        coController.dPadLeft.onTrue(Commands.runOnce(() -> shooter.disableIdle()));
+        coController.dPadUp.onTrue(autoDrive.setDriveMode(DriveMode.MANUAL_SHOOT).alongWith(autoDrive.incrementHood(1)));
+        coController.dPadDown.onTrue(autoDrive.setDriveMode(DriveMode.MANUAL_SHOOT).alongWith(autoDrive.incrementHood(-1)));
         coController.buttonX.onTrue(superstructure.retractIntake());
         coController.rightBumper.whileTrue(superstructure.reverse());
         // defense mode

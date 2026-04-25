@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -40,6 +41,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     public boolean enabled = false;
     public boolean isRotAligned = false;
 
+    private Angle manualHoodAngle = Degrees.of(1);
+
     private final TargetingUtil targeting;
 
     public AutoDrive(
@@ -60,7 +63,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         SHOOT, // prealign shoot
         FEED, // shoot feed
         INTAKE_FEED, // reverse intake feed
-        INTAKE
+        INTAKE,
+        MANUAL_SHOOT
     }
 
     public boolean rotAligned() {
@@ -105,6 +109,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                     || wantedMode == DriveMode.INTAKE
                     || wantedMode == DriveMode.SHOOT) {
                 return 1;
+            } else if (wantedMode == DriveMode.MANUAL_SHOOT){
+                return manualHoodAngle.in(Degrees);
             }
             return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                     ? targeting.shootAtHubOnTheMove().pivot
@@ -149,6 +155,15 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     public Command setDriveMode(DriveMode mode) {
         return Commands.runOnce(() -> this.wantedMode = mode).ignoringDisable(false);
+    }
+
+    public Command incrementHood(double angleDegrees){
+        return Commands.runOnce(()-> {
+            Angle newAngle = manualHoodAngle.plus(Degrees.of(angleDegrees));
+            if (newAngle.gt(HoodConstants.kMinAngle) && newAngle.lt(HoodConstants.kMaxAngle)) {
+                manualHoodAngle = newAngle;
+            }
+        });
     }
 
     /** Returns true if the robot is beyond the trench line (in mid). */
