@@ -109,12 +109,12 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                     || wantedMode == DriveMode.INTAKE
                     || wantedMode == DriveMode.SHOOT) {
                 return 1;
-            } else if (wantedMode == DriveMode.MANUAL_SHOOT){
-                return manualHoodAngle.in(Degrees);
             }
             return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                     ? targeting.shootAtHubOnTheMove().pivot
-                    : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
+                     : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
+        } else if (wantedMode == DriveMode.MANUAL_SHOOT) {
+                return manualHoodAngle.in(Degrees);
         }
         return 1;
     }
@@ -157,13 +157,17 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         return Commands.runOnce(() -> this.wantedMode = mode).ignoringDisable(false);
     }
 
-    public Command incrementHood(double angleDegrees){
-        return Commands.runOnce(()-> {
-            Angle newAngle = manualHoodAngle.plus(Degrees.of(angleDegrees));
-            if (newAngle.gt(HoodConstants.kMinAngle) && newAngle.lt(HoodConstants.kMaxAngle)) {
-                manualHoodAngle = newAngle;
-            }
-        });
+    public Command incrementHood(double angleDegrees) {
+        return Commands.runOnce(
+                () -> {
+                    Angle newAngle = manualHoodAngle.plus(Degrees.of(angleDegrees));
+                    Logger.recordOutput("Shooting/Hood/manual angle", manualHoodAngle.in(Degrees));
+                    Logger.recordOutput("Shooting/Hood/new angle", newAngle.in(Degrees));
+                    if (newAngle.gt(HoodConstants.kMinAngle)
+                            && newAngle.lt(HoodConstants.kMaxAngle)) {
+                        manualHoodAngle = newAngle;
+                    }
+                });
     }
 
     /** Returns true if the robot is beyond the trench line (in mid). */

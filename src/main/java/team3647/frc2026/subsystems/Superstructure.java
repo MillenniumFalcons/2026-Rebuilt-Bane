@@ -2,21 +2,20 @@ package team3647.frc2026.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
 import team3647.frc2026.commands.KickerCommands;
 import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.WristCommands;
+import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.util.LEDStates;
 import team3647.frc2026.util.LEDStates.SuperstructureState;
 import team3647.frc2026.util.RobotTracker;
@@ -145,17 +144,27 @@ public class Superstructure {
     }
 
     public Command shootInstantly() {
-        return Commands.parallel(logEverything(), prep(), Commands.sequence(
-                Commands.waitUntil(atShotVel),
-                index()
-                        // .onlyWhile(readyToShoot)
-                        //         .repeatedly()
-                        .deadlineFor(ledStates.activateState(SuperstructureState.SHOOTING))));
+        return Commands.parallel(
+                logEverything(),
+                prepKids(),
+                Commands.sequence(
+                        Commands.waitUntil(() -> shooterCommands.isAtVelocity(() ->ShooterConstants.kidSpeed)),
+                        index()
+                                // .onlyWhile(readyToShoot)
+                                //         .repeatedly()
+                                .deadlineFor(
+                                        ledStates.activateState(SuperstructureState.SHOOTING))));
     }
 
     public Command prep() {
         return shooterCommands
                 .setVelocity(shotSpeed)
+                .deadlineFor(ledStates.activateState(SuperstructureState.PREPPING));
+    }
+
+    public Command prepKids() {
+        return shooterCommands
+                .setVelocity(() -> ShooterConstants.kidSpeed)
                 .deadlineFor(ledStates.activateState(SuperstructureState.PREPPING));
     }
 

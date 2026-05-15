@@ -210,8 +210,7 @@ public class RobotContainer {
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         // Manual feed
         mainController.buttonY.whileTrue(
-                Commands.run(() -> autoDrive.updateDriveModeByPose())
-                        .alongWith(superstructure.shoot()));
+                superstructure.shootInstantly());
         // feed out of intake
         mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.rightBumper.whileTrue(superstructure.feed());
@@ -239,8 +238,14 @@ public class RobotContainer {
         coController.leftTrigger.onTrue(superstructure.jerkOff());
         coController.dPadRight.onTrue(Commands.runOnce(() -> shooter.enableIdle()));
         coController.dPadLeft.onTrue(Commands.runOnce(() -> shooter.disableIdle()));
-        coController.dPadUp.onTrue(autoDrive.setDriveMode(DriveMode.MANUAL_SHOOT).alongWith(autoDrive.incrementHood(1)));
-        coController.dPadDown.onTrue(autoDrive.setDriveMode(DriveMode.MANUAL_SHOOT).alongWith(autoDrive.incrementHood(-1)));
+        coController.dPadUp.onTrue(
+                autoDrive
+                        .setDriveMode(DriveMode.MANUAL_SHOOT)
+                        .alongWith(autoDrive.incrementHood(1)));
+        coController.dPadDown.onTrue(
+                autoDrive
+                        .setDriveMode(DriveMode.MANUAL_SHOOT)
+                        .alongWith(autoDrive.incrementHood(-1)));
         coController.buttonX.onTrue(superstructure.retractIntake());
         coController.rightBumper.whileTrue(superstructure.reverse());
         // defense mode

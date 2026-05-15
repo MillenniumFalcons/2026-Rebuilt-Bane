@@ -39,6 +39,7 @@ public class ShooterConstants {
 
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxCurrent = 90.0;
+    public static final double kidSpeed = 9.0;
 
     public static final double kS = 4.3;
     public static final double kV = 0.43;

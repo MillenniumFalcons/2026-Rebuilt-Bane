@@ -37,7 +37,7 @@ public class Hood extends TalonFXSubsystem {
         super.setPositionExpoVoltage(angle, 0);
     }
 
-    public void incrementAngle(double angle){
+    public void incrementAngle(double angle) {
         super.setPositionExpoVoltage(getPosition() + angle, 0, false);
     }
 
