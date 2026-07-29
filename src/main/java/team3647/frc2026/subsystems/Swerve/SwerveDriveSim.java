@@ -176,6 +176,11 @@ public class SwerveDriveSim implements SwerveDrive {
         return Optional.of(this.intakeSim);
     }
 
+    @Override
+    public void brake() {
+        
+    }
+
     // @Override
     // public Command driveSysIdQuasi(Direction direction) {
     //     // TODO Auto-generated method stub

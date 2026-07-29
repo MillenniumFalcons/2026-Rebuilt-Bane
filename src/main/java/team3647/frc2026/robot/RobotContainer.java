@@ -183,7 +183,8 @@ public class RobotContainer {
                         autoDrive::getVelocities,
                         autoDrive::getWantedMode,
                         autoDrive::getAutoDriveEnabled,
-                        mainController.rightJoyStickPress));
+                        mainController.rightJoyStickPress,
+                        autoDrive::rotAligned));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
         // shooter.setDefaultCommand(shooterCommands.kill());
@@ -209,8 +210,7 @@ public class RobotContainer {
         mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         // Manual feed
-        mainController.buttonY.whileTrue(
-                superstructure.shootInstantly());
+        mainController.buttonY.whileTrue(superstructure.shootInstantly());
         // feed out of intake
         mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.rightBumper.whileTrue(superstructure.feed());

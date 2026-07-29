@@ -526,6 +526,11 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         this.masterRequest = this.robotCentric;
     }
 
+    @Override
+    public void brake() {
+        this.masterRequest = new SwerveRequest.SwerveDriveBrake();
+    }
+
     public SwerveModuleState[] getModuleStates() {
         return periodicIO.states;
     }

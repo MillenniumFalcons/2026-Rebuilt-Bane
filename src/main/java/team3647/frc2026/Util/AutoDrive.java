@@ -112,9 +112,9 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             }
             return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                     ? targeting.shootAtHubOnTheMove().pivot
-                     : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
+                    : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
         } else if (wantedMode == DriveMode.MANUAL_SHOOT) {
-                return manualHoodAngle.in(Degrees);
+            return manualHoodAngle.in(Degrees);
         }
         return 1;
     }
@@ -185,7 +185,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         if (isInMid()) {
             this.wantedMode = DriveMode.FEED;
         } else {
-            this.wantedMode = DriveMode.SHOOT_ON_THE_MOVE;
+            this.wantedMode = DriveMode.SHOOT;
         }
     }
 

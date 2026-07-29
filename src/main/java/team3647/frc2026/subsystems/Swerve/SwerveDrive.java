@@ -24,6 +24,8 @@ public interface SwerveDrive extends PeriodicSubsystem, AllianceObserver {
 
     public void driveFieldOriented(double x, double y, double rotation);
 
+    public void brake();
+
     public void resetPose(Pose2d pose);
 
     public void setRobotPose(Pose2d pose);

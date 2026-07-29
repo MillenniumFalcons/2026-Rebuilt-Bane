@@ -174,7 +174,6 @@ public class AutoPathFollowers implements AllianceObserver {
             double xFF = referenceState.getChassisSpeeds().vxMetersPerSecond;
             double yFF = referenceState.getChassisSpeeds().vyMetersPerSecond;
             double rotationFF = referenceState.getChassisSpeeds().omegaRadiansPerSecond;
-
             double xFeedback = xController.calculate(pose.getX(), referenceState.getPose().getX());
             double yFeedback = yController.calculate(pose.getY(), referenceState.getPose().getY());
             double rotationFeedback =

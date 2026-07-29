@@ -148,7 +148,10 @@ public class Superstructure {
                 logEverything(),
                 prepKids(),
                 Commands.sequence(
-                        Commands.waitUntil(() -> shooterCommands.isAtVelocity(() ->ShooterConstants.kidSpeed)),
+                        Commands.waitUntil(
+                                () ->
+                                        shooterCommands.isAtVelocity(
+                                                () -> ShooterConstants.kidSpeed)),
                         index()
                                 // .onlyWhile(readyToShoot)
                                 //         .repeatedly()

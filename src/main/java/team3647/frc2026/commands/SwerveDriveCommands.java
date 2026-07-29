@@ -41,7 +41,8 @@ public class SwerveDriveCommands implements AllianceObserver {
             Supplier<Twist2d> autoDriveVelocities,
             Supplier<DriveMode> getMode,
             BooleanSupplier autoDriveEnabled,
-            BooleanSupplier robotRelative) {
+            BooleanSupplier robotRelative,
+            BooleanSupplier isAligned) {
 
         return Commands.run(
                 () -> {
@@ -81,9 +82,13 @@ public class SwerveDriveCommands implements AllianceObserver {
                                     motionYComponent * 0.25,
                                     motionTurnComponent);
                         } else if (getMode.get().equals(DriveMode.SHOOT)) {
-                            motionTurnComponent = velocities.dtheta;
-                            swerve.driveFieldOriented(
-                                    motionXComponent, motionYComponent, motionTurnComponent);
+                            if (isAligned.getAsBoolean()) {
+                                swerve.brake();
+                            } else {
+                                motionTurnComponent = velocities.dtheta;
+                                swerve.driveFieldOriented(
+                                        motionXComponent*0.25, motionYComponent*0.25, motionTurnComponent);
+                            }
                         } else if (getMode.get().equals(DriveMode.INTAKE_FEED)) {
                             motionTurnComponent = velocities.dtheta;
                             swerve.driveFieldOriented(
