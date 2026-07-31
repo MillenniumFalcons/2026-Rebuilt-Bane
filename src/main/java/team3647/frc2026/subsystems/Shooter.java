@@ -19,8 +19,8 @@ import team3647.lib.tunables.TunableSlotConfigs;
 
 public class Shooter extends TalonFXSubsystem {
 
-    public double idleSpeed = 6;
-    public double idleSpeedInMid = 6;
+    public double idleSpeed = ShooterConstants.kIdleSpeed;
+    public double idleSpeedInMid = ShooterConstants.kIdleSpeedMid;
     private BooleanSupplier isInMidSupplier = () -> false;
     TunableSlotConfigs configs;
     SysIdRoutine sysIdRoutine =
@@ -69,8 +69,8 @@ public class Shooter extends TalonFXSubsystem {
     }
 
     public void enableIdle() {
-        idleSpeedInMid = 6;
-        idleSpeed = 6;
+        idleSpeedInMid = ShooterConstants.kIdleSpeedMid;
+        idleSpeed = ShooterConstants.kIdleSpeed;
     }
 
     public void setOpenLoop(double percent) {

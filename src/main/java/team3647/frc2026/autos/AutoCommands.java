@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+
+import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.util.AutoDrive;
@@ -26,28 +28,30 @@ public class AutoCommands extends AutoPathFollowers {
     //         return followPathPlannerAuto("Right Mid Sweep");
     //     }
 
+    double spinUpSpeed = 10.0;
+
     public Command leftMidRushPathPlanner() {
         return Commands.sequence(
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 1"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> 6)),
+                        superstructure.shooterCommands.setVelocity(() -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"),
-                                superstructure.shooterCommands.setVelocity(() -> 10)),
+                                superstructure.shooterCommands.setVelocity(() -> spinUpSpeed)),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 3"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> 6)),
+                        superstructure.shooterCommands.setVelocity(() -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"),
-                                superstructure.shooterCommands.setVelocity(() -> 10)),
+                                superstructure.shooterCommands.setVelocity(() -> spinUpSpeed)),
                         Commands.deadline(
-                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())));
+                                Commands.waitSeconds(5), autoAlign(), superstructure.shoot())));
     }
 
     public Command rightMidRushPathPlanner() {
@@ -55,23 +59,23 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.deadline(
                         followPathPlannerPath("Right Mid Sweep 1"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> 6)),
+                        superstructure.shooterCommands.setVelocity(() -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Right Mid Sweep 2"),
-                                superstructure.shooterCommands.setVelocity(() -> 10)),
+                                superstructure.shooterCommands.setVelocity(() -> spinUpSpeed)),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
                 Commands.deadline(
                         followPathPlannerPath("Right Mid Sweep 3"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> 6)),
+                        superstructure.shooterCommands.setVelocity(() -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Right Mid Sweep 2"),
-                                superstructure.shooterCommands.setVelocity(() -> 10)),
+                                superstructure.shooterCommands.setVelocity(() -> spinUpSpeed)),
                         Commands.deadline(
-                                Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())));
+                                Commands.waitSeconds(5), autoAlign(), superstructure.shoot())));
     }
 
     public Command depot() {
@@ -81,7 +85,7 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.parallel(autoAlign(), superstructure.shoot()));
     }
 
-    // actual autos
+    // choreo autos, not in-use
 
     // preload only
     public Command preloadAuto() {

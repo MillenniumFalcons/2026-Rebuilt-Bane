@@ -196,6 +196,7 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        mainController.buttonA.whileTrue(Commands.run(()->swerve.brake()));
         // interp
         mainController.buttonX.whileTrue(superstructure.interpShot());
         // intake

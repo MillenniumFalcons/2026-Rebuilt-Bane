@@ -41,6 +41,9 @@ public class ShooterConstants {
     public static final double kMaxCurrent = 90.0;
     public static final double kidSpeed = 9.0;
 
+    public static final double kIdleSpeed = 8.5;
+    public static final double kIdleSpeedMid = 6.0;
+
     public static final double kS = 4.3;
     public static final double kV = 0.43;
     public static final double kA = 0;

@@ -36,7 +36,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     private Alliance color = Alliance.Red;
 
-    private DriveMode wantedMode = DriveMode.SHOOT_ON_THE_MOVE;
+    private DriveMode wantedMode = DriveMode.SHOOT;
 
     public boolean enabled = false;
     public boolean isRotAligned = false;
@@ -59,7 +59,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     public enum DriveMode {
-        SHOOT_ON_THE_MOVE, // regular
+        SHOOT_ON_THE_MOVE, // dont use
         SHOOT, // prealign shoot
         FEED, // shoot feed
         INTAKE_FEED, // reverse intake feed
@@ -76,7 +76,10 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                 (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                         ? targeting.shootAtHubOnTheMove().rotation
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
-        if (wantedMode == DriveMode.INTAKE) {
+        if (wantedMode == DriveMode.SHOOT) {
+            angleToTarget = targeting.shootAtHubStationary().rotation;
+        }
+        else if (wantedMode == DriveMode.INTAKE) {
             // Past the trench, face the opposite wall (swap 0 and 180).
             boolean past = isInMid();
             if (color == Alliance.Blue) {
@@ -85,7 +88,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                 angleToTarget = new Rotation2d(Degrees.of(past ? 180 : 0));
             }
         }
-        if (wantedMode == DriveMode.INTAKE_FEED) {
+        else if (wantedMode == DriveMode.INTAKE_FEED) {
             if (color == Alliance.Blue) {
                 angleToTarget = new Rotation2d(Degrees.of(0));
             } else {
@@ -106,13 +109,15 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             if (wantedMode == DriveMode.FEED) {
                 return HoodConstants.kFeedAngle.magnitude();
             } else if (wantedMode == DriveMode.INTAKE_FEED
-                    || wantedMode == DriveMode.INTAKE
-                    || wantedMode == DriveMode.SHOOT) {
+                    || wantedMode == DriveMode.INTAKE) {
                 return 1;
+            } else if (wantedMode == DriveMode.SHOOT) {
+                return targeting.shootAtHubStationary().pivot;
             }
             return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                     ? targeting.shootAtHubOnTheMove().pivot
                     : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
+            
         } else if (wantedMode == DriveMode.MANUAL_SHOOT) {
             return manualHoodAngle.in(Degrees);
         }
