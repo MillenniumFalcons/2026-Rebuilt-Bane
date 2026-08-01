@@ -55,8 +55,10 @@ import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveReal;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveSim;
 import team3647.frc2026.subsystems.Wrist;
+import java.util.List;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.AutoDrive.DriveMode;
+import team3647.frc2026.util.CurrentMonitor;
 import team3647.frc2026.util.LEDStates;
 import team3647.frc2026.util.RobotTracker;
 import team3647.frc2026.util.TargetingUtil;
@@ -196,7 +198,7 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        mainController.buttonA.whileTrue(Commands.run(()->swerve.brake()));
+        mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
         // interp
         mainController.buttonX.whileTrue(superstructure.interpShot());
         // intake
@@ -395,6 +397,10 @@ public class RobotContainer {
 
     public final AutoDrive autoDrive =
             new AutoDrive(swerve::getOdoPose, swerve::getChassisSpeeds, targetingUtil);
+
+    public final CurrentMonitor currentMonitor =
+            new CurrentMonitor(
+                    swerve, List.of(shooter, indexer, kicker, rollers, hood, wrist));
 
     public LEDStates ledStates = new LEDStates();
 

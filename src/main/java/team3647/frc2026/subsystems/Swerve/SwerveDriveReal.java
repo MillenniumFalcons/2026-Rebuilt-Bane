@@ -224,6 +224,22 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         // periodicIO.characterizationVoltage);
     }
 
+    @Override
+    public double getTotalDriveCurrent() {
+        return periodicIO.frontLeftDriveCurrent
+                + periodicIO.frontRightDriveCurrent
+                + periodicIO.backLeftDriveCurrent
+                + periodicIO.backRightDriveCurrent;
+    }
+
+    @Override
+    public double getTotalSteerCurrent() {
+        return periodicIO.frontLeftSteerCurrent
+                + periodicIO.frontRightSteerCurrent
+                + periodicIO.backLeftSteerCurrent
+                + periodicIO.backRightSteerCurrent;
+    }
+
     public void writePeriodicOutputs() {
         setisAccel();
         if (!isChar) {

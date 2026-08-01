@@ -60,6 +60,14 @@ public interface SwerveDrive extends PeriodicSubsystem, AllianceObserver {
 
     public AbstractDriveTrainSimulation getSim();
 
+    default double getTotalDriveCurrent() {
+        return 0;
+    }
+
+    default double getTotalSteerCurrent() {
+        return 0;
+    }
+
     @AutoLog
     public static class PeriodicIO {
         // inputs

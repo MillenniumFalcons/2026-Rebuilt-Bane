@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
@@ -35,7 +34,8 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 1"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> ShooterConstants.kIdleSpeedMid)),
+                        superstructure.shooterCommands.setVelocity(
+                                () -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"),
@@ -45,7 +45,8 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.deadline(
                         followPathPlannerPath("Left Mid Sweep 3"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> ShooterConstants.kIdleSpeedMid)),
+                        superstructure.shooterCommands.setVelocity(
+                                () -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Left Mid Sweep 2"),
@@ -59,7 +60,8 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.deadline(
                         followPathPlannerPath("Right Mid Sweep 1"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> ShooterConstants.kIdleSpeedMid)),
+                        superstructure.shooterCommands.setVelocity(
+                                () -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Right Mid Sweep 2"),
@@ -69,7 +71,8 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.deadline(
                         followPathPlannerPath("Right Mid Sweep 3"),
                         superstructure.intakeWithDelay(),
-                        superstructure.shooterCommands.setVelocity(() -> ShooterConstants.kIdleSpeedMid)),
+                        superstructure.shooterCommands.setVelocity(
+                                () -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
                                 followPathPlannerPath("Right Mid Sweep 2"),

@@ -177,9 +177,7 @@ public class SwerveDriveSim implements SwerveDrive {
     }
 
     @Override
-    public void brake() {
-        
-    }
+    public void brake() {}
 
     // @Override
     // public Command driveSysIdQuasi(Direction direction) {

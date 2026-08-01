@@ -82,6 +82,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
         public double current = 0;
         public double timestamp = 0;
         public double masterCurrent = 0;
+        public double masterSupplyCurrent = 0;
         public double nativePosition = 0;
         public double voltage = 0;
 
@@ -100,6 +101,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
         ioAutoLogged.current = primaryMaster.getStatorCurrent().getValueAsDouble();
         ioAutoLogged.timestamp = Timer.getFPGATimestamp();
         ioAutoLogged.masterCurrent = primaryMaster.getStatorCurrent().getValueAsDouble();
+        ioAutoLogged.masterSupplyCurrent = primaryMaster.getSupplyCurrent().getValueAsDouble();
         ioAutoLogged.voltage = primaryMaster.getMotorVoltage().getValueAsDouble();
         Logger.processInputs(getName(), ioAutoLogged);
     }
@@ -377,6 +379,18 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
 
     public double getMasterCurrent() {
         return ioAutoLogged.masterCurrent;
+    }
+
+    public double getMasterSupplyCurrent() {
+        return ioAutoLogged.masterSupplyCurrent;
+    }
+
+    public double getTotalCurrent() {
+        double total = ioAutoLogged.masterSupplyCurrent;
+        for (TalonFX follower : followers) {
+            total += follower.getSupplyCurrent().getValueAsDouble();
+        }
+        return total;
     }
 
     public double getNativePos() {

@@ -78,8 +78,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                         : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
         if (wantedMode == DriveMode.SHOOT) {
             angleToTarget = targeting.shootAtHubStationary().rotation;
-        }
-        else if (wantedMode == DriveMode.INTAKE) {
+        } else if (wantedMode == DriveMode.INTAKE) {
             // Past the trench, face the opposite wall (swap 0 and 180).
             boolean past = isInMid();
             if (color == Alliance.Blue) {
@@ -87,8 +86,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             } else {
                 angleToTarget = new Rotation2d(Degrees.of(past ? 180 : 0));
             }
-        }
-        else if (wantedMode == DriveMode.INTAKE_FEED) {
+        } else if (wantedMode == DriveMode.INTAKE_FEED) {
             if (color == Alliance.Blue) {
                 angleToTarget = new Rotation2d(Degrees.of(0));
             } else {
@@ -108,8 +106,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         if (enabled) {
             if (wantedMode == DriveMode.FEED) {
                 return HoodConstants.kFeedAngle.magnitude();
-            } else if (wantedMode == DriveMode.INTAKE_FEED
-                    || wantedMode == DriveMode.INTAKE) {
+            } else if (wantedMode == DriveMode.INTAKE_FEED || wantedMode == DriveMode.INTAKE) {
                 return 1;
             } else if (wantedMode == DriveMode.SHOOT) {
                 return targeting.shootAtHubStationary().pivot;
@@ -117,7 +114,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
                     ? targeting.shootAtHubOnTheMove().pivot
                     : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
-            
+
         } else if (wantedMode == DriveMode.MANUAL_SHOOT) {
             return manualHoodAngle.in(Degrees);
         }
