@@ -19,8 +19,9 @@ import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.util.LEDStates;
 import team3647.frc2026.util.LEDStates.SuperstructureState;
 import team3647.frc2026.util.RobotTracker;
+import team3647.lib.team6328.VirtualSubsystem;
 
-public class Superstructure {
+public class Superstructure extends VirtualSubsystem{
 
     public final Shooter shooter;
     public final Indexer indexer;
@@ -100,52 +101,27 @@ public class Superstructure {
                 Commands.waitUntil(readyToShoot), Commands.parallel(deployIntake(), reverse()));
     }
 
-    public Command logEverything() {
-        return Commands.parallel(
-                Commands.run(
-                        () ->
-                                Logger.recordOutput(
-                                        "Shooting/ShotSpeed/wantedshotspeed",
-                                        shotSpeed.getAsDouble())),
-                Commands.run(
-                        () ->
-                                Logger.recordOutput(
-                                        "Shooting/ShotSpeed/shootervelocity",
-                                        shooter.getVelocity())),
-                Commands.run(
-                        () ->
-                                Logger.recordOutput(
-                                        "Shooting/ShotSpeed/atshotvel", atShotVel.getAsBoolean())),
-                Commands.run(
-                        () ->
-                                Logger.recordOutput(
-                                        "Shooting/readytoshoot", readyToShoot.getAsBoolean())),
-                Commands.run(
-                        () ->
-                                Logger.recordOutput(
-                                        "Shooting/Hood/athoodangle", atHoodAngle.getAsBoolean())),
-                Commands.run(
-                        () ->
-                                Logger.recordOutput(
-                                        "Shooting/Hood/wantedhoodeangle", hoodAngle.getAsDouble())),
-                Commands.run(
-                        () ->
-                                Logger.recordOutput(
-                                        "Shooting/Hood/currenthoodangle", hood.getPosition())),
-                Commands.run(
-                        () ->
-                                Logger.recordOutput(
-                                        "Shooting/Rotation/isrotaligned",
-                                        isRotAligned.getAsBoolean())));
+    public void logShooting() {
+        Logger.recordOutput("Shooting/ShotSpeed/wantedshotspeed",Math.round(shotSpeed.getAsDouble()*100.0)/100.0);
+        Logger.recordOutput("Shooting/ShotSpeed/shootervelocity",Math.round(shooter.getVelocity()*100.0)/100.0);
+        Logger.recordOutput("Shooting/ShotSpeed/atshotvel", atShotVel.getAsBoolean());
+        Logger.recordOutput("Shooting/Hood/wantedhoodeangle", Math.round(hoodAngle.getAsDouble()*100.0)/100.0);
+        Logger.recordOutput("Shooting/Hood/currenthoodangle", Math.round(hood.getPosition()*100.0)/100.0);
+        Logger.recordOutput("Shooting/Hood/athoodangle", atHoodAngle.getAsBoolean());
+        Logger.recordOutput("Shooting/Rotation/isrotaligned",isRotAligned.getAsBoolean());
+    }
+
+    @Override
+    public void periodic() {
+        logShooting();
     }
 
     public Command shoot() {
-        return Commands.parallel(logEverything(), prep(), indexWhenReady());
+        return Commands.parallel(prep(), indexWhenReady());
     }
 
     public Command shootInstantly() {
         return Commands.parallel(
-                logEverything(),
                 prepKids(),
                 Commands.sequence(
                         Commands.waitUntil(
@@ -172,7 +148,7 @@ public class Superstructure {
     }
 
     public Command bumpShot() {
-        return Commands.parallel(logEverything(), prepForBump(), index());
+        return Commands.parallel(prepForBump(), index());
     }
 
     public Command prepForBump() {

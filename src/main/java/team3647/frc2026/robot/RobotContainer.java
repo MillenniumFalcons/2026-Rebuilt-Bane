@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.HoodCommands;
@@ -60,6 +59,7 @@ import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.CurrentMonitor;
 import team3647.frc2026.util.LEDStates;
+import team3647.frc2026.util.MatchStateLogger;
 import team3647.frc2026.util.RobotTracker;
 import team3647.frc2026.util.TargetingUtil;
 import team3647.lib.GroupPrinter;
@@ -463,40 +463,5 @@ public class RobotContainer {
 
     public final AutoChooser autoChooser = new AutoChooser(autoCommands, swerve::setRobotPose);
 
-    /**
-     * Returns true when our alliance's goal is in an active period (can score). Uses FMS game data
-     * to determine auto winner, then checks shift timing. Always returns true during transition
-     * (>130s) and endgame (<30s).
-     */
-    public final BooleanSupplier isActivePeriod =
-            () -> {
-                double matchTime = Timer.getMatchTime();
-
-                // Transition period or endgame — always active
-                if (matchTime > 130 || matchTime <= 30) return true;
-
-                // Determine which shift we're in (odd = 1,3; even = 2,4)
-                boolean isOddShift;
-                if (matchTime > 105) isOddShift = true; // Shift 1: 105-130
-                else if (matchTime > 80) isOddShift = false; // Shift 2: 80-105
-                else if (matchTime > 55) isOddShift = true; // Shift 3: 55-80
-                else isOddShift = false; // Shift 4: 30-55
-
-                // Game data: "R" or "B" = alliance that LOST auto
-                // Won auto → active in odd shifts (1,3)
-                // Lost auto → active in even shifts (2,4)
-                String gameData = DriverStation.getGameSpecificMessage();
-                if (gameData == null || gameData.isEmpty()) return true;
-
-                DriverStation.Alliance ourAlliance =
-                        DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
-                boolean wonAuto;
-                if (ourAlliance == DriverStation.Alliance.Red) {
-                    wonAuto = gameData.equals("B"); // Blue lost → Red won
-                } else {
-                    wonAuto = gameData.equals("R"); // Red lost → Blue won
-                }
-
-                return wonAuto ? isOddShift : !isOddShift;
-            };
+    public final MatchStateLogger matchStateLogger = new MatchStateLogger();
 }

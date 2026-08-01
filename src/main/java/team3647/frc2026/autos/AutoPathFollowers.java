@@ -259,6 +259,38 @@ public class AutoPathFollowers implements AllianceObserver {
     // PathPlanner path following
     // =========================================================================
 
+    /** Follow a PathPlanner path by name, mirrored across the field center Y axis. */
+    public Command followMirroredPathPlannerPath(String pathName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName).mirrorPath();
+            Translation2d finalTranslation =
+                    path.getPathPoses().get(path.getPathPoses().size() - 1).getTranslation();
+            Rotation2d finalRotation = path.getGoalEndState().rotation();
+            Pose2d rawFinalPose = new Pose2d(finalTranslation, finalRotation);
+            Command ppCommand = AutoBuilder.followPath(path);
+            Timer pathTimer = new Timer();
+            return new FunctionalCommand(
+                    () -> {
+                        pathTimer.restart();
+                        ppCommand.initialize();
+                    },
+                    ppCommand::execute,
+                    ppCommand::end,
+                    () -> {
+                        Pose2d finalPose =
+                                AllianceFlip.flip(
+                                        rawFinalPose, isRed() ? Alliance.Red : Alliance.Blue);
+                        return ppCommand.isFinished()
+                                && PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
+                    },
+                    swerve);
+        } catch (Exception e) {
+            DriverStation.reportError(
+                    "Failed to load PathPlanner path: " + pathName, e.getStackTrace());
+            return Commands.none();
+        }
+    }
+
     /** Follow a PathPlanner path by name (loads from deploy/pathplanner/paths/). */
     public Command followPathPlannerPath(String pathName) {
         try {

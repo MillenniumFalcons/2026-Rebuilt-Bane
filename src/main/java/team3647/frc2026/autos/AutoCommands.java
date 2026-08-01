@@ -32,24 +32,24 @@ public class AutoCommands extends AutoPathFollowers {
     public Command leftMidRushPathPlanner() {
         return Commands.sequence(
                 Commands.deadline(
-                        followPathPlannerPath("Left Mid Sweep 1"),
+                        followMirroredPathPlannerPath("Right Mid Sweep 1"),
                         superstructure.intakeWithDelay(),
                         superstructure.shooterCommands.setVelocity(
                                 () -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
-                                followPathPlannerPath("Left Mid Sweep 2"),
+                                followMirroredPathPlannerPath("Right Mid Sweep 2"),
                                 superstructure.shooterCommands.setVelocity(() -> spinUpSpeed)),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
                 Commands.deadline(
-                        followPathPlannerPath("Left Mid Sweep 3"),
+                        followMirroredPathPlannerPath("Right Mid Sweep 3"),
                         superstructure.intakeWithDelay(),
                         superstructure.shooterCommands.setVelocity(
                                 () -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
-                                followPathPlannerPath("Left Mid Sweep 2"),
+                                followMirroredPathPlannerPath("Right Mid Sweep 2"),
                                 superstructure.shooterCommands.setVelocity(() -> spinUpSpeed)),
                         Commands.deadline(
                                 Commands.waitSeconds(5), autoAlign(), superstructure.shoot())));

@@ -94,11 +94,11 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             }
         }
         Logger.recordOutput(
-                "Shooting/Rotation/robot rotation", robotPose.getRotation().getDegrees());
-        Logger.recordOutput("Shooting/Rotation/wanted rotation", angleToTarget.getDegrees());
+                "Shooting/Rotation/robot rotation", Math.round(robotPose.getRotation().getDegrees()*100.0)/100.0);
+        Logger.recordOutput("Shooting/Rotation/wanted rotation", Math.round(angleToTarget.getDegrees()*100.0)/100.0);
         Logger.recordOutput(
                 "Shooting/Rotation/difference in angle",
-                Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()));
+                Math.round(Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees())*100.0)/100.0);
         return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 5.0;
     }
 
@@ -277,5 +277,6 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+    }
 }
