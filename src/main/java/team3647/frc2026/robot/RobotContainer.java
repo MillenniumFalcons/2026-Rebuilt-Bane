@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import java.util.List;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
 import team3647.frc2026.autos.AutoCommands;
@@ -54,7 +55,6 @@ import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveReal;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveSim;
 import team3647.frc2026.subsystems.Wrist;
-import java.util.List;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.CurrentMonitor;
@@ -399,8 +399,7 @@ public class RobotContainer {
             new AutoDrive(swerve::getOdoPose, swerve::getChassisSpeeds, targetingUtil);
 
     public final CurrentMonitor currentMonitor =
-            new CurrentMonitor(
-                    swerve, List.of(shooter, indexer, kicker, rollers, hood, wrist));
+            new CurrentMonitor(swerve, List.of(shooter, indexer, kicker, rollers, hood, wrist));
 
     public LEDStates ledStates = new LEDStates();
 

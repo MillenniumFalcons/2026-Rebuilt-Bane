@@ -21,7 +21,7 @@ import team3647.frc2026.util.LEDStates.SuperstructureState;
 import team3647.frc2026.util.RobotTracker;
 import team3647.lib.team6328.VirtualSubsystem;
 
-public class Superstructure extends VirtualSubsystem{
+public class Superstructure extends VirtualSubsystem {
 
     public final Shooter shooter;
     public final Indexer indexer;
@@ -102,13 +102,20 @@ public class Superstructure extends VirtualSubsystem{
     }
 
     public void logShooting() {
-        Logger.recordOutput("Shooting/ShotSpeed/wantedshotspeed",Math.round(shotSpeed.getAsDouble()*100.0)/100.0);
-        Logger.recordOutput("Shooting/ShotSpeed/shootervelocity",Math.round(shooter.getVelocity()*100.0)/100.0);
+        Logger.recordOutput(
+                "Shooting/ShotSpeed/wantedshotspeed",
+                Math.round(shotSpeed.getAsDouble() * 100.0) / 100.0);
+        Logger.recordOutput(
+                "Shooting/ShotSpeed/shootervelocity",
+                Math.round(shooter.getVelocity() * 100.0) / 100.0);
         Logger.recordOutput("Shooting/ShotSpeed/atshotvel", atShotVel.getAsBoolean());
-        Logger.recordOutput("Shooting/Hood/wantedhoodeangle", Math.round(hoodAngle.getAsDouble()*100.0)/100.0);
-        Logger.recordOutput("Shooting/Hood/currenthoodangle", Math.round(hood.getPosition()*100.0)/100.0);
+        Logger.recordOutput(
+                "Shooting/Hood/wantedhoodeangle",
+                Math.round(hoodAngle.getAsDouble() * 100.0) / 100.0);
+        Logger.recordOutput(
+                "Shooting/Hood/currenthoodangle", Math.round(hood.getPosition() * 100.0) / 100.0);
         Logger.recordOutput("Shooting/Hood/athoodangle", atHoodAngle.getAsBoolean());
-        Logger.recordOutput("Shooting/Rotation/isrotaligned",isRotAligned.getAsBoolean());
+        Logger.recordOutput("Shooting/Rotation/isrotaligned", isRotAligned.getAsBoolean());
     }
 
     @Override

@@ -33,27 +33,27 @@ public class MatchStateLogger extends VirtualSubsystem {
         double shiftTimeRemaining;
 
         if (matchTime > 130) {
-            period = "Transition";
+            period = "TRANSITION";
             shift = 0;
             shiftTimeRemaining = matchTime - 130;
         } else if (matchTime > 105) {
-            period = "Shift 1";
+            period = "SHIFT 1";
             shift = 1;
             shiftTimeRemaining = matchTime - 105;
         } else if (matchTime > 80) {
-            period = "Shift 2";
+            period = "SHIFT 2";
             shift = 2;
             shiftTimeRemaining = matchTime - 80;
         } else if (matchTime > 55) {
-            period = "Shift 3";
+            period = "SHIFT 3";
             shift = 3;
             shiftTimeRemaining = matchTime - 55;
         } else if (matchTime > 30) {
-            period = "Shift 4";
+            period = "SHIFT 4";
             shift = 4;
             shiftTimeRemaining = matchTime - 30;
         } else {
-            period = "Endgame";
+            period = "ENDGAME";
             shift = 0;
             shiftTimeRemaining = 0;
         }
@@ -62,6 +62,18 @@ public class MatchStateLogger extends VirtualSubsystem {
         Logger.recordOutput("MatchState/Shift", shift);
         Logger.recordOutput("MatchState/ShiftTimeRemaining", shiftTimeRemaining);
         Logger.recordOutput("MatchState/HubActive", isHubActive(matchTime));
+        Logger.recordOutput("MatchState/WonAuto", isWonAuto());
+    }
+
+    public boolean isWonAuto() {
+        String gameData = DriverStation.getGameSpecificMessage();
+        if (gameData == null || gameData.isEmpty()) return true;
+
+        DriverStation.Alliance ourAlliance =
+                DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+        return ourAlliance == DriverStation.Alliance.Red
+                ? gameData.equals("B") // Blue lost → Red won
+                : gameData.equals("R"); // Red lost → Blue won
     }
 
     // Returns true when our alliance's goal is active (can score). Uses FMS game data
@@ -72,16 +84,7 @@ public class MatchStateLogger extends VirtualSubsystem {
         // Odd shifts (1, 3): 105-130s and 55-80s remaining
         boolean isOddShift = matchTime > 105 || (matchTime > 55 && matchTime <= 80);
 
-        // Game data: "R" or "B" = alliance that LOST auto
-        String gameData = DriverStation.getGameSpecificMessage();
-        if (gameData == null || gameData.isEmpty()) return true;
-
-        DriverStation.Alliance ourAlliance =
-                DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
-        boolean wonAuto =
-                ourAlliance == DriverStation.Alliance.Red
-                        ? gameData.equals("B") // Blue lost → Red won
-                        : gameData.equals("R"); // Red lost → Blue won
+        boolean wonAuto = isWonAuto();
 
         return wonAuto ? isOddShift : !isOddShift;
     }

@@ -45,6 +45,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     private final TargetingUtil targeting;
 
+    private TargetingUtil.AimingParameters cachedAimingParams = null;
+
     public AutoDrive(
             Supplier<Pose2d> odoPoseFunction,
             Supplier<ChassisSpeeds> chassisSpeedsSupplier,
@@ -72,13 +74,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             return true;
         }
         final Pose2d robotPose = getPose();
-        Rotation2d angleToTarget =
-                (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
-                        ? targeting.shootAtHubOnTheMove().rotation
-                        : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).rotation;
-        if (wantedMode == DriveMode.SHOOT) {
-            angleToTarget = targeting.shootAtHubStationary().rotation;
-        } else if (wantedMode == DriveMode.INTAKE) {
+        Rotation2d angleToTarget = cachedAimingParams != null ? cachedAimingParams.rotation : new Rotation2d();
+        if (wantedMode == DriveMode.INTAKE) {
             // Past the trench, face the opposite wall (swap 0 and 180).
             boolean past = isInMid();
             if (color == Alliance.Blue) {
@@ -94,11 +91,19 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             }
         }
         Logger.recordOutput(
-                "Shooting/Rotation/robot rotation", Math.round(robotPose.getRotation().getDegrees()*100.0)/100.0);
-        Logger.recordOutput("Shooting/Rotation/wanted rotation", Math.round(angleToTarget.getDegrees()*100.0)/100.0);
+                "Shooting/Rotation/robot rotation",
+                Math.round(robotPose.getRotation().getDegrees() * 100.0) / 100.0);
+        Logger.recordOutput(
+                "Shooting/Rotation/wanted rotation",
+                Math.round(angleToTarget.getDegrees() * 100.0) / 100.0);
         Logger.recordOutput(
                 "Shooting/Rotation/difference in angle",
-                Math.round(Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees())*100.0)/100.0);
+                Math.round(
+                                Math.abs(
+                                                robotPose.getRotation().getDegrees()
+                                                        - angleToTarget.getDegrees())
+                                        * 100.0)
+                        / 100.0);
         return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 5.0;
     }
 
@@ -108,13 +113,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                 return HoodConstants.kFeedAngle.magnitude();
             } else if (wantedMode == DriveMode.INTAKE_FEED || wantedMode == DriveMode.INTAKE) {
                 return 1;
-            } else if (wantedMode == DriveMode.SHOOT) {
-                return targeting.shootAtHubStationary().pivot;
             }
-            return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE)
-                    ? targeting.shootAtHubOnTheMove().pivot
-                    : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).pivot;
-
+            return cachedAimingParams != null ? cachedAimingParams.pivot : 1;
         } else if (wantedMode == DriveMode.MANUAL_SHOOT) {
             return manualHoodAngle.in(Degrees);
         }
@@ -122,9 +122,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     }
 
     public double getShotSpeed() {
-        return (wantedMode == DriveMode.SHOOT_ON_THE_MOVE || wantedMode == DriveMode.SHOOT)
-                ? targeting.shootAtHubOnTheMove().shootSpeed
-                : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed()).shootSpeed;
+        return cachedAimingParams != null ? cachedAimingParams.shootSpeed : 0;
     }
 
     public Pose2d getPose() {
@@ -202,18 +200,13 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         final ChassisSpeeds fieldSpeeds =
                 ChassisSpeeds.fromRobotRelativeSpeeds(currentSpeeds, getOdoRot());
 
-        AimingParameters targetData =
-                wantedMode == DriveMode.SHOOT_ON_THE_MOVE
-                        ? targeting.shootAtHubOnTheMove()
-                        : targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed());
-
-        if (wantedMode == DriveMode.SHOOT) {
-            targetData = targeting.shootAtHubStationary();
+        if (cachedAimingParams == null) {
+            return new Twist2d();
         }
 
-        Translation2d robotToTarget = targetData.robotToTarget;
-        double distanceToTarget = targetData.effectiveDistance;
-        Rotation2d angleToTarget = targetData.rotation;
+        Translation2d robotToTarget = cachedAimingParams.robotToTarget;
+        double distanceToTarget = cachedAimingParams.effectiveDistance;
+        Rotation2d angleToTarget = cachedAimingParams.rotation;
 
         if (wantedMode == DriveMode.INTAKE) {
             // Past the trench, face the opposite wall (swap 0 and 180).
@@ -278,5 +271,12 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     @Override
     public void periodic() {
+        if (wantedMode == DriveMode.SHOOT) {
+            cachedAimingParams = targeting.shootAtHubStationary();
+        } else if (wantedMode == DriveMode.SHOOT_ON_THE_MOVE) {
+            cachedAimingParams = targeting.shootAtHubOnTheMove();
+        } else {
+            cachedAimingParams = targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed());
+        }
     }
 }

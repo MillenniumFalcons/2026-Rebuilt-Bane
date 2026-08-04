@@ -72,9 +72,9 @@ public class ShooterConstants {
         shootSpeedMap.put(2.5, 9.0 + tempOffset);
         shootSpeedMap.put(3.0, 10.0 + tempOffset);
         shootSpeedMap.put(3.5, 10.8 + tempOffset);
-        shootSpeedMap.put(4.0, 11.2 + tempOffset);
-        shootSpeedMap.put(4.5, 12.0 + tempOffset); // made up
-        shootSpeedMap.put(5.0, 13.0 + tempOffset); // made up
+        shootSpeedMap.put(4.0, 11.5 + tempOffset);
+        shootSpeedMap.put(4.5, 12.5 + tempOffset); // made up
+        shootSpeedMap.put(5.0, 13.5 + tempOffset); // made up
         shootSpeedMap.put(8.0, 14.5 + tempOffset); // made up
         shootSpeedMap.put(14.0, 14.5);
 

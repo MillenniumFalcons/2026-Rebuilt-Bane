@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -245,7 +246,6 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         if (!isChar) {
             this.setControl(this.masterRequest);
         }
-
         // Logger.recordOutput("Robot/pose", periodicIO.pose);
         // simpleSim.periodic();
 

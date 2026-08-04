@@ -10,10 +10,15 @@ public class CurrentMonitor extends VirtualSubsystem {
 
     private final SwerveDrive swerve;
     private final List<TalonFXSubsystem> subsystems;
+    private final String[] subsystemKeys;
 
     public CurrentMonitor(SwerveDrive swerve, List<TalonFXSubsystem> subsystems) {
         this.swerve = swerve;
         this.subsystems = subsystems;
+        this.subsystemKeys = new String[subsystems.size()];
+        for (int i = 0; i < subsystems.size(); i++) {
+            subsystemKeys[i] = "CurrentMonitor/" + subsystems.get(i).getName();
+        }
     }
 
     @Override
@@ -26,9 +31,9 @@ public class CurrentMonitor extends VirtualSubsystem {
         Logger.recordOutput("CurrentMonitor/Swerve/SteerMotors", swerveSteer);
         Logger.recordOutput("CurrentMonitor/Swerve/Total", swerveDrive + swerveSteer);
 
-        for (TalonFXSubsystem subsystem : subsystems) {
-            double current = subsystem.getTotalCurrent();
-            Logger.recordOutput("CurrentMonitor/" + subsystem.getName(), current);
+        for (int i = 0; i < subsystems.size(); i++) {
+            double current = subsystems.get(i).getTotalCurrent();
+            Logger.recordOutput(subsystemKeys[i], current);
             total += current;
         }
 
