@@ -21,7 +21,7 @@ public class TunableDouble extends VirtualSubsystem {
     private boolean hasChanged() {
         return tunableNumber.hasChanged();
     }
-
+    
     @Override
     public void periodic() {
         update();

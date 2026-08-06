@@ -20,6 +20,8 @@ import team3647.frc2026.util.LEDStates;
 import team3647.frc2026.util.LEDStates.SuperstructureState;
 import team3647.frc2026.util.RobotTracker;
 import team3647.lib.team6328.VirtualSubsystem;
+import team3647.lib.tunables.TunableDouble;
+import team3647.lib.tunables.TunableNumber;
 
 public class Superstructure extends VirtualSubsystem {
 
@@ -86,6 +88,7 @@ public class Superstructure extends VirtualSubsystem {
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
 
         this.ledStates = ledStates;
+
     }
 
     public LEDStates getStates() {
@@ -225,4 +228,13 @@ public class Superstructure extends VirtualSubsystem {
                         rollerCommands.intake().withTimeout(1))
                 .repeatedly();
     }
+
+    public Command preloadBalls() {
+        return Commands.parallel(
+            kickerCommands.preload(),
+            indexerCommands.index())
+            .withTimeout(0.75);
+    }
+
 }
+

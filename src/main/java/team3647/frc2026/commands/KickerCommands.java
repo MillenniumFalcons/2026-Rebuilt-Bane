@@ -12,6 +12,14 @@ public class KickerCommands {
         this.kicker = kicker;
     }
 
+    public Command setOpenLoop(DoubleSupplier dutyCycle) {
+        return Commands.run(() -> kicker.setOpenLoop(dutyCycle.getAsDouble()), kicker);
+    }
+
+    public Command preload() {
+        return Commands.runEnd(() -> kicker.setOpenLoop(0.13), () -> kicker.setOpenLoop(0), kicker);
+    }
+
     public Command matchShooterSpeed(DoubleSupplier shooterSpeed) {
         return Commands.runEnd(() -> kicker.setVelocityFOC(4), () -> kicker.setOpenLoop(0), kicker);
     }

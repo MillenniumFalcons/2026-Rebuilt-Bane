@@ -17,7 +17,6 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.HoodConstants;
-import team3647.frc2026.util.TargetingUtil.AimingParameters;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
 
@@ -74,7 +73,8 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             return true;
         }
         final Pose2d robotPose = getPose();
-        Rotation2d angleToTarget = cachedAimingParams != null ? cachedAimingParams.rotation : new Rotation2d();
+        Rotation2d angleToTarget =
+                cachedAimingParams != null ? cachedAimingParams.rotation : new Rotation2d();
         if (wantedMode == DriveMode.INTAKE) {
             // Past the trench, face the opposite wall (swap 0 and 180).
             boolean past = isInMid();
