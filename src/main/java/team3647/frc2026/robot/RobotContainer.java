@@ -189,17 +189,15 @@ public class RobotContainer {
                         autoDrive::rotAligned));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         //shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
-        // shooter.setDefaultCommand(shooterCommands.kill());
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
-        // hood.setDefaultCommand(hoodCommands.setAngleDeg(hoodAngle::get));
         rollers.setDefaultCommand(rollerCommands.kill());
         kicker.setDefaultCommand(kickerCommands.kill());
-        // climb.setDefaultCommand(climbCommands.kill());
     }
 
     private void configureBindings() {
+        superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
         //mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
-        mainController.buttonA.onTrue(superstructure.preloadBalls());
+        mainController.buttonA.onTrue(superstructure.loadBalls());
         // interp
         mainController.buttonX.whileTrue(superstructure.interpShot());
         // intake

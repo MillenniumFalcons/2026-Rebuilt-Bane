@@ -185,7 +185,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         if (isInMid()) {
             this.wantedMode = DriveMode.FEED;
         } else {
-            this.wantedMode = DriveMode.SHOOT;
+            this.wantedMode = DriveMode.SHOOT_ON_THE_MOVE;
         }
     }
 

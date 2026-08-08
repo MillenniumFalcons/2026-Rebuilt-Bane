@@ -81,13 +81,12 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
         public double velocity = 0;
         public double current = 0;
         public double timestamp = 0;
-        public double masterCurrent = 0;
-        public double masterSupplyCurrent = 0;
+        public double supplyCurrent = 0;
         public double nativePosition = 0;
         public double voltage = 0;
+        public double dutyCycle = 0;
 
         // Outputs
-        public double demand = 0;
         public double feedforward = 0;
     }
 
@@ -100,9 +99,9 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
                 primaryMaster.getRotorVelocity().getValueAsDouble() * velocityConversion;
         ioAutoLogged.current = primaryMaster.getStatorCurrent().getValueAsDouble();
         ioAutoLogged.timestamp = Timer.getFPGATimestamp();
-        ioAutoLogged.masterCurrent = primaryMaster.getStatorCurrent().getValueAsDouble();
-        ioAutoLogged.masterSupplyCurrent = primaryMaster.getSupplyCurrent().getValueAsDouble();
+        ioAutoLogged.supplyCurrent = primaryMaster.getSupplyCurrent().getValueAsDouble();
         ioAutoLogged.voltage = primaryMaster.getMotorVoltage().getValueAsDouble();
+        ioAutoLogged.dutyCycle = primaryMaster.getDutyCycle().getValueAsDouble();
         Logger.processInputs(getName(), ioAutoLogged);
     }
 
@@ -378,15 +377,15 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
     }
 
     public double getMasterCurrent() {
-        return ioAutoLogged.masterCurrent;
+        return ioAutoLogged.current;
     }
 
     public double getMasterSupplyCurrent() {
-        return ioAutoLogged.masterSupplyCurrent;
+        return ioAutoLogged.supplyCurrent;
     }
 
     public double getTotalCurrent() {
-        double total = ioAutoLogged.masterSupplyCurrent;
+        double total = ioAutoLogged.supplyCurrent;
         for (TalonFX follower : followers) {
             total += follower.getSupplyCurrent().getValueAsDouble();
         }

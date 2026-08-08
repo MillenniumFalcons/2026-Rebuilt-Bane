@@ -23,6 +23,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -194,11 +195,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         periodicIO.roll = this.getPigeon2().getRoll().getValueAsDouble();
         periodicIO.heading = this.getPigeon2().getYaw().getValueAsDouble();
         periodicIO.pitch = this.getPigeon2().getPitch().getValueAsDouble() - this.pitchZero;
-        periodicIO.rawHeading = this.getPigeon2().getYaw().getValueAsDouble();
-        periodicIO.states[0] = this.getModules()[0].getCurrentState();
-        periodicIO.states[1] = this.getModules()[1].getCurrentState();
-        periodicIO.states[2] = this.getModules()[2].getCurrentState();
-        periodicIO.states[3] = this.getModules()[3].getCurrentState();
+        periodicIO.rawHeading = periodicIO.heading;
         periodicIO.gyroRotation = Rotation2d.fromDegrees(periodicIO.heading);
         periodicIO.timestamp = Timer.getFPGATimestamp();
         periodicIO.frontLeftDriveCurrent =

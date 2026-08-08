@@ -38,11 +38,12 @@ public class ShooterConstants {
     public static final double kNativeVelToSurfaceMpS = kWheelRotationMeters * kGearboxReduction;
 
     public static final double kNominalVoltage = 11.0;
-    public static final double kMaxCurrent = 90.0;
+    public static final double kMaxStatorCurrent = 90.0;
+    public static final double kMaxSupplyCurrent = 50.0;
     public static final double kidSpeed = 9.0;
 
     public static final double kIdleSpeed = 8.5;
-    public static final double kIdleSpeedMid = 6.0;
+    public static final double kIdleSpeedMid = 8.0;
 
     public static final double kS = 4.3;
     public static final double kV = 0.43;
@@ -104,7 +105,9 @@ public class ShooterConstants {
                 InvertedValue.CounterClockwise_Positive; // this should be right
 
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = kMaxCurrent;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = kMaxStatorCurrent;
+        kMasterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        kMasterConfig.CurrentLimits.SupplyCurrentLimit = kMaxSupplyCurrent;
 
         // kSlaveConfig.TorqueCurrent.PeakForwardTorqueCurrent = kMaxCurrent;
         // kSlaveConfig.TorqueCurrent.PeakReverseTorqueCurrent = 0;

@@ -34,6 +34,6 @@ public class Rollers extends TalonFXSubsystem {
 
     @Override
     public String getName() {
-        return "intake rollers";
+        return "Rollers";
     }
 }

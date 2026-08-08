@@ -1,5 +1,6 @@
 package team3647.frc2026.util;
 
+import edu.wpi.first.wpilibj.RobotController;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
@@ -38,5 +39,6 @@ public class CurrentMonitor extends VirtualSubsystem {
         }
 
         Logger.recordOutput("CurrentMonitor/TotalRobotCurrent", total);
+        Logger.recordOutput("CurrentMonitor/BatteryVoltage", RobotController.getBatteryVoltage());
     }
 }

@@ -3,6 +3,7 @@ package team3647.frc2026.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -42,7 +43,7 @@ public class Superstructure extends VirtualSubsystem {
     public final DoubleSupplier hoodAngle;
     public final DoubleSupplier shotSpeed;
     public Angle wantedIntakeAngle = Degrees.of(70);
-    public final BooleanSupplier isRotAligned;
+    public final BooleanSupplier isRotAligned;    
 
     public final RobotTracker robotTracker;
 
@@ -51,6 +52,10 @@ public class Superstructure extends VirtualSubsystem {
     public final Trigger readyToShoot;
 
     public final LEDStates ledStates;
+    
+    public boolean fuelLoaded = false;
+    public final Trigger kickerCurrent;
+    public final Trigger notLoaded;
 
     public Superstructure(
             Shooter shooter,
@@ -89,6 +94,12 @@ public class Superstructure extends VirtualSubsystem {
 
         this.ledStates = ledStates;
 
+        this.kickerCurrent = new Trigger(() -> kicker.getTotalCurrent() > 2.0).debounce(0.1);
+        this.notLoaded = new Trigger(() -> !fuelLoaded && RobotState.isEnabled());
+    }
+
+    public Command setFuelLoaded(boolean loaded) {
+        return Commands.runOnce(() -> fuelLoaded = loaded);
     }
 
     public LEDStates getStates() {
@@ -178,7 +189,7 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command index() {
         return Commands.parallel(
-                indexerCommands.index(), kickerCommands.matchShooterSpeed(shotSpeed), jerkOff());
+                indexerCommands.index(), kickerCommands.matchShooterSpeed(shotSpeed), jerkOff(), setFuelLoaded(false));
     }
 
     public Command reverse() {
@@ -229,11 +240,18 @@ public class Superstructure extends VirtualSubsystem {
                 .repeatedly();
     }
 
-    public Command preloadBalls() {
+    public Command loadBalls() {
         return Commands.parallel(
             kickerCommands.preload(),
             indexerCommands.index())
-            .withTimeout(0.75);
+            .withTimeout(0.75)
+            .andThen(setFuelLoaded(true));
+    }
+
+    public Command loadWhenDetected() {
+        return Commands.sequence(
+                Commands.race(kickerCommands.preload(), indexerCommands.index(), Commands.waitUntil(kickerCurrent)),
+                loadBalls().withTimeout(0.5));
     }
 
 }
