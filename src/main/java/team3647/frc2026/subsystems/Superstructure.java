@@ -21,8 +21,6 @@ import team3647.frc2026.util.LEDStates;
 import team3647.frc2026.util.LEDStates.SuperstructureState;
 import team3647.frc2026.util.RobotTracker;
 import team3647.lib.team6328.VirtualSubsystem;
-import team3647.lib.tunables.TunableDouble;
-import team3647.lib.tunables.TunableNumber;
 
 public class Superstructure extends VirtualSubsystem {
 
@@ -43,7 +41,7 @@ public class Superstructure extends VirtualSubsystem {
     public final DoubleSupplier hoodAngle;
     public final DoubleSupplier shotSpeed;
     public Angle wantedIntakeAngle = Degrees.of(70);
-    public final BooleanSupplier isRotAligned;    
+    public final BooleanSupplier isRotAligned;
 
     public final RobotTracker robotTracker;
 
@@ -52,7 +50,7 @@ public class Superstructure extends VirtualSubsystem {
     public final Trigger readyToShoot;
 
     public final LEDStates ledStates;
-    
+
     public boolean fuelLoaded = false;
     public final Trigger kickerCurrent;
     public final Trigger notLoaded;
@@ -189,7 +187,10 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command index() {
         return Commands.parallel(
-                indexerCommands.index(), kickerCommands.matchShooterSpeed(shotSpeed), jerkOff(), setFuelLoaded(false));
+                indexerCommands.index(),
+                kickerCommands.matchShooterSpeed(shotSpeed),
+                jerkOff(),
+                setFuelLoaded(false));
     }
 
     public Command reverse() {
@@ -241,18 +242,17 @@ public class Superstructure extends VirtualSubsystem {
     }
 
     public Command loadBalls() {
-        return Commands.parallel(
-            kickerCommands.preload(),
-            indexerCommands.index())
-            .withTimeout(1)
-            .andThen(setFuelLoaded(true));
+        return Commands.parallel(kickerCommands.preload(), indexerCommands.index())
+                .withTimeout(0.75)
+                .andThen(setFuelLoaded(true));
     }
 
     public Command loadWhenDetected() {
         return Commands.sequence(
-                Commands.race(kickerCommands.preload(), indexerCommands.index(), Commands.waitUntil(kickerCurrent)),
-                loadBalls().withTimeout(0.5), Commands.waitSeconds(4.0), loadBalls().withTimeout(0.5));
+                Commands.race(
+                        kickerCommands.preload(),
+                        indexerCommands.index(),
+                        Commands.waitUntil(kickerCurrent)),
+                loadBalls().withTimeout(0.5));
     }
-
 }
-

@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.695206847360912,
+        "y": 0.7292
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.945206844503045,
+        "y": 0.7291621987625838
+      },
+      "isLocked": false,
+      "linkedName": "Right Sweep 3 End"
+    },
+    {
+      "anchor": {
+        "x": 3.873,
+        "y": 0.7292
+      },
+      "prevControl": {
+        "x": 3.508573466478013,
+        "y": 0.7421112696100647
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Right Trench Shoot"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 77.2
+  },
+  "reversed": false,
+  "folder": "Right Mid Sweep Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 77.2
+  },
+  "useDefaultConstraints": true
+}
