@@ -32,7 +32,7 @@ public class KickerConstants {
     public static final double kP = 4.5;
     public static final double kI = 0;
     public static final double kD = 0;
-    public static final double kS = 0.6; //2.6
+    public static final double kS = 0.6; // 2.6
 
     public static final double kGearboxReduction = 0.25;
     public static final double kWheelDiameterMeters = Units.inchesToMeters(5);
