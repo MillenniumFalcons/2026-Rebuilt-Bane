@@ -17,7 +17,7 @@ public class KickerCommands {
     }
 
     public Command preload() {
-        return Commands.runEnd(() -> kicker.setVelocityFOC(1), () -> kicker.setOpenLoop(0), kicker);
+        return Commands.runEnd(() -> kicker.setVelocityFOC(0.5), () -> kicker.setOpenLoop(0), kicker);
     }
 
     public Command matchShooterSpeed(DoubleSupplier shooterSpeed) {
