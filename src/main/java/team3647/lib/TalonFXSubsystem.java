@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
@@ -37,6 +38,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
     protected final VoltageOut voltageOut = new VoltageOut(0);
     protected final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
     private final PositionVoltage positionVoltage = new PositionVoltage(0);
+    private final PositionTorqueCurrentFOC positionTorqueCurrentFOC = new PositionTorqueCurrentFOC(0);
     private final MotionMagicExpoTorqueCurrentFOC motionMagicExpoTorqueCurrentFOC =
             new MotionMagicExpoTorqueCurrentFOC(0);
     protected final MotionMagicExpoVoltage motionMagicExpoVoltage = new MotionMagicExpoVoltage(0);
@@ -145,6 +147,13 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
         positionDutyCycle.Position = position / positionConversion;
     }
 
+    protected void setPositionFOC(double position, double feedforward, int slot) {
+        controlMode = positionTorqueCurrentFOC;
+        positionTorqueCurrentFOC.FeedForward = feedforward;
+        positionTorqueCurrentFOC.Position = position / positionConversion;
+        positionTorqueCurrentFOC.Slot = slot;
+    }
+
     protected void setPositionNative(double position, double feedforward) {
         controlMode = positionDutyCycle;
         positionDutyCycle.FeedForward = feedforward / nominalVoltage;
@@ -219,7 +228,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
      * @param position in units of positionConvertsion (degrees/meters/etc..)
      * @param feedforward in volts
      */
-    protected void setPositionFOC(double position, double feedforward) {
+    protected void setPositionExpoFOC(double position, double feedforward) {
         controlMode = motionMagicExpoTorqueCurrentFOC;
         motionMagicExpoTorqueCurrentFOC.FeedForward = feedforward;
         motionMagicExpoTorqueCurrentFOC.Position = position / positionConversion;
@@ -228,7 +237,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
 
     /**
      * @param velocity in the units of velocityConversion (RPM?, Surface speed?)
-     * @param feedforward in volts
+     * @param feedforward in amps
      */
     protected void setVelocityFOC(double velocity, double feedforward) {
         controlMode = velocityTorqueCurrentFOC;

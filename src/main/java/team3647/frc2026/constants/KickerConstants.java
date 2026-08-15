@@ -5,6 +5,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
 import edu.wpi.first.math.util.Units;
 
 public class KickerConstants {
@@ -31,13 +33,16 @@ public class KickerConstants {
 
     public static final double kP = 4.5;
     public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double kD = 0.0;
     public static final double kS = 0.6; // 2.6
+    public static final double kV = 0.0;
 
     public static final double kGearboxReduction = 0.25;
     public static final double kWheelDiameterMeters = Units.inchesToMeters(5);
     public static final double kWheelRotationMeters = kWheelDiameterMeters * Math.PI;
     public static final double kNativeVelToSurfaceMpS = kWheelRotationMeters * kGearboxReduction;
+
+    public static final double kLoadSpeed = 0.5;
 
     static {
         kMasterConfig.MotorOutput.Inverted =
@@ -47,6 +52,13 @@ public class KickerConstants {
         kMasterConfig.Slot0.kI = kI;
         kMasterConfig.Slot0.kD = kD;
         kMasterConfig.Slot0.kS = kS;
+        kMasterConfig.Slot0.kV = kV;
+
+        kMasterConfig.Slot1.kP = 2.0;
+        kMasterConfig.Slot1.kI = 6.0;
+        kMasterConfig.Slot1.kD = 3.0;
+        kMasterConfig.Slot1.kS = 0.0;
+        kMasterConfig.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
         kMasterConfig.CurrentLimits.StatorCurrentLimit = 100.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;

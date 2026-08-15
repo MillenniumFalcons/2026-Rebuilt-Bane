@@ -197,7 +197,7 @@ public class RobotContainer {
     private void configureBindings() {
         superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
         // mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
-        mainController.buttonA.onTrue(superstructure.loadBalls());
+        mainController.buttonA.onTrue(superstructure.shooterCommands.kill());
         // interp
         mainController.buttonX.whileTrue(superstructure.interpShot());
         // intake

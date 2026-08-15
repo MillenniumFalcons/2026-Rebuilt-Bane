@@ -28,6 +28,14 @@ public class Kicker extends TalonFXSubsystem {
         super.setVelocityFOC(velocity, 0);
     }
 
+    public void setVelocityFOC(double velocity, double feedforward) {
+        super.setVelocityFOC(velocity, feedforward);
+    }
+
+    public void setPosition(double position, double ff) {
+        super.setPositionFOC(position, ff, 1);
+    }
+
     public double getMasterCurrent() {
         return super.getMasterCurrent();
     }

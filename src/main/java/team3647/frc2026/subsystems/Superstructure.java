@@ -92,7 +92,7 @@ public class Superstructure extends VirtualSubsystem {
 
         this.ledStates = ledStates;
 
-        this.kickerCurrent = new Trigger(() -> kicker.getTotalCurrent() > 5.0).debounce(0.1);
+        this.kickerCurrent = new Trigger(() -> kicker.getTotalCurrent() > 1.0).debounce(0.1);
         this.notLoaded = new Trigger(() -> !fuelLoaded && RobotState.isEnabled());
     }
 
@@ -242,7 +242,7 @@ public class Superstructure extends VirtualSubsystem {
     }
 
     public Command loadBalls() {
-        return Commands.parallel(kickerCommands.preload(), indexerCommands.index())
+        return Commands.parallel(kickerCommands.preloadFF(), indexerCommands.index())
                 .withTimeout(0.75)
                 .andThen(setFuelLoaded(true));
     }
@@ -253,6 +253,8 @@ public class Superstructure extends VirtualSubsystem {
                         kickerCommands.preload(),
                         indexerCommands.index(),
                         Commands.waitUntil(kickerCurrent)),
-                loadBalls().withTimeout(0.5));
+                loadBalls().withTimeout(0.0),
+                Commands.waitSeconds(0.67),
+                kickerCommands.spinRotations(0.5));
     }
 }
