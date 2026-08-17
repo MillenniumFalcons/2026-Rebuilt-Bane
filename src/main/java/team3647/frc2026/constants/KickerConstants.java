@@ -1,11 +1,13 @@
 package team3647.frc2026.constants;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
 import edu.wpi.first.math.util.Units;
 import team3647.lib.tunables.TunableSlotConfigs;
 
@@ -34,7 +36,7 @@ public class KickerConstants {
     public static final double kP = 4.5;
     public static final double kI = 0;
     public static final double kD = 0.0;
-    public static final double kS = 0.6; // 2.6
+    public static final double kS = 2.6;
     public static final double kV = 0.0;
 
     public static final double kGearboxReduction = 0.25;
@@ -60,9 +62,8 @@ public class KickerConstants {
         kMasterConfig.Slot1.kS = 0.0;
         kMasterConfig.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
-        TunableSlotConfigs kTunableSlotConfigs =
-                new TunableSlotConfigs(kMaster, "Kicker", kMasterConfig.Slot1);
-
+        TunableSlotConfigs kTunableSlotConfigs = new TunableSlotConfigs(kMaster, "Kicker", kMasterConfig.Slot1);
+        
         kMasterConfig.CurrentLimits.StatorCurrentLimit = 100.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
