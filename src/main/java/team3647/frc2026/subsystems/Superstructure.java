@@ -241,20 +241,12 @@ public class Superstructure extends VirtualSubsystem {
                 .repeatedly();
     }
 
-    public Command loadBalls() {
-        return Commands.parallel(kickerCommands.preloadFF(), indexerCommands.index())
-                .withTimeout(0.75)
-                .andThen(setFuelLoaded(true));
-    }
-
     public Command loadWhenDetected() {
         return Commands.sequence(
                 Commands.race(
                         kickerCommands.preload(),
                         indexerCommands.index(),
                         Commands.waitUntil(kickerCurrent)),
-                loadBalls().withTimeout(0.0),
-                Commands.waitSeconds(0.67),
                 kickerCommands.spinRotations(0.5));
     }
 }

@@ -38,7 +38,8 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
     protected final VoltageOut voltageOut = new VoltageOut(0);
     protected final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
     private final PositionVoltage positionVoltage = new PositionVoltage(0);
-    private final PositionTorqueCurrentFOC positionTorqueCurrentFOC = new PositionTorqueCurrentFOC(0);
+    private final PositionTorqueCurrentFOC positionTorqueCurrentFOC =
+            new PositionTorqueCurrentFOC(0);
     private final MotionMagicExpoTorqueCurrentFOC motionMagicExpoTorqueCurrentFOC =
             new MotionMagicExpoTorqueCurrentFOC(0);
     protected final MotionMagicExpoVoltage motionMagicExpoVoltage = new MotionMagicExpoVoltage(0);

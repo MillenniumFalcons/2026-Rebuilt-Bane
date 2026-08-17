@@ -6,8 +6,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
 import edu.wpi.first.math.util.Units;
+import team3647.lib.tunables.TunableSlotConfigs;
 
 public class KickerConstants {
     // master is bottom right, 1 is top right, 2 is bottom left, 3 is top left (looking from front
@@ -59,6 +59,9 @@ public class KickerConstants {
         kMasterConfig.Slot1.kD = 3.0;
         kMasterConfig.Slot1.kS = 0.0;
         kMasterConfig.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+
+        TunableSlotConfigs kTunableSlotConfigs =
+                new TunableSlotConfigs(kMaster, "Kicker", kMasterConfig.Slot1);
 
         kMasterConfig.CurrentLimits.StatorCurrentLimit = 100.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;

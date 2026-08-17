@@ -196,8 +196,9 @@ public class RobotContainer {
 
     private void configureBindings() {
         superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
+
         // mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
-        mainController.buttonA.onTrue(superstructure.shooterCommands.kill());
+        mainController.buttonA.onTrue(shooterCommands.kill().alongWith(kickerCommands.reverse()));
         // interp
         mainController.buttonX.whileTrue(superstructure.interpShot());
         // intake
@@ -234,6 +235,7 @@ public class RobotContainer {
                 .dPadRight
                 .and(mainController.rightTrigger.negate())
                 .whileTrue(superstructure.prep());
+                
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());

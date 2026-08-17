@@ -1,8 +1,13 @@
 package team3647.lib.tunables;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.configs.Slot2Configs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import team3647.lib.team6328.VirtualSubsystem;
 
 public class TunableSlotConfigs extends VirtualSubsystem {
@@ -30,6 +35,18 @@ public class TunableSlotConfigs extends VirtualSubsystem {
         kV = new TunableNumber(baseKey + "/kV", configs.kV);
         kA = new TunableNumber(baseKey + "/kA", configs.kA);
         kG = new TunableNumber(baseKey + "/kG", configs.kG);
+    }
+
+    public TunableSlotConfigs(TalonFX fx, String name, Slot0Configs initialConfigs) {
+        this(fx, 0, name, SlotConfigs.from(initialConfigs));
+    }
+
+    public TunableSlotConfigs(TalonFX fx, String name, Slot1Configs initialConfigs) {
+        this(fx, 1, name, SlotConfigs.from(initialConfigs));
+    }
+
+    public TunableSlotConfigs(TalonFX fx, String name, Slot2Configs initialConfigs) {
+        this(fx, 2, name, SlotConfigs.from(initialConfigs));
     }
 
     public void update() {

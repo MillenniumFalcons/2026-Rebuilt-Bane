@@ -127,8 +127,8 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
                     new Pose2d(
                             pose.getX() + vx * time, pose.getY() + vy * time, pose.getRotation());
             currentDistance = getDistanceFromHub(lookaheadPose);
-            Logger.recordOutput("SOTMAutoAlign/lookahead", lookaheadPose);
         }
+        Logger.recordOutput("SOTMAutoAlign/lookahead", lookaheadPose);
 
         Logger.recordOutput("SOTMValues/compensate time", time);
         Logger.recordOutput("SOTMValues/compensate distance", currentDistance);

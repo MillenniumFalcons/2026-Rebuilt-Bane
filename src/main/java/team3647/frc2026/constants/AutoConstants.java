@@ -27,8 +27,8 @@ public class AutoConstants {
     public static final PIDController autoXController = new PIDController(2.0, 0, 0.05);
     public static final PIDController autoYController = new PIDController(2.0, 0, 0.05);
 
-    public static final TunablePID tunableAutoXController =
-            new TunablePID("Auto/x", autoXController);
-    public static final TunablePID tunableAutoYController =
-            new TunablePID("Auto/y", autoYController);
+//     public static final TunablePID tunableAutoXController =
+//             new TunablePID("Auto/x", autoXController);
+//     public static final TunablePID tunableAutoYController =
+//             new TunablePID("Auto/y", autoYController);
 }
