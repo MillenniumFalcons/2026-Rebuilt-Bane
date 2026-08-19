@@ -17,8 +17,6 @@ import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.WristCommands;
 import team3647.frc2026.constants.ShooterConstants;
-import team3647.frc2026.util.LEDStates;
-import team3647.frc2026.util.LEDStates.SuperstructureState;
 import team3647.frc2026.util.RobotTracker;
 import team3647.lib.team6328.VirtualSubsystem;
 
@@ -49,8 +47,6 @@ public class Superstructure extends VirtualSubsystem {
     public final BooleanSupplier atHoodAngle;
     public final Trigger readyToShoot;
 
-    public final LEDStates ledStates;
-
     public boolean fuelLoaded = false;
     public final Trigger kickerCurrent;
     public final Trigger notLoaded;
@@ -62,7 +58,6 @@ public class Superstructure extends VirtualSubsystem {
             Kicker kicker,
             Wrist wrist,
             Rollers rollers,
-            LEDStates ledStates,
             RobotTracker robotTracker,
             DoubleSupplier hoodAngle,
             DoubleSupplier shotSpeed,
@@ -90,18 +85,12 @@ public class Superstructure extends VirtualSubsystem {
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
 
-        this.ledStates = ledStates;
-
-        this.kickerCurrent = new Trigger(() -> kicker.getTotalCurrent() > 1.0).debounce(0.1);
+        this.kickerCurrent = new Trigger(() -> kicker.getTotalCurrent() > 0.7).debounce(0.1);
         this.notLoaded = new Trigger(() -> !fuelLoaded && RobotState.isEnabled());
     }
 
     public Command setFuelLoaded(boolean loaded) {
         return Commands.runOnce(() -> fuelLoaded = loaded);
-    }
-
-    public LEDStates getStates() {
-        return ledStates;
     }
 
     public Angle getIntakeAngle() {
@@ -147,23 +136,15 @@ public class Superstructure extends VirtualSubsystem {
                                 () ->
                                         shooterCommands.isAtVelocity(
                                                 () -> ShooterConstants.kidSpeed)),
-                        index()
-                                // .onlyWhile(readyToShoot)
-                                //         .repeatedly()
-                                .deadlineFor(
-                                        ledStates.activateState(SuperstructureState.SHOOTING))));
+                        index()));
     }
 
     public Command prep() {
-        return shooterCommands
-                .setVelocity(shotSpeed)
-                .deadlineFor(ledStates.activateState(SuperstructureState.PREPPING));
+        return shooterCommands.setVelocity(shotSpeed);
     }
 
     public Command prepKids() {
-        return shooterCommands
-                .setVelocity(() -> ShooterConstants.kidSpeed)
-                .deadlineFor(ledStates.activateState(SuperstructureState.PREPPING));
+        return shooterCommands.setVelocity(() -> ShooterConstants.kidSpeed);
     }
 
     public Command bumpShot() {
@@ -171,18 +152,14 @@ public class Superstructure extends VirtualSubsystem {
     }
 
     public Command prepForBump() {
-        return shooterCommands
-                .setVelocity(() -> 8.5)
-                .deadlineFor(ledStates.activateState(SuperstructureState.PREPPING));
+        return shooterCommands.setVelocity(() -> 8.5);
     }
 
     public Command indexWhenReady() {
         return Commands.sequence(
-                Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)),
-                index()
-                        // .onlyWhile(readyToShoot)
-                        //         .repeatedly()
-                        .deadlineFor(ledStates.activateState(SuperstructureState.SHOOTING)));
+                Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)), index());
+        // .onlyWhile(readyToShoot)
+        //         .repeatedly());
     }
 
     public Command index() {
@@ -199,15 +176,13 @@ public class Superstructure extends VirtualSubsystem {
     }
 
     public Command intake() {
-        return Commands.parallel(wristCommands.deploy(), rollerCommands.intake())
-                .deadlineFor(ledStates.activateState(SuperstructureState.INTAKING));
+        return Commands.parallel(wristCommands.deploy(), rollerCommands.intake());
     }
 
     public Command intakeWithDelay() {
         return Commands.sequence(
-                        Commands.waitSeconds(0.5),
-                        Commands.parallel(wristCommands.deploy(), rollerCommands.intake()))
-                .deadlineFor(ledStates.activateState(SuperstructureState.INTAKING));
+                Commands.waitSeconds(0.5),
+                Commands.parallel(wristCommands.deploy(), rollerCommands.intake()));
     }
 
     public Command retractIntake() {
@@ -247,6 +222,7 @@ public class Superstructure extends VirtualSubsystem {
                         kickerCommands.preload(),
                         indexerCommands.index(),
                         Commands.waitUntil(kickerCurrent)),
-                kickerCommands.spinRotations(0.5));
+                Commands.waitSeconds(2.0),
+                kickerCommands.spinRotations(0.54));
     }
 }

@@ -41,7 +41,6 @@ public class SwerveDriveCommands implements AllianceObserver {
             Supplier<Twist2d> autoDriveVelocities,
             Supplier<DriveMode> getMode,
             BooleanSupplier autoDriveEnabled,
-            BooleanSupplier robotRelative,
             BooleanSupplier isAligned) {
 
         return Commands.run(
@@ -49,7 +48,6 @@ public class SwerveDriveCommands implements AllianceObserver {
                     var isAutoDrive = autoDriveEnabled.getAsBoolean();
                     var velocities = autoDriveVelocities.get();
                     Logger.recordOutput("autoDriveVelocities", velocities);
-                    var robotRel = robotRelative.getAsBoolean();
                     // SmartDashboard.putBoolean("MONBEIONS", robotRel);
                     // Logger.recordOutput("hastarget@cmds", toRun);
 

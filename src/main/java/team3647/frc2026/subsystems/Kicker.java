@@ -36,6 +36,10 @@ public class Kicker extends TalonFXSubsystem {
         super.setPositionFOC(position, ff, 1);
     }
 
+    public void setCurrent(double current) {
+        super.setTorque(current);
+    }
+
     public double getMasterCurrent() {
         return super.getMasterCurrent();
     }

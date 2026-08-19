@@ -38,7 +38,6 @@ import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.IndexerConstants;
 import team3647.frc2026.constants.KickerConstants;
-import team3647.frc2026.constants.LEDConstants;
 import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
@@ -47,7 +46,6 @@ import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
 import team3647.frc2026.subsystems.Kicker;
-import team3647.frc2026.subsystems.LEDs;
 import team3647.frc2026.subsystems.Rollers;
 import team3647.frc2026.subsystems.Shooter;
 import team3647.frc2026.subsystems.Superstructure;
@@ -58,7 +56,6 @@ import team3647.frc2026.subsystems.Wrist;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.CurrentMonitor;
-import team3647.frc2026.util.LEDStates;
 import team3647.frc2026.util.MatchStateLogger;
 import team3647.frc2026.util.RobotTracker;
 import team3647.frc2026.util.TargetingUtil;
@@ -167,7 +164,7 @@ public class RobotContainer {
 
     private void configureAllianceObservers() {
         allianceChecker.registerObservers(
-                swerveCommands, swerve, autoCommands, autoChooser, autoDrive, robotTracker, leds);
+                swerveCommands, swerve, autoCommands, autoChooser, autoDrive, robotTracker);
     }
 
     private void configureSmartDashboardLogging() {
@@ -185,18 +182,17 @@ public class RobotContainer {
                         autoDrive::getVelocities,
                         autoDrive::getWantedMode,
                         autoDrive::getAutoDriveEnabled,
-                        mainController.rightJoyStickPress,
                         autoDrive::rotAligned));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        // shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
+        shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
         hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         rollers.setDefaultCommand(rollerCommands.kill());
         kicker.setDefaultCommand(kickerCommands.kill());
     }
 
     private void configureBindings() {
-        superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
-
+        // preload balls, commented out for now, need to trigger after intake
+        // superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
         // mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
         mainController.buttonA.onTrue(shooterCommands.kill().alongWith(kickerCommands.reverse()));
         // interp
@@ -235,7 +231,7 @@ public class RobotContainer {
                 .dPadRight
                 .and(mainController.rightTrigger.negate())
                 .whileTrue(superstructure.prep());
-                
+
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
@@ -402,10 +398,6 @@ public class RobotContainer {
     public final CurrentMonitor currentMonitor =
             new CurrentMonitor(swerve, List.of(shooter, indexer, kicker, rollers, hood, wrist));
 
-    public LEDStates ledStates = new LEDStates();
-
-    public final LEDs leds = new LEDs(LEDConstants.m_candle, ledStates);
-
     public final Superstructure superstructure =
             new Superstructure(
                     shooter,
@@ -414,7 +406,6 @@ public class RobotContainer {
                     kicker,
                     wrist,
                     rollers,
-                    ledStates,
                     robotTracker,
                     autoDrive::getHoodAngle,
                     autoDrive::getShotSpeed,

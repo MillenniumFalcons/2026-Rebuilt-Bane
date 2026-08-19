@@ -18,6 +18,10 @@ public class TunableDouble extends VirtualSubsystem {
         }
     }
 
+    public double get() {
+        return doubleNumber;
+    }
+
     private boolean hasChanged() {
         return tunableNumber.hasChanged();
     }

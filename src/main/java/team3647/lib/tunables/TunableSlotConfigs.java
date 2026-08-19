@@ -6,8 +6,6 @@ import com.ctre.phoenix6.configs.Slot2Configs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import team3647.lib.team6328.VirtualSubsystem;
 
 public class TunableSlotConfigs extends VirtualSubsystem {

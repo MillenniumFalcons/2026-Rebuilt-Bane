@@ -1,15 +1,12 @@
 package team3647.frc2026.constants;
 
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
 import edu.wpi.first.math.util.Units;
-import team3647.lib.tunables.TunableSlotConfigs;
 
 public class KickerConstants {
     // master is bottom right, 1 is top right, 2 is bottom left, 3 is top left (looking from front
@@ -36,7 +33,7 @@ public class KickerConstants {
     public static final double kP = 4.5;
     public static final double kI = 0;
     public static final double kD = 0.0;
-    public static final double kS = 2.6;
+    public static final double kS = 0.0;
     public static final double kV = 0.0;
 
     public static final double kGearboxReduction = 0.25;
@@ -44,7 +41,8 @@ public class KickerConstants {
     public static final double kWheelRotationMeters = kWheelDiameterMeters * Math.PI;
     public static final double kNativeVelToSurfaceMpS = kWheelRotationMeters * kGearboxReduction;
 
-    public static final double kLoadSpeed = 0.5;
+    public static final double kLoadSpeed = 0.2;
+    public static final double kShootSpeed = 4; // more than 6 makes it inaccurate
 
     static {
         kMasterConfig.MotorOutput.Inverted =
@@ -62,8 +60,6 @@ public class KickerConstants {
         kMasterConfig.Slot1.kS = 0.0;
         kMasterConfig.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
-        TunableSlotConfigs kTunableSlotConfigs = new TunableSlotConfigs(kMaster, "Kicker", kMasterConfig.Slot1);
-        
         kMasterConfig.CurrentLimits.StatorCurrentLimit = 100.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
