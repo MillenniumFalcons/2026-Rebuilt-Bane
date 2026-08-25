@@ -46,6 +46,7 @@ public class SwerveDriveCommands implements AllianceObserver {
         return Commands.run(
                 () -> {
                     var isAutoDrive = autoDriveEnabled.getAsBoolean();
+                    DriveMode mode = getMode.get();
                     var velocities = autoDriveVelocities.get();
                     Logger.recordOutput("autoDriveVelocities", velocities);
                     // SmartDashboard.putBoolean("MONBEIONS", robotRel);
@@ -63,57 +64,25 @@ public class SwerveDriveCommands implements AllianceObserver {
                     double xSquared =
                             Math.pow(x.getAsDouble(), 2) * Math.signum(x.getAsDouble()) * 1.05;
 
-                    double motionXComponent = ySquared * invert * kMaxSpeedMps;
-                    double motionYComponent = -xSquared * invert * kMaxSpeedMps;
+                    double xyMult = 1.0;
                     double motionTurnComponent = rot.getAsDouble() * kMaxRotRadPs * rotMultiplier;
 
-                    if (!isAutoDrive) {
-                        swerve.driveFieldOriented(
-                                motionXComponent, motionYComponent, -motionTurnComponent);
-                    } else if (isAutoDrive) {
-                        if (getMode.get().equals(DriveMode.SHOOT_ON_THE_MOVE)
-                                || getMode.get().equals(DriveMode.FEED)) {
-
-                            motionTurnComponent = velocities.dtheta;
-                            swerve.driveFieldOriented(
-                                    motionXComponent * 0.25,
-                                    motionYComponent * 0.25,
-                                    motionTurnComponent);
-                        } else if (getMode.get().equals(DriveMode.SHOOT)) {
-                            motionTurnComponent = velocities.dtheta;
-                            swerve.driveFieldOriented(
-                                    motionXComponent * 0.25,
-                                    motionYComponent * 0.25,
-                                    motionTurnComponent);
-                        } else if (getMode.get().equals(DriveMode.INTAKE_FEED)) {
-                            motionTurnComponent = velocities.dtheta;
-                            swerve.driveFieldOriented(
-                                    motionXComponent, motionYComponent, motionTurnComponent);
-                        } else if (getMode.get().equals(DriveMode.INTAKE)) {
-                            motionTurnComponent = velocities.dtheta;
-                            swerve.driveFieldOriented(
-                                    motionXComponent, motionYComponent, motionTurnComponent);
+                    if (isAutoDrive) {
+                        motionTurnComponent = velocities.dtheta;
+                        switch (mode) {
+                            case SHOOT_ON_THE_MOVE:
+                                xyMult = 0.25;
+                            case SHOOT:
+                                xyMult = 0.25;
+                            default:
+                                xyMult = 1.0;
                         }
                     }
-                    // else if (isAutoDrive
-                    //         && (getMode.get().equals(DriveMode.SCORE)
-                    //                 || getMode.get().equals(DriveMode.ALGAE_REEF))) {
-                    //     motionXComponent = velocities.dx;
-                    //     motionYComponent = velocities.dy;
-                    //     motionTurnComponent = velocities.dtheta;
 
-                    //     swerve.drive(motionXComponent, motionYComponent, motionTurnComponent);
-
-                    // } else if (isAutoDrive && getMode.get().equals(DriveMode.BARGE)) {
-                    //     motionXComponent = velocities.dx;
-                    //     motionYComponent =
-                    //             Math.abs(x.getAsDouble()) < 0.05 ? velocities.dy :
-                    // -x.getAsDouble();
-                    //     motionTurnComponent = velocities.dtheta;
-                    //     swerve.drive(motionXComponent, motionYComponent, motionTurnComponent);
-                    // } else if (getMode.get().equals(DriveMode.ROBOT_REL)) {
-                    //     swerve.drive(motionXComponent, motionYComponent, motionTurnComponent);
-                    // }
+                    double motionXComponent = xyMult * ySquared * invert * kMaxSpeedMps;
+                    double motionYComponent = xyMult * -xSquared * invert * kMaxSpeedMps;
+                    //swerve.generate(motionXComponent, motionYComponent, motionTurnComponent);
+                    //swerve.driveFieldOriented(motionXComponent, motionYComponent, motionTurnComponent);
                 },
                 swerve);
     }
