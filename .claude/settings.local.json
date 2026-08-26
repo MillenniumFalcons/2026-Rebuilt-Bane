@@ -3,7 +3,10 @@
     "allow": [
       "Bash(./gradlew build:*)",
       "Bash(./gradlew spotlessApply)",
-      "Bash(./gradlew spotlessApply compileJava -q)"
+      "Bash(./gradlew spotlessApply compileJava -q)",
+      "Bash(./gradlew compileJava)",
+      "PowerShell(cd \"c:\\\\Users\\\\chris\\\\Downloads\\\\FRC\\\\2026-Rebuilt-Bane\"; $env:JAVA_HOME = \\(Get-ChildItem \"C:\\\\Users\\\\chris\\\\wpilib\\\\2026\\\\jdk\" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName\\); if \\(-not $env:JAVA_HOME\\) { $env:JAVA_HOME = \\(Get-ChildItem \"C:\\\\Users\\\\chris\\\\wpilib\" -Filter \"jdk\" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName\\) }; Write-Host \"JAVA_HOME: $env:JAVA_HOME\"; .\\\\gradlew.bat compileJava 2>&1 | Select-Object -Last 30)",
+      "PowerShell(Get-Command java -ErrorAction SilentlyContinue | Select-Object Source; [System.Environment]::GetEnvironmentVariable\\(\"JAVA_HOME\", \"Machine\"\\); [System.Environment]::GetEnvironmentVariable\\(\"JAVA_HOME\", \"User\"\\))"
     ]
   }
 }

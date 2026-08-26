@@ -5,7 +5,6 @@
 package team3647.lib.team254.swerve;
 
 import java.util.Arrays;
-import java.util.Collections;
 import org.ejml.simple.SimpleMatrix;
 import team3647.lib.team254.geometry.Rotation2d;
 import team3647.lib.team254.geometry.Translation2d;
@@ -39,6 +38,10 @@ public class SwerveDriveKinematics {
     private final Translation2d[] m_modules;
     private Translation2d m_prevCoR = new Translation2d();
     private final Rotation2d[] m_rotations;
+
+    // Pre-allocated to avoid per-call heap allocation in fillSwerveModuleStates
+    private final SimpleMatrix m_chassisSpeedsVector = new SimpleMatrix(3, 1);
+    private static final Translation2d kZeroTranslation = new Translation2d();
 
     /**
      * Constructs a swerve drive kinematics object. This takes in a variable number of wheel
@@ -137,7 +140,27 @@ public class SwerveDriveKinematics {
      * @return An array containing the module states.
      */
     public SwerveModuleState[] toSwerveModuleStates(ChassisSpeeds chassisSpeeds) {
-        return toSwerveModuleStates(chassisSpeeds, new Translation2d());
+        return toSwerveModuleStates(chassisSpeeds, kZeroTranslation);
+    }
+
+    /**
+     * Fills an existing SwerveModuleState[] with the result of inverse kinematics. Avoids
+     * allocating a new array and new SwerveModuleState objects on every call.
+     *
+     * @param chassisSpeeds The desired chassis speed.
+     * @param out Pre-allocated array to fill. Must have length == number of modules.
+     */
+    public void fillSwerveModuleStates(ChassisSpeeds chassisSpeeds, SwerveModuleState[] out) {
+        m_chassisSpeedsVector.set(0, 0, chassisSpeeds.vxMetersPerSecond);
+        m_chassisSpeedsVector.set(1, 0, chassisSpeeds.vyMetersPerSecond);
+        m_chassisSpeedsVector.set(2, 0, chassisSpeeds.omegaRadiansPerSecond);
+        var moduleStatesMatrix = m_inverseKinematics.mult(m_chassisSpeedsVector);
+        for (int i = 0; i < m_numModules; i++) {
+            double x = moduleStatesMatrix.get(i * 2, 0);
+            double y = moduleStatesMatrix.get(i * 2 + 1, 0);
+            out[i].speedMetersPerSecond = Math.hypot(x, y);
+            out[i].angle = new Rotation2d(x, y, true);
+        }
     }
 
     /**
@@ -232,7 +255,12 @@ public class SwerveDriveKinematics {
      */
     public static void desaturateWheelSpeeds(
             SwerveModuleState[] moduleStates, double attainableMaxSpeedMetersPerSecond) {
-        double realMaxSpeed = Collections.max(Arrays.asList(moduleStates)).speedMetersPerSecond;
+        double realMaxSpeed = 0;
+        for (SwerveModuleState state : moduleStates) {
+            if (state.speedMetersPerSecond > realMaxSpeed) {
+                realMaxSpeed = state.speedMetersPerSecond;
+            }
+        }
         if (realMaxSpeed > attainableMaxSpeedMetersPerSecond) {
             for (SwerveModuleState moduleState : moduleStates) {
                 moduleState.speedMetersPerSecond =

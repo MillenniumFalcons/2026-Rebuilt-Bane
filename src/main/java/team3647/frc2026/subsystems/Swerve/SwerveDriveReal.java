@@ -468,7 +468,6 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     }
 
     public SwerveSetpoint generate(double x, double y, double omega) {
-        Logger.recordOutput("prevspt", this.setpoint.mChassisSpeeds.vyMetersPerSecond);
         var robotRel =
                 team3647.lib.team254.swerve.ChassisSpeeds.fromFieldRelativeSpeeds(
                         x,
