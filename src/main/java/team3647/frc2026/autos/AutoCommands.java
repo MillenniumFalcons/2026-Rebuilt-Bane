@@ -6,12 +6,16 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
@@ -26,8 +30,19 @@ public class AutoCommands extends AutoPathFollowers {
     //     public Command rightMidRushPathPlanner() {
     //         return followPathPlannerAuto("Right Mid Sweep");
     //     }
-
+    public final Trigger stuckTrench;
     double spinUpSpeed = 10.0;
+
+    private static final double kStuckCurrentAmps = 40.0;
+    private static final double kStuckVelocityMps = 0.15;
+    private static final double kStuckDebounceSeconds = 0.3;
+
+    // fallback stall check for sim, where drive current always reads 0:
+    // flags a stall if the robot barely moved over a sampling window
+    private static final double kStuckSampleWindowSeconds = 0.5;
+    private static final double kStuckMinDistanceMeters = 0.05;
+    private Pose2d stallSamplePose = null;
+    private double stallSampleTimestamp = 0;
 
     public Command leftMidRushPathPlanner() {
         return Commands.sequence(
@@ -38,7 +53,9 @@ public class AutoCommands extends AutoPathFollowers {
                                 () -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
-                                followMirroredPathPlannerPath("Right Mid Sweep 2"),
+                                crossTrenchWithRetry(
+                                        () -> followMirroredPathPlannerPath("Right Mid Sweep 2"),
+                                        2),
                                 superstructure.shooterCommands.setVelocity(() -> spinUpSpeed)),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
@@ -49,7 +66,9 @@ public class AutoCommands extends AutoPathFollowers {
                                 () -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
-                                followMirroredPathPlannerPath("Right Mid Sweep 2"),
+                                crossTrenchWithRetry(
+                                        () -> followMirroredPathPlannerPath("Right Mid Sweep 2"),
+                                        2),
                                 superstructure.shooterCommands.setVelocity(() -> spinUpSpeed)),
                         Commands.deadline(
                                 Commands.waitSeconds(5), autoAlign(), superstructure.shoot())));
@@ -64,7 +83,8 @@ public class AutoCommands extends AutoPathFollowers {
                                 () -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
-                                followPathPlannerPath("Right Mid Sweep 2"),
+                                crossTrenchWithRetry(
+                                        () -> followPathPlannerPath("Right Mid Sweep 2"), 2),
                                 superstructure.shooterCommands.setVelocity(() -> spinUpSpeed)),
                         Commands.deadline(
                                 Commands.waitSeconds(2.5), autoAlign(), superstructure.shoot())),
@@ -75,7 +95,8 @@ public class AutoCommands extends AutoPathFollowers {
                                 () -> ShooterConstants.kIdleSpeedMid)),
                 Commands.sequence(
                         Commands.deadline(
-                                followPathPlannerPath("Right Mid Sweep 2"),
+                                crossTrenchWithRetry(
+                                        () -> followPathPlannerPath("Right Mid Sweep 2"), 2),
                                 superstructure.shooterCommands.setVelocity(() -> spinUpSpeed)),
                         Commands.deadline(
                                 Commands.waitSeconds(5), autoAlign(), superstructure.shoot())));
@@ -199,6 +220,71 @@ public class AutoCommands extends AutoPathFollowers {
         blueAutosList =
                 List.of(blueEmpty, leftMidRushBluePP, rightMidRushBluePP, preloadBlue, depotBlue);
         redAutosList = List.of(redEmpty, leftMidRushRedPP, rightMidRushRedPP, preloadRed, depotRed);
+
+        this.stuckTrench = new Trigger(this::isStalled).debounce(kStuckDebounceSeconds);
+    }
+
+    /**
+     * True when the drivetrain is drawing high current but not actually moving, or when the pose
+     * hasn't advanced over the last sampling window. The current check catches real stalls fast;
+     * the pose check is what actually fires in sim, since simulated drive current always reads 0.
+     */
+    private boolean isStalled() {
+        double speed =
+                Math.hypot(
+                        swerve.getChassisSpeeds().vxMetersPerSecond,
+                        swerve.getChassisSpeeds().vyMetersPerSecond);
+        boolean highCurrentStall =
+                swerve.getTotalDriveCurrent() > kStuckCurrentAmps && speed < kStuckVelocityMps;
+        return highCurrentStall || isPoseStalled();
+    }
+
+    private boolean isPoseStalled() {
+        Pose2d pose = swerve.getOdoPose();
+        double now = Timer.getFPGATimestamp();
+
+        if (stallSamplePose == null || now - stallSampleTimestamp < kStuckSampleWindowSeconds) {
+            if (stallSamplePose == null) {
+                stallSamplePose = pose;
+                stallSampleTimestamp = now;
+            }
+            return false;
+        }
+
+        double distanceMoved = pose.getTranslation().getDistance(stallSamplePose.getTranslation());
+        stallSamplePose = pose;
+        stallSampleTimestamp = now;
+
+        return distanceMoved < kStuckMinDistanceMeters;
+    }
+
+    public Pose2d getTrenchAlignPose() {
+        return isRed() ? FieldConstants.redTrenchRightPose : FieldConstants.blueTrenchRightPose;
+    }
+
+    public Command recoverFromStuckTrench() {
+        return pathfindToPose(getTrenchAlignPose());
+    }
+
+    /**
+     * Follows a trench-crossing path, and if the robot stalls partway through, backs off to the
+     * pre-trench align pose and retries, up to {@code retriesLeft} times.
+     */
+    public Command crossTrenchWithRetry(Supplier<Command> crossingPath, int retriesLeft) {
+        return Commands.defer(
+                () ->
+                        Commands.sequence(
+                                crossingPath.get().until(stuckTrench),
+                                Commands.either(
+                                        retriesLeft <= 0
+                                                ? Commands.none()
+                                                : Commands.sequence(
+                                                        recoverFromStuckTrench(),
+                                                        crossTrenchWithRetry(
+                                                                crossingPath, retriesLeft - 1)),
+                                        Commands.none(),
+                                        stuckTrench)),
+                Set.of(swerve));
     }
 
     public BooleanSupplier hasTarget() {

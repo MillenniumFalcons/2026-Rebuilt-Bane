@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 
 public class FieldConstants {
@@ -17,6 +18,15 @@ public class FieldConstants {
 
     public static final double kBlueTrenchX = 4.8;
     public static final double kRedTrenchX = kFieldLengthM - kBlueTrenchX;
+
+    public static final Pose2d redTrenchRightPose =
+            new Pose2d(
+                    Units.inchesToMeters(467.64), Units.inchesToMeters(292.31), new Rotation2d());
+    public static final Pose2d blueTrenchRightPose =
+            new Pose2d(
+                    kFieldLengthM - redTrenchRightPose.getX(),
+                    kFieldWidthM - redTrenchRightPose.getY(),
+                    redTrenchRightPose.getRotation().rotateBy(Rotation2d.k180deg));
 
     public static final Pose2d blueHubPose = new Pose2d(4.624, 4.034, new Rotation2d());
     public static final Pose2d redHubPose =
