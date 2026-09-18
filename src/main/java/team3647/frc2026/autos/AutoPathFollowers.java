@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import java.io.IOException;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -291,16 +293,20 @@ public class AutoPathFollowers implements AllianceObserver {
         }
     }
 
-    /** Follow a PathPlanner path by name (loads from deploy/pathplanner/paths/). */
-    public Command followPathPlannerPath(String pathName) {
+    public Command followPathPlannerPath(String pathName, BiFunction<Pose2d, Pose2d, Boolean> finished, boolean mirror) {
         try {
             PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+            if (mirror) {
+                path = path.mirrorPath();
+            }
             Translation2d finalTranslation =
                     path.getPathPoses().get(path.getPathPoses().size() - 1).getTranslation();
             Rotation2d finalRotation = path.getGoalEndState().rotation();
             Pose2d rawFinalPose = new Pose2d(finalTranslation, finalRotation);
             Command ppCommand = AutoBuilder.followPath(path);
             Timer pathTimer = new Timer();
+            BooleanSupplier finishedSupplier = 
+                () -> ppCommand.isFinished() && finished.apply(swerve.getRealPose(), rawFinalPose);
             return new FunctionalCommand(
                     () -> {
                         pathTimer.restart();
@@ -308,19 +314,28 @@ public class AutoPathFollowers implements AllianceObserver {
                     },
                     ppCommand::execute,
                     ppCommand::end,
-                    () -> {
-                        Pose2d finalPose =
-                                AllianceFlip.flip(
-                                        rawFinalPose, isRed() ? Alliance.Red : Alliance.Blue);
-                        return ppCommand.isFinished()
-                                && PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
-                    },
+                    finishedSupplier,
                     swerve);
         } catch (Exception e) {
             DriverStation.reportError(
                     "Failed to load PathPlanner path: " + pathName, e.getStackTrace());
             return Commands.none();
         }
+    }
+
+    public Command followPathPlannerPath(String pathName) {
+
+        BiFunction<Pose2d, Pose2d, Boolean> finished =(finalPose, robotPose) -> {
+            return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
+        };
+        return followPathPlannerPath(pathName, finished, false);
+    }
+
+    public Command followMirriedPathPlannerPath(String pathName) {
+                BiFunction<Pose2d, Pose2d, Boolean> finished =(finalPose, robotPose) -> {
+            return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
+        };
+        return followPathPlannerPath(pathName, finished, true);
     }
 
     /** Run a full PathPlanner auto by name (loads from deploy/pathplanner/autos/). */

@@ -17,16 +17,17 @@ public class WristConstants {
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
-    public static final Angle kMaxAngle = Degree.of(70); // these need changing
+    public static final Angle kMaxAngle = Degree.of(120); // need to verify physically
     public static final Angle kMinAngle = Degree.of(0);
 
-    public static final Angle kInitialAngle = kMinAngle;
+    public static final Angle kInitialAngle = kMaxAngle;
 
     // 60 degrees per 4.4 rotations (this was full range of motion)
-    public static final double kNativeToDeg =
-            70 / 8.68; // this converts rotations to degrees so the units should be
+    public static final double kNativeToDeg = // this is wrong
+            120 / 8.68; // this converts rotations to degrees so the units should be
 
     // degrees/rotation
+
 
     // 48T to 16T, 50T to 10T, 50T to 18T
 

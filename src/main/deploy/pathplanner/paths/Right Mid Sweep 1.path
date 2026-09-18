@@ -64,16 +64,16 @@
     },
     {
       "anchor": {
-        "x": 5.943,
-        "y": 0.7292
+        "x": 5.979857346647646,
+        "y": 0.5868473609129818
       },
       "prevControl": {
-        "x": 6.120975961305462,
-        "y": 1.5495584073207853
+        "x": 6.1578333079531085,
+        "y": 1.4072057682337673
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right Mid Sweep 1 End"
     }
   ],
   "rotationTargets": [
