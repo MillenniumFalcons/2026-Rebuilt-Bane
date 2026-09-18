@@ -1,7 +1,9 @@
 package team3647.frc2026.constants;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 
@@ -34,12 +36,12 @@ public class RollerConstants {
         kMasterConfig.Slot0.kI = kI;
         kMasterConfig.Slot0.kD = kD;
 
-        kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         kMasterConfig.CurrentLimits.SupplyCurrentLimit = 60.0;
         kMasterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         kMaster.getConfigurator().apply(kMasterConfig);
-        kSlave.getConfigurator().apply(kMasterConfig);
+        kSlave.getConfigurator().apply(kMasterConfig.withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)));
     }
 }

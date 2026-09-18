@@ -23,8 +23,8 @@ public class GlobalConstants {
     }
 
     public class RollerIds {
-        public static final int kMasterId = 15;
-        public static final int kSlaveId = 16;
+        public static final int kMasterId = 15; //left roller
+        public static final int kSlaveId = 16; // right roller
     }
 
     public class IndexerIds {
