@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.EmptyControl;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
@@ -47,6 +48,8 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
             new VelocityTorqueCurrentFOC(0);
     private final MotionMagicVelocityTorqueCurrentFOC motionMagicFOCVelocity =
             new MotionMagicVelocityTorqueCurrentFOC(0);
+    private DynamicMotionMagicVoltage dynamicMotionMagicVoltage =
+            new DynamicMotionMagicVoltage(0, 0, 0);
     private final TorqueCurrentFOC torqueCurrentFOC = new TorqueCurrentFOC(0);
     public ControlRequest controlMode = new EmptyControl();
     private final List<Follower> followerOutputs = new ArrayList<>();
@@ -173,6 +176,15 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
         motionMagicDutyCycle.Slot = 0;
         motionMagicDutyCycle.FeedForward = feedforward / nominalVoltage;
         motionMagicDutyCycle.Position = position / positionConversion;
+    }
+
+    // DO NOT CALL REPEATEDLY
+    protected void setPositionDynamicMM(
+            double position, double feedforward, double vel, double accel) {
+        dynamicMotionMagicVoltage.Position = position;
+        dynamicMotionMagicVoltage.Velocity = vel;
+        dynamicMotionMagicVoltage.Acceleration = accel;
+        controlMode = dynamicMotionMagicVoltage;
     }
 
     /**

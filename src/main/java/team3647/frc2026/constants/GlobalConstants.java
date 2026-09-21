@@ -20,10 +20,11 @@ public class GlobalConstants {
 
     public class WristIds {
         public static final int kMasterId = 14;
+        public static final int kWristCancoderId = 25;
     }
 
     public class RollerIds {
-        public static final int kMasterId = 15; //left roller
+        public static final int kMasterId = 15; // left roller
         public static final int kSlaveId = 16; // right roller
     }
 

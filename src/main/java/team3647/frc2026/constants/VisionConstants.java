@@ -71,7 +71,8 @@ public class VisionConstants {
     // so basically i named these facing the intake but the front is actually the shooter
     // ---- Camera A (Left Camera) - 254-style flat config for VisionIOHardwareLimelight ----
     public static final String kLimelightATableName = "limelight-left";
-    public static final double kCameraAPitchDegrees = 12; //not sure if this is supposed to be 12 or -12
+    public static final double kCameraAPitchDegrees =
+            12; // not sure if this is supposed to be 12 or -12
     public static final double kCameraAPitchRads = Units.degreesToRadians(kCameraAPitchDegrees);
     public static final double kCameraAHeightOffGroundMeters = Inches.of(7.62).in(Meters);
     public static final double kRobotToCameraAForward = Inches.of(4.215).in(Meters);
@@ -84,7 +85,7 @@ public class VisionConstants {
 
     // ---- Camera B (Right Camera) ----
     public static final String kLimelightBTableName = "limelight-right";
-    public static final double kCameraBPitchDegrees = 12; 
+    public static final double kCameraBPitchDegrees = 12;
     public static final double kCameraBPitchRads = Units.degreesToRadians(kCameraBPitchDegrees);
     public static final double kCameraBHeightOffGroundMeters = Inches.of(7.62).in(Meters);
     public static final double kRobotToCameraBForward = Inches.of(4.215).in(Meters);

@@ -85,7 +85,6 @@ public class RobotContainer {
         configureAllianceObservers();
         configureSmartDashboardLogging();
 
-        wrist.setEncoderAngle(WristConstants.kInitialAngle);
         hood.setEncoderAngle(HoodConstants.kInitialAngle);
 
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
@@ -184,8 +183,8 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         autoDrive::rotAligned));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
-        hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
+        // shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
+        // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         rollers.setDefaultCommand(rollerCommands.kill());
         kicker.setDefaultCommand(kickerCommands.kill());
     }
@@ -200,7 +199,6 @@ public class RobotContainer {
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(rollerCommands.kill());
-        mainController.leftTrigger.onTrue(superstructure.jerkOff());
         mainController.buttonB.onTrue(superstructure.retractIntake());
         // shooting / feeding (pose-based: past trench = feed, otherwise = shoot)
         mainController.rightTrigger.whileTrue(
@@ -235,7 +233,6 @@ public class RobotContainer {
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
-        coController.leftTrigger.onTrue(superstructure.jerkOff());
         coController.dPadRight.onTrue(Commands.runOnce(() -> shooter.enableIdle()));
         coController.dPadLeft.onTrue(Commands.runOnce(() -> shooter.disableIdle()));
         coController.dPadUp.onTrue(
@@ -344,6 +341,7 @@ public class RobotContainer {
     public final Wrist wrist =
             new Wrist(
                     WristConstants.kMaster,
+                    WristConstants.cancoder,
                     WristConstants.kMaxAngle,
                     WristConstants.kMinAngle,
                     WristConstants.kNativeToDeg,

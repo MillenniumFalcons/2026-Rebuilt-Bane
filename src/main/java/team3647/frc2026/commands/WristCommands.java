@@ -14,11 +14,15 @@ import team3647.frc2026.subsystems.Wrist;
 
 public class WristCommands {
     public Command deploy() {
-        return setAngle(Degrees.of(70));
+        return setAngle(Degrees.of(0));
     }
 
     public Command retract() {
-        return setAngle(Degrees.of(0));
+        return setAngle(Degrees.of(100));
+    }
+
+    public Command stowSlow() {
+        return Commands.runOnce(() -> wrist.setAngleSlow(120), wrist);
     }
 
     public Command setAngle(Angle angle) {

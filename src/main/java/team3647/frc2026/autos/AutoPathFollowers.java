@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import java.io.IOException;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -293,7 +292,8 @@ public class AutoPathFollowers implements AllianceObserver {
         }
     }
 
-    public Command followPathPlannerPath(String pathName, BiFunction<Pose2d, Pose2d, Boolean> finished, boolean mirror) {
+    public Command followPathPlannerPath(
+            String pathName, BiFunction<Pose2d, Pose2d, Boolean> finished, boolean mirror) {
         try {
             PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
             if (mirror) {
@@ -305,8 +305,10 @@ public class AutoPathFollowers implements AllianceObserver {
             Pose2d rawFinalPose = new Pose2d(finalTranslation, finalRotation);
             Command ppCommand = AutoBuilder.followPath(path);
             Timer pathTimer = new Timer();
-            BooleanSupplier finishedSupplier = 
-                () -> ppCommand.isFinished() && finished.apply(swerve.getRealPose(), rawFinalPose);
+            BooleanSupplier finishedSupplier =
+                    () ->
+                            ppCommand.isFinished()
+                                    && finished.apply(swerve.getRealPose(), rawFinalPose);
             return new FunctionalCommand(
                     () -> {
                         pathTimer.restart();
@@ -325,16 +327,18 @@ public class AutoPathFollowers implements AllianceObserver {
 
     public Command followPathPlannerPath(String pathName) {
 
-        BiFunction<Pose2d, Pose2d, Boolean> finished =(finalPose, robotPose) -> {
-            return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
-        };
+        BiFunction<Pose2d, Pose2d, Boolean> finished =
+                (finalPose, robotPose) -> {
+                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
+                };
         return followPathPlannerPath(pathName, finished, false);
     }
 
     public Command followMirriedPathPlannerPath(String pathName) {
-                BiFunction<Pose2d, Pose2d, Boolean> finished =(finalPose, robotPose) -> {
-            return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
-        };
+        BiFunction<Pose2d, Pose2d, Boolean> finished =
+                (finalPose, robotPose) -> {
+                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
+                };
         return followPathPlannerPath(pathName, finished, true);
     }
 

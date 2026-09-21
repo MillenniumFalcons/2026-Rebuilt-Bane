@@ -166,7 +166,7 @@ public class Superstructure extends VirtualSubsystem {
         return Commands.parallel(
                 indexerCommands.index(),
                 kickerCommands.matchShooterSpeed(shotSpeed),
-                jerkOff(),
+                wristCommands.stowSlow(),
                 setFuelLoaded(false));
     }
 
@@ -176,7 +176,9 @@ public class Superstructure extends VirtualSubsystem {
     }
 
     public Command intake() {
-        return Commands.parallel(wristCommands.deploy(), rollerCommands.intake());
+        return Commands.parallel(
+                // wristCommands.deploy(),
+                rollerCommands.intake());
     }
 
     public Command intakeWithDelay() {
@@ -206,14 +208,6 @@ public class Superstructure extends VirtualSubsystem {
                 prepForInterp(),
                 hoodCommands.setInterpAngle(),
                 Commands.sequence(Commands.waitSeconds(4.0), index()));
-    }
-
-    public Command jerkOff() {
-        return Commands.parallel(
-                        Commands.sequence(
-                                deployIntake().withTimeout(0.5), retractIntake().withTimeout(0.5)),
-                        rollerCommands.intake().withTimeout(1))
-                .repeatedly();
     }
 
     public Command loadWhenDetected() {

@@ -21,14 +21,17 @@ public class RollerCommands {
     }
 
     public Command intake() {
-        return Commands.runEnd(
-                () ->
-                        rollers.setVelocityTorque(
-                                RollerConstants.kIntakeBaseSpeed
-                                        + intakeSpeedGain.get()
-                                                * Math.max(0, vxSupplier.getAsDouble())),
-                () -> rollers.setOpenLoop(0),
-                rollers);
+        return Commands.run(
+            ()->rollers.setOpenLoop(0.4), rollers
+        );
+        // return Commands.runEnd(
+        //         () ->
+        //                 rollers.setVelocityTorque(
+        //                         RollerConstants.kIntakeBaseSpeed
+        //                                 + intakeSpeedGain.get()
+        //                                         * Math.max(0, vxSupplier.getAsDouble())),
+        //         () -> rollers.setOpenLoop(0),
+        //         rollers);
     }
 
     public Command jerkOff() {
