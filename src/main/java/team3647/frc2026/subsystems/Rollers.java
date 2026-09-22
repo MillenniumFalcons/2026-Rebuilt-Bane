@@ -14,7 +14,6 @@ public class Rollers extends TalonFXSubsystem {
             double nominalVoltage,
             double kDt) {
         super(List.of(master, slave), velocityConversion, positionConversion, nominalVoltage, kDt);
-        
     }
 
     public void setOpenLoop(double percent) {

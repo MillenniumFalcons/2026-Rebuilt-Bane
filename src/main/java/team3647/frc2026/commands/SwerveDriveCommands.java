@@ -82,7 +82,8 @@ public class SwerveDriveCommands implements AllianceObserver {
                     double motionXComponent = xyMult * ySquared * invert * kMaxSpeedMps;
                     double motionYComponent = xyMult * -xSquared * invert * kMaxSpeedMps;
                     // swerve.generate(motionXComponent, motionYComponent, motionTurnComponent);
-                    swerve.driveFieldOriented(motionXComponent, motionYComponent, motionTurnComponent);
+                    swerve.driveFieldOriented(
+                            motionXComponent, motionYComponent, motionTurnComponent);
                 },
                 swerve);
     }

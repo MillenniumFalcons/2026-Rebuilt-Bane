@@ -11,7 +11,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.units.measure.Angle;
 
 public class WristConstants {
@@ -35,12 +34,12 @@ public class WristConstants {
     public static final Angle kInitialAngle = kMaxAngle;
 
     // With SensorToMechanismRatio=3 in FeedbackConfigs, TalonFX reports in mechanism rotations
-    public static final double kNativeToDeg = 360.0/41.67; 
+    public static final double kNativeToDeg = 360.0 / 41.67;
 
     public static final double kCancoderRatio = 3.0; // 3 cancoder rotations = 1 wrist rotation
 
     // degrees/second
-    public static final double maxVel = 300;
+    public static final double maxVel = 360;
     public static final double maxAccel = 600;
 
     public static final double moi = 1;
@@ -62,8 +61,8 @@ public class WristConstants {
 
         kMasterConfig.MotionMagic.MotionMagicCruiseVelocity = maxVel / kNativeToDeg;
         kMasterConfig.MotionMagic.MotionMagicAcceleration = maxAccel / kNativeToDeg;
-        kMasterConfig.MotionMagic.MotionMagicExpo_kA = kA*2;
-        kMasterConfig.MotionMagic.MotionMagicExpo_kV = kV*2;
+        kMasterConfig.MotionMagic.MotionMagicExpo_kA = kA * 2;
+        kMasterConfig.MotionMagic.MotionMagicExpo_kV = kV * 2;
 
         kMasterConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         kMasterConfig.Feedback.FeedbackRemoteSensorID = GlobalConstants.WristIds.kWristCancoderId;

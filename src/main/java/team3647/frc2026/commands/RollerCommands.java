@@ -3,7 +3,6 @@ package team3647.frc2026.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.DoubleSupplier;
-import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.subsystems.Rollers;
 import team3647.lib.tunables.TunableNumber;
 
@@ -21,9 +20,7 @@ public class RollerCommands {
     }
 
     public Command intake() {
-        return Commands.run(
-            ()->rollers.setOpenLoop(0.4), rollers
-        );
+        return Commands.run(() -> rollers.setOpenLoop(0.4), rollers);
         // return Commands.runEnd(
         //         () ->
         //                 rollers.setVelocityTorque(
