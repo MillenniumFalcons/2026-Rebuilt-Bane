@@ -5,6 +5,7 @@ import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
 
 public class GlobalConstants {
+
     public static final double kDt = 0.02;
 
     public static final double kFalconTicksPerRotation = 1;
@@ -44,10 +45,5 @@ public class GlobalConstants {
 
     public class HoodIds {
         public static final int kMasterId = 23;
-    }
-
-    public class ClimbIds {
-        public static final int kLeftId = 24;
-        public static final int kRightId = 25;
     }
 }

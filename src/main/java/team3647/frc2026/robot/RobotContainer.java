@@ -29,7 +29,6 @@ import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants;
-import team3647.frc2026.constants.VisionConstants;
 import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
@@ -48,9 +47,10 @@ import team3647.lib.inputs.Joysticks;
 import team3647.lib.team9442.AllianceChecker;
 import team3647.lib.team9442.AutoChooser;
 import team3647.lib.tunables.TunableNumber;
-import team3647.lib.vision.AprilTagLimelight;
-import team3647.lib.vision.NeuralDetectorLimelight;
-import team3647.lib.vision.VisionController;
+
+// import team3647.lib.vision.AprilTagLimelight;
+// import team3647.lib.vision.NeuralDetectorLimelight;
+// import team3647.lib.vision.VisionController;
 
 public class RobotContainer {
     public final Joysticks mainController = new Joysticks(0);
@@ -231,7 +231,7 @@ public class RobotContainer {
                     GlobalConstants.kNominalVoltage,
                     GlobalConstants.kDt);
 
-    NeuralDetectorLimelight detector = new NeuralDetectorLimelight(VisionConstants.kCrossbarCam);
+    // NeuralDetectorLimelight detector = new NeuralDetectorLimelight(VisionConstants.kCrossbarCam);
 
     public final SwerveDriveCommands swerveCommands =
             new SwerveDriveCommands(
@@ -274,7 +274,7 @@ public class RobotContainer {
                     AutoConstants.autoAlignXController,
                     AutoConstants.autoAlignYController,
                     AutoConstants.rotAlignController,
-                    detector,
+                    // detector,
                     targetingUtil);
 
     public final Superstructure superstructure =
@@ -291,36 +291,36 @@ public class RobotContainer {
     // private final LEDs leds = new LEDs(LEDConstants.m_candle, triggers);
 
     // cams (need to change transforms)
-    AprilTagLimelight rightCam =
-            new AprilTagLimelight(
-                    VisionConstants.kRightCam,
-                    VisionConstants.rightMount,
-                    swerve::getPigeonOrientation,
-                    VisionConstants.baseStdDevs,
-                    autoDrive::getAutoDriveEnabled);
+    //     AprilTagLimelight rightCam =
+    //             new AprilTagLimelight(
+    //                     VisionConstants.kRightCam,
+    //                     VisionConstants.rightMount,
+    //                     swerve::getPigeonOrientation,
+    //                     VisionConstants.baseStdDevs,
+    //                     autoDrive::getAutoDriveEnabled);
 
-    AprilTagLimelight leftCam =
-            new AprilTagLimelight(
-                    VisionConstants.kLeftCam,
-                    VisionConstants.leftMount,
-                    swerve::getPigeonOrientation,
-                    VisionConstants.baseStdDevs,
-                    autoDrive::getAutoDriveEnabled);
+    //     AprilTagLimelight leftCam =
+    //             new AprilTagLimelight(
+    //                     VisionConstants.kLeftCam,
+    //                     VisionConstants.leftMount,
+    //                     swerve::getPigeonOrientation,
+    //                     VisionConstants.baseStdDevs,
+    //                     autoDrive::getAutoDriveEnabled);
 
-    public final VisionController controller =
-            new VisionController(
-                    swerve::addVisionData,
-                    swerve::shouldAddData,
-                    swerve::resetPose,
-                    rightCam,
-                    leftCam);
+    //     public final VisionController controller =
+    //             new VisionController(
+    //                     swerve::addVisionData,
+    //                     swerve::shouldAddData,
+    //                     swerve::resetPose,
+    //                     rightCam,
+    //                     leftCam);
 
     public final AutoCommands autoCommands =
             new AutoCommands(
                     swerve,
                     superstructure,
                     autoDrive::getVelocities,
-                    detector::hasTarget,
+                    // detector::hasTarget,
                     autoDrive);
 
     public final AutoChooser autoChooser = new AutoChooser(autoCommands, swerve::setRobotPose);

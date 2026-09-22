@@ -17,16 +17,17 @@ import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.lib.team6328.VirtualSubsystem;
 import team3647.lib.team9442.AllianceObserver;
-import team3647.lib.vision.AprilTagCamera;
-import team3647.lib.vision.NeuralDetector;
+
+// import team3647.lib.vision.AprilTagCamera;
+// import team3647.lib.vision.NeuralDetector;
 
 public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     private final Supplier<Pose2d> odoPoseFunction;
     private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
 
-    private NeuralDetector detector;
-    private AprilTagCamera frontLL;
+    // private NeuralDetector detector;
+    // private AprilTagCamera frontLL;
 
     // these are for sim
     // public final PIDController xController;
@@ -58,7 +59,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             PIDController xController,
             PIDController yController,
             PIDController rotController,
-            NeuralDetector detector,
+            // NeuralDetector detector,
             TargetingUtil targeting) {
         super();
         this.odoPoseFunction = odoPoseFunction;

@@ -1,4 +1,5 @@
-package team3647.lib.vision;
+// package team3647.lib.vision;
 
-public record Orientation(
-        double yaw, double pitch, double roll, double yawRate, double pitchRate, double rollRate) {}
+// public record Orientation(
+//         double yaw, double pitch, double roll, double yawRate, double pitchRate, double rollRate)
+// {}
