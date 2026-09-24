@@ -9,8 +9,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import java.util.List;
-
-import team3647.frc2026.commands.WristCommands;
 import team3647.frc2026.constants.WristConstants;
 import team3647.lib.TalonFXSubsystem;
 
@@ -49,11 +47,12 @@ public class Wrist extends TalonFXSubsystem {
     }
 
     public void setAngleSlow(double angle) {
-        super.setPositionDynamicMM(angle, 0, 50, 50);
+        super.setPositionExpoVoltage(angle, 0, 1);
     }
 
     public void setSlowConfigs() {
         TalonFXConfiguration config = new TalonFXConfiguration();
+        configurator.refresh(config);
         config.MotionMagic.MotionMagicCruiseVelocity = 100;
         config.MotionMagic.MotionMagicAcceleration = 100;
         configurator.apply(config);
@@ -61,8 +60,11 @@ public class Wrist extends TalonFXSubsystem {
 
     public void setDefaultConfigs() {
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.MotionMagic.MotionMagicCruiseVelocity = WristConstants.maxVel/WristConstants.kNativeToDeg;
-        config.MotionMagic.MotionMagicAcceleration = WristConstants.maxAccel/WristConstants.kNativeToDeg;
+        configurator.refresh(config);
+        config.MotionMagic.MotionMagicCruiseVelocity =
+                WristConstants.maxVel / WristConstants.kNativeToDeg;
+        config.MotionMagic.MotionMagicAcceleration =
+                WristConstants.maxAccel / WristConstants.kNativeToDeg;
         configurator.apply(config);
     }
 

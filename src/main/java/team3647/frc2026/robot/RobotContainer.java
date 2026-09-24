@@ -183,8 +183,9 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         autoDrive::rotAligned));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
+        shooter.setDefaultCommand(shooterCommands.kill());
         // shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
-        // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
+        hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         rollers.setDefaultCommand(rollerCommands.kill());
         kicker.setDefaultCommand(kickerCommands.kill());
     }

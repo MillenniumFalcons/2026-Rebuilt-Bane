@@ -9,7 +9,7 @@ import team3647.lib.tunables.TunableNumber;
 public class RollerCommands {
     final Rollers rollers;
     private DoubleSupplier vxSupplier = () -> 0.0;
-    TunableNumber intakeSpeedGain = new TunableNumber("intake speed gain", 4);
+    //TunableNumber intakeSpeedGain = new TunableNumber("intake speed gain", 4);
 
     public RollerCommands(Rollers rollers) {
         this.rollers = rollers;
@@ -20,7 +20,7 @@ public class RollerCommands {
     }
 
     public Command intake() {
-        return Commands.run(() -> rollers.setOpenLoop(0.4), rollers);
+        return Commands.run(() -> rollers.setOpenLoop(0.5), rollers);
         // return Commands.runEnd(
         //         () ->
         //                 rollers.setVelocityTorque(

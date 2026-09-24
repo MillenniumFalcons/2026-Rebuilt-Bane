@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -33,40 +34,48 @@ public class WristConstants {
 
     public static final Angle kInitialAngle = kMaxAngle;
 
-    // With SensorToMechanismRatio=3 in FeedbackConfigs, TalonFX reports in mechanism rotations
-    public static final double kNativeToDeg = 360.0 / 41.67;
-
+    public static final double kGearRatio = 41.67; // total rotor-to-wrist gear reduction
     public static final double kCancoderRatio = 3.0; // 3 cancoder rotations = 1 wrist rotation
+
+    // Native units are wrist rotations (mechanism rotations after SensorToMechanismRatio)
+    public static final double kNativeToDeg = 360.0;
 
     // degrees/second
     public static final double maxVel = 360;
-    public static final double maxAccel = 600;
+    public static final double maxAccel = 480;
 
-    public static final double moi = 1;
-    public static final double kV = 0.02;
-    public static final double kA =
-            0.03 * kV * moi * kNativeToDeg; // moment of inertia around 1 kg m^2
-    public static final double kG = kA * 9.81 * 0.25; // 0.25 meters from pivot to center of mass
+    // All gains are in wrist-rotation units (native = wrist rotations)
+    public static final double kV = 1.5;   // V / (wrist rot/s)
+    public static final double kA = 0.05;  // V / (wrist rot/s²)
+    public static final double kG = 0.4;   // V to hold wrist horizontal against gravity
 
     // 48T to 16T, 50T to 10T, 50T to 18T
     // 30T to 10T, 50T to 18T, 50T to 10T
 
     static {
-        kMasterConfig.Slot0.withKP(0); // change these values
-        kMasterConfig.Slot0.withKI(0);
-        kMasterConfig.Slot0.withKD(0);
-        kMasterConfig.Slot0.withKV(kV);
-        kMasterConfig.Slot0.withKA(kA);
-        kMasterConfig.Slot0.withKG(kG);
+        kMasterConfig.Slot0.kP = 80;
+        kMasterConfig.Slot0.kI = 0;
+        kMasterConfig.Slot0.kD = 8;
+        kMasterConfig.Slot0.kV = kV;
+        kMasterConfig.Slot0.kA = kA;
+        kMasterConfig.Slot0.kG = kG;
+        kMasterConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+
+        kMasterConfig.Slot1.kP = 30;
+        kMasterConfig.Slot1.kD = 4;
+        kMasterConfig.Slot1.kV = kV;
+        kMasterConfig.Slot1.kA = kA;
+        kMasterConfig.Slot1.kG = kG;
+        kMasterConfig.Slot1.GravityType = GravityTypeValue.Arm_Cosine;
 
         kMasterConfig.MotionMagic.MotionMagicCruiseVelocity = maxVel / kNativeToDeg;
         kMasterConfig.MotionMagic.MotionMagicAcceleration = maxAccel / kNativeToDeg;
-        kMasterConfig.MotionMagic.MotionMagicExpo_kA = kA * 2;
-        kMasterConfig.MotionMagic.MotionMagicExpo_kV = kV * 2;
+        kMasterConfig.MotionMagic.MotionMagicExpo_kV = kV;
+        kMasterConfig.MotionMagic.MotionMagicExpo_kA = kA;
 
         kMasterConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         kMasterConfig.Feedback.FeedbackRemoteSensorID = GlobalConstants.WristIds.kWristCancoderId;
-        kMasterConfig.Feedback.RotorToSensorRatio = kNativeToDeg / kCancoderRatio;
+        kMasterConfig.Feedback.RotorToSensorRatio = kGearRatio / kCancoderRatio;
         kMasterConfig.Feedback.SensorToMechanismRatio = kCancoderRatio;
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -85,8 +94,9 @@ public class WristConstants {
 
         kMaster.getConfigurator().apply(kMasterConfig);
 
-        kCancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        kCancoderConfig.MagnetSensor.MagnetOffset = 0.0; // need to change
+        kCancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        kCancoderConfig.MagnetSensor.MagnetOffset = -0.0235; // need to change
+        kCancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
         cancoder.getConfigurator().apply(kCancoderConfig);
     }
 }
