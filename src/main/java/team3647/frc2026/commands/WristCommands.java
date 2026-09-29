@@ -20,11 +20,11 @@ public class WristCommands {
     }
 
     public Command retract() {
-        return setAngle(Degrees.of(130));
+        return setAngle(WristConstants.kMaxAngle);
     }
 
     public Command stowSlow() {
-        return Commands.run(() ->wrist.setAngleSlow(130.0), wrist);
+        return Commands.run(() ->wrist.setAngleSlow(137), wrist);
     }
 
     public Command setAngle(Angle angle) {

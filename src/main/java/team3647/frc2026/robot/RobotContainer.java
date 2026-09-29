@@ -85,6 +85,8 @@ public class RobotContainer {
         configureAllianceObservers();
         configureSmartDashboardLogging();
 
+        wrist.initCancoderPos();
+
         hood.setEncoderAngle(HoodConstants.kInitialAngle);
 
         swerve.setRobotPose(new Pose2d(2, 2, Rotation2d.k180deg));
@@ -98,7 +100,6 @@ public class RobotContainer {
                         wrist,
                         rollers,
                         kicker,
-                        // climb,
                         printer,
                         visionSubsystem);
     }
@@ -192,7 +193,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         // preload balls, commented out for now, need to trigger after intake
-        // superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
+        superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
         // mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
         mainController.buttonA.onTrue(shooterCommands.kill().alongWith(kickerCommands.reverse()));
         // interp

@@ -166,7 +166,7 @@ public class Superstructure extends VirtualSubsystem {
         return Commands.parallel(
                 indexerCommands.index(),
                 kickerCommands.matchShooterSpeed(shotSpeed),
-                Commands.waitSeconds(1).andThen(wristCommands.stowSlow()),
+                Commands.waitSeconds(0).andThen(wristCommands.retract()),
                 setFuelLoaded(false));
     }
 
@@ -217,6 +217,6 @@ public class Superstructure extends VirtualSubsystem {
                         indexerCommands.index(),
                         Commands.waitUntil(kickerCurrent)),
                 Commands.waitSeconds(2.0),
-                kickerCommands.spinRotations(0.54));
+                kickerCommands.spinRotations(0.6));
     }
 }

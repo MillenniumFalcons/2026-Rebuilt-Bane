@@ -29,7 +29,7 @@ public class WristConstants {
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
-    public static final Angle kMaxAngle = Degree.of(120); // need to verify physically
+    public static final Angle kMaxAngle = Degree.of(137); // need to verify physically
     public static final Angle kMinAngle = Degree.of(0);
 
     public static final Angle kInitialAngle = kMaxAngle;
@@ -95,7 +95,7 @@ public class WristConstants {
         kMaster.getConfigurator().apply(kMasterConfig);
 
         kCancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        kCancoderConfig.MagnetSensor.MagnetOffset = -0.0235; // need to change
+        kCancoderConfig.MagnetSensor.MagnetOffset = -1.0315; // need to change
         kCancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
         cancoder.getConfigurator().apply(kCancoderConfig);
     }

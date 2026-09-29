@@ -50,23 +50,23 @@ public class Wrist extends TalonFXSubsystem {
         super.setPositionExpoVoltage(angle, 0, 1);
     }
 
-    public void setSlowConfigs() {
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        configurator.refresh(config);
-        config.MotionMagic.MotionMagicCruiseVelocity = 100;
-        config.MotionMagic.MotionMagicAcceleration = 100;
-        configurator.apply(config);
-    }
+    // public void setSlowConfigs() {
+    //     TalonFXConfiguration config = new TalonFXConfiguration();
+    //     configurator.refresh(config);
+    //     config.MotionMagic.MotionMagicCruiseVelocity = 100;
+    //     config.MotionMagic.MotionMagicAcceleration = 100;
+    //     configurator.apply(config);
+    // }
 
-    public void setDefaultConfigs() {
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        configurator.refresh(config);
-        config.MotionMagic.MotionMagicCruiseVelocity =
-                WristConstants.maxVel / WristConstants.kNativeToDeg;
-        config.MotionMagic.MotionMagicAcceleration =
-                WristConstants.maxAccel / WristConstants.kNativeToDeg;
-        configurator.apply(config);
-    }
+    // public void setDefaultConfigs() {
+    //     TalonFXConfiguration config = new TalonFXConfiguration();
+    //     configurator.refresh(config);
+    //     config.MotionMagic.MotionMagicCruiseVelocity =
+    //             WristConstants.maxVel / WristConstants.kNativeToDeg;
+    //     config.MotionMagic.MotionMagicAcceleration =
+    //             WristConstants.maxAccel / WristConstants.kNativeToDeg;
+    //     configurator.apply(config);
+    // }
 
     public Angle getAngle() {
         return Degree.of(getPosition());
@@ -82,6 +82,10 @@ public class Wrist extends TalonFXSubsystem {
 
     public void setEncoderAngle(double angleRads) {
         cancoder.setPosition(Radian.of(angleRads));
+    }
+
+    public void initCancoderPos() {
+        cancoder.setPosition(cancoder.getAbsolutePosition().getValueAsDouble()+1);
     }
 
     public double getAngleRads() {
