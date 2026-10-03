@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import team3647.lib.tunables.TunableSlotConfigs;
 
 public class ShooterConstants {
     public static final TalonFX kMaster =
@@ -71,10 +72,10 @@ public class ShooterConstants {
         shootSpeedMap.put(1.5, 8.5 + tempOffset);
         shootSpeedMap.put(2.0, 8.5 + tempOffset);
         shootSpeedMap.put(2.5, 9.0 + tempOffset);
-        shootSpeedMap.put(3.0, 10.0 + tempOffset);
-        shootSpeedMap.put(3.5, 10.8 + tempOffset);
-        shootSpeedMap.put(4.0, 11.5 + tempOffset);
-        shootSpeedMap.put(4.5, 12.5 + tempOffset); // made up
+        shootSpeedMap.put(3.0, 9.5 + tempOffset);
+        shootSpeedMap.put(3.5, 9.75 + tempOffset);
+        shootSpeedMap.put(4.0, 10.5 + tempOffset);
+        shootSpeedMap.put(4.5, 11.25 + tempOffset); // made up
         shootSpeedMap.put(5.0, 13.5 + tempOffset); // made up
         shootSpeedMap.put(8.0, 14.5 + tempOffset); // made up
         shootSpeedMap.put(14.0, 14.5);
@@ -129,5 +130,7 @@ public class ShooterConstants {
 
         // final TalonFXConfigurator kSlaveConfigurator = kSlave.getConfigurator();
         // kSlaveConfigurator.apply(kSlaveConfig);
+
+        TunableSlotConfigs tunable = new TunableSlotConfigs(kMaster, "shooter", kMasterConfig.Slot0);
     }
 }

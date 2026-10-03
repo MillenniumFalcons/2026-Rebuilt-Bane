@@ -240,6 +240,21 @@ public class AutoPathFollowers implements AllianceObserver {
         return AllianceFlip.flip(startPose, color);
     }
 
+    public Pose2d getInitialPPMirrored(String pathName, Alliance color) {
+        Pose2d startPose;
+        try {
+            startPose =
+                    PathPlannerPath.fromPathFile(pathName)
+                            .mirrorPath()
+                            .getStartingHolonomicPose()
+                            .get();
+        } catch (Exception e) {
+            startPose = new Pose2d();
+            e.printStackTrace();
+        }
+        return AllianceFlip.flip(startPose, color);
+    }
+
     @Override
     public void onAllianceFound(Alliance color) {
 

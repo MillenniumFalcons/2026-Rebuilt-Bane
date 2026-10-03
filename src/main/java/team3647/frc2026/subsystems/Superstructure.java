@@ -17,6 +17,7 @@ import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.WristCommands;
 import team3647.frc2026.constants.ShooterConstants;
+import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.RobotTracker;
 import team3647.lib.team6328.VirtualSubsystem;
 
@@ -99,7 +100,8 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command feed() {
         return Commands.sequence(
-                Commands.waitUntil(readyToShoot), Commands.parallel(deployIntake(), reverse()));
+                Commands.waitUntil(readyToShoot), 
+                Commands.parallel(deployIntake(), reverse()));
     }
 
     public void logShooting() {
@@ -140,7 +142,8 @@ public class Superstructure extends VirtualSubsystem {
     }
 
     public Command prep() {
-        return shooterCommands.setVelocity(shotSpeed);
+        return shooterCommands.setVelocity(shotSpeed)
+            .alongWith(hoodCommands.setAngleDeg(hoodAngle::getAsDouble));
     }
 
     public Command prepKids() {
@@ -166,7 +169,6 @@ public class Superstructure extends VirtualSubsystem {
         return Commands.parallel(
                 indexerCommands.index(),
                 kickerCommands.matchShooterSpeed(shotSpeed),
-                Commands.waitSeconds(0).andThen(wristCommands.retract()),
                 setFuelLoaded(false));
     }
 
@@ -178,12 +180,13 @@ public class Superstructure extends VirtualSubsystem {
     public Command intake() {
         return Commands.parallel(
                 wristCommands.deploy(),
-                rollerCommands.intake());
+                rollerCommands.intake(),
+                indexerCommands.index());
     }
 
     public Command intakeWithDelay() {
         return Commands.sequence(
-                Commands.waitSeconds(0.5),
+                Commands.waitSeconds(0.25),
                 Commands.parallel(wristCommands.deploy(), rollerCommands.intake()));
     }
 
@@ -207,16 +210,15 @@ public class Superstructure extends VirtualSubsystem {
         return Commands.parallel(
                 prepForInterp(),
                 hoodCommands.setInterpAngle(),
-                Commands.sequence(Commands.waitSeconds(4.0), index()));
+                Commands.sequence(Commands.waitSeconds(3.0), index()));
     }
 
     public Command loadWhenDetected() {
         return Commands.sequence(
                 Commands.race(
                         kickerCommands.preload(),
-                        indexerCommands.index(),
                         Commands.waitUntil(kickerCurrent)),
                 Commands.waitSeconds(2.0),
-                kickerCommands.spinRotations(0.6));
+                kickerCommands.spinRotations(0.5));
     }
 }

@@ -29,6 +29,42 @@ public class AutoCommands extends AutoPathFollowers {
 
     double spinUpSpeed = 10.0;
 
+    public Command shoot(double time) {
+        return Commands.deadline(
+                Commands.waitSeconds(time), autoAlign(), superstructure.shoot());
+    }
+
+    public Command sweepAndShoot(String pathname, double shootTime) {
+        return Commands.sequence(
+                Commands.deadline(
+                        followPathPlannerPath(pathname),
+                        superstructure.intakeWithDelay()),
+                shoot(shootTime)
+        );
+    }
+
+    public Command sweepaShootMirror(String pathname, double shootTime) {
+        return Commands.sequence(
+                Commands.deadline(
+                        followMirroredPathPlannerPath(pathname),
+                        superstructure.intakeWithDelay()),
+                shoot(shootTime)
+        );
+    }
+    public Command rightMidBumpPP() {
+        return Commands.sequence(
+                sweepAndShoot("Right Mid Bump 1", 2.5),
+                sweepAndShoot("Right Mid Bump 2", 10)
+        );
+    }
+
+    public Command leftMidBumpPP() {
+        return Commands.sequence(
+                sweepaShootMirror("Right Mid Bump 1", 2.5),
+                sweepaShootMirror("Right Mid Bump 2", 10)
+        );
+    }
+
     public Command leftMidRushPathPlanner() {
         return Commands.sequence(
                 Commands.deadline(
@@ -145,6 +181,8 @@ public class AutoCommands extends AutoPathFollowers {
     public final AutoMode rightMidRushBluePP;
     public final AutoMode rightMidRushRedPP;
 
+    public final AutoMode rightMidBump;
+
     public final AutoMode depotBlue;
     public final AutoMode depotRed;
 
@@ -165,12 +203,12 @@ public class AutoCommands extends AutoPathFollowers {
         this.leftMidRushBluePP =
                 new AutoMode(
                         leftMidRushPathPlanner(),
-                        getInitialPP("Left Mid Sweep", Alliance.Blue),
+                        getInitialPPMirrored("Right Mid Sweep 1", Alliance.Blue),
                         "Left Mid Sweep");
         this.leftMidRushRedPP =
                 new AutoMode(
                         leftMidRushPathPlanner(),
-                        getInitialPP("Left Mid Sweep", Alliance.Red),
+                        getInitialPPMirrored("Right Mid Sweep 1", Alliance.Red),
                         "Left Mid Sweep");
 
         this.rightMidRushBluePP =
@@ -183,6 +221,12 @@ public class AutoCommands extends AutoPathFollowers {
                         rightMidRushPathPlanner(),
                         getInitialPP("Right Mid Sweep", Alliance.Red),
                         "Right Mid Sweep");
+
+        this.rightMidBump = 
+                new AutoMode(
+                        rightMidBumpPP(), 
+                        getInitialPP("Right Mid Bump 1", Alliance.Red),
+                        "Right Mid Bump");
 
         this.depotBlue = new AutoMode(depot(), getInitialPP("Depot", Alliance.Blue), "Depot");
         this.depotRed = new AutoMode(depot(), getInitialPP("Depot", Alliance.Red), "Depot");

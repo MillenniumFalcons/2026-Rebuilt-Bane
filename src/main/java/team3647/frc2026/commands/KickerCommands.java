@@ -10,7 +10,7 @@ import team3647.lib.tunables.TunableDouble;
 public class KickerCommands {
     Kicker kicker;
     double setpoint;
-    Double speed = 4.0;
+    Double speed = 3.75; // need to make kicker slower when close
     TunableDouble tunable = new TunableDouble("kicker speed", speed);
 
     public KickerCommands(Kicker kicker) {

@@ -186,14 +186,15 @@ public class RobotContainer {
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         shooter.setDefaultCommand(shooterCommands.kill());
         // shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
-        hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
+        hood.setDefaultCommand(hoodCommands.setAngle(HoodConstants.kMinAngle));
+        //hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         rollers.setDefaultCommand(rollerCommands.kill());
         kicker.setDefaultCommand(kickerCommands.kill());
     }
 
     private void configureBindings() {
         // preload balls, commented out for now, need to trigger after intake
-        superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
+        //superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
         // mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
         mainController.buttonA.onTrue(shooterCommands.kill().alongWith(kickerCommands.reverse()));
         // interp
@@ -201,7 +202,7 @@ public class RobotContainer {
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(rollerCommands.kill());
-        mainController.buttonB.onTrue(superstructure.retractIntake());
+        mainController.buttonB.onTrue(wristCommands.retract());
         // shooting / feeding (pose-based: past trench = feed, otherwise = shoot)
         mainController.rightTrigger.whileTrue(
                 Commands.run(() -> autoDrive.updateDriveModeByPose())
@@ -211,10 +212,12 @@ public class RobotContainer {
         // Manual feed
         mainController.buttonY.whileTrue(superstructure.shootInstantly());
         // feed out of intake
-        mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
+
+        //mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.rightBumper.whileTrue(superstructure.feed());
-        mainController.rightBumper.onTrue(autoDrive.enableAutoDrive());
-        mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
+        //mainController.rightBumper.onTrue(autoDrive.enableAutoDrive());
+        //mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
+
         // intake autoalign facing other wall — auto-disables once rotation aligned
         mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.INTAKE));
         mainController.dPadLeft.whileTrue(superstructure.intake());

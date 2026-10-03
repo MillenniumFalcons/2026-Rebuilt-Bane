@@ -55,7 +55,7 @@ public class WristConstants {
     static {
         kMasterConfig.Slot0.kP = 80;
         kMasterConfig.Slot0.kI = 0;
-        kMasterConfig.Slot0.kD = 8;
+        kMasterConfig.Slot0.kD = 6;
         kMasterConfig.Slot0.kV = kV;
         kMasterConfig.Slot0.kA = kA;
         kMasterConfig.Slot0.kG = kG;
