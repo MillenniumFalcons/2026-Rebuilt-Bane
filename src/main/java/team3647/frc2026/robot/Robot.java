@@ -22,8 +22,10 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import team3647.frc2026.constants.VisionConstants;
 import team3647.lib.ModifiedSignalLogger;
 import team3647.lib.team6328.VirtualSubsystem;
+import team3647.lib.vision.LimelightHelpers;
 
 public class Robot extends LoggedRobot {
     private Command m_autonomousCommand;
@@ -102,6 +104,9 @@ public class Robot extends LoggedRobot {
         m_robotContainer.visionIO.setIMUMode(1);
         SignalLogger.stop();
         ModifiedSignalLogger.stop();
+        LimelightHelpers.SetThrottle(VisionConstants.kLimelightATableName, 100);
+        LimelightHelpers.SetThrottle(VisionConstants.kLimelightBTableName, 100);
+        LimelightHelpers.SetThrottle(VisionConstants.kLimelightCTableName, 100);
     }
 
     @Override
@@ -110,7 +115,11 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void disabledExit() {}
+    public void disabledExit() {
+        LimelightHelpers.cancelThrottle(VisionConstants.kLimelightATableName);
+        LimelightHelpers.cancelThrottle(VisionConstants.kLimelightBTableName);
+        LimelightHelpers.cancelThrottle(VisionConstants.kLimelightCTableName);
+    }
 
     @Override
     public void autonomousInit() {

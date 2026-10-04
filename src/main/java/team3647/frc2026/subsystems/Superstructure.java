@@ -100,14 +100,13 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command feed() {
         return Commands.sequence(
-                Commands.waitUntil(readyToShoot), 
+                //Commands.waitUntil(readyToShoot), 
                 Commands.parallel(deployIntake(), reverse()));
     }
 
     public void logShooting() {
-        Logger.recordOutput(
-                "Shooting/ShotSpeed/wantedshotspeed",
-                Math.round(shotSpeed.getAsDouble() * 100.0) / 100.0);
+        double wantedSpeed = Math.round(shotSpeed.getAsDouble() * 100.0) / 100.0;
+        Logger.recordOutput("Shooting/ShotSpeed/wantedshotspeed", wantedSpeed);
         Logger.recordOutput(
                 "Shooting/ShotSpeed/shootervelocity",
                 Math.round(shooter.getVelocity() * 100.0) / 100.0);
@@ -186,7 +185,7 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command intakeWithDelay() {
         return Commands.sequence(
-                Commands.waitSeconds(0.25),
+                Commands.waitSeconds(0.1),
                 Commands.parallel(wristCommands.deploy(), rollerCommands.intake()));
     }
 

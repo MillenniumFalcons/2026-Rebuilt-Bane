@@ -25,7 +25,7 @@ public class TargetingUtil {
     private double offset = 0.0;
 
     // Constant flywheel speed (Matches the 15 m/s or similar logic in RobotTracker)
-    private static double kShootSpeed = 15.0;
+    private static double kShootSpeed = 10.0;
 
     // =========================================================================
     // Lookup Maps

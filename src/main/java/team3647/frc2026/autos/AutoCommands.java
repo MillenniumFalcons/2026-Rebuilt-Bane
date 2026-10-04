@@ -13,6 +13,7 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import team3647.frc2026.constants.ShooterConstants;
+import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.util.AutoDrive;
@@ -38,30 +39,32 @@ public class AutoCommands extends AutoPathFollowers {
         return Commands.sequence(
                 Commands.deadline(
                         followPathPlannerPath(pathname),
-                        superstructure.intakeWithDelay()),
+                        superstructure.intakeWithDelay(),
+                        superstructure.hoodCommands.setAngle(WristConstants.kMinAngle)),
                 shoot(shootTime)
         );
     }
 
-    public Command sweepaShootMirror(String pathname, double shootTime) {
+    public Command sweepShootMirror(String pathname, double shootTime) {
         return Commands.sequence(
                 Commands.deadline(
                         followMirroredPathPlannerPath(pathname),
-                        superstructure.intakeWithDelay()),
+                        superstructure.intakeWithDelay(),
+                        superstructure.hoodCommands.setAngle(WristConstants.kMinAngle)),
                 shoot(shootTime)
         );
     }
     public Command rightMidBumpPP() {
         return Commands.sequence(
-                sweepAndShoot("Right Mid Bump 1", 2.5),
+                sweepAndShoot("Right Mid Bump 1", 4),
                 sweepAndShoot("Right Mid Bump 2", 10)
         );
     }
 
     public Command leftMidBumpPP() {
         return Commands.sequence(
-                sweepaShootMirror("Right Mid Bump 1", 2.5),
-                sweepaShootMirror("Right Mid Bump 2", 10)
+                sweepShootMirror("Right Mid Bump 1", 2.5),
+                sweepShootMirror("Right Mid Bump 2", 10)
         );
     }
 
@@ -182,6 +185,7 @@ public class AutoCommands extends AutoPathFollowers {
     public final AutoMode rightMidRushRedPP;
 
     public final AutoMode rightMidBump;
+    public final AutoMode leftMidBump;
 
     public final AutoMode depotBlue;
     public final AutoMode depotRed;
@@ -228,6 +232,12 @@ public class AutoCommands extends AutoPathFollowers {
                         getInitialPP("Right Mid Bump 1", Alliance.Red),
                         "Right Mid Bump");
 
+        this.leftMidBump = 
+                new AutoMode(
+                        leftMidBumpPP(),
+                        getInitialPPMirrored(("Right Mid Bump 1"), Alliance.Red), 
+                        "Left Mid Bump");
+
         this.depotBlue = new AutoMode(depot(), getInitialPP("Depot", Alliance.Blue), "Depot");
         this.depotRed = new AutoMode(depot(), getInitialPP("Depot", Alliance.Red), "Depot");
 
@@ -242,7 +252,7 @@ public class AutoCommands extends AutoPathFollowers {
 
         blueAutosList =
                 List.of(blueEmpty, leftMidRushBluePP, rightMidRushBluePP, preloadBlue, depotBlue);
-        redAutosList = List.of(redEmpty, leftMidRushRedPP, rightMidRushRedPP, preloadRed, depotRed);
+        redAutosList = List.of(redEmpty, leftMidRushRedPP, rightMidRushRedPP, rightMidBump, leftMidBump, preloadRed, depotRed);
     }
 
     public BooleanSupplier hasTarget() {

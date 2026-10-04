@@ -104,7 +104,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                                                         - angleToTarget.getDegrees())
                                         * 100.0)
                         / 100.0);
-        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 5.0;
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 3;
     }
 
     public double getHoodAngle() {

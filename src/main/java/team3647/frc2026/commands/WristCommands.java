@@ -24,7 +24,7 @@ public class WristCommands {
     }
 
     public Command stowSlow() {
-        return Commands.run(() ->wrist.setAngleSlow(137), wrist);
+        return Commands.run(() ->wrist.setAngleSlow(129), wrist);
     }
 
     public Command setAngle(Angle angle) {

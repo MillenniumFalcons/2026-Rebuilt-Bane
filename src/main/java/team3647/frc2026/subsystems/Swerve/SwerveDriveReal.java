@@ -602,8 +602,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
 
     @Override
     public Pose2d getRealPose() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRealPose'");
+        return periodicIO.pose;
     }
 
     @Override

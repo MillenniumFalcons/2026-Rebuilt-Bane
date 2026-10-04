@@ -186,6 +186,7 @@ public class AutoPathFollowers implements AllianceObserver {
             Logger.recordOutput("AutoController/referenceX", referenceState.getPose().getX());
             Logger.recordOutput("AutoController/yFF", yFF);
             Logger.recordOutput("AutoController/referenceY", referenceState.getPose().getY());
+            Logger.recordOutput("Auto/ReferencePose", referenceState.getPose());
 
             return ChassisSpeeds.fromFieldRelativeSpeeds(
                     xFF + xFeedback,
@@ -275,38 +276,6 @@ public class AutoPathFollowers implements AllianceObserver {
     // PathPlanner path following
     // =========================================================================
 
-    /** Follow a PathPlanner path by name, mirrored across the field center Y axis. */
-    public Command followMirroredPathPlannerPath(String pathName) {
-        try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName).mirrorPath();
-            Translation2d finalTranslation =
-                    path.getPathPoses().get(path.getPathPoses().size() - 1).getTranslation();
-            Rotation2d finalRotation = path.getGoalEndState().rotation();
-            Pose2d rawFinalPose = new Pose2d(finalTranslation, finalRotation);
-            Command ppCommand = AutoBuilder.followPath(path);
-            Timer pathTimer = new Timer();
-            return new FunctionalCommand(
-                    () -> {
-                        pathTimer.restart();
-                        ppCommand.initialize();
-                    },
-                    ppCommand::execute,
-                    ppCommand::end,
-                    () -> {
-                        Pose2d finalPose =
-                                AllianceFlip.flip(
-                                        rawFinalPose, isRed() ? Alliance.Red : Alliance.Blue);
-                        return ppCommand.isFinished()
-                                && PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
-                    },
-                    swerve);
-        } catch (Exception e) {
-            DriverStation.reportError(
-                    "Failed to load PathPlanner path: " + pathName, e.getStackTrace());
-            return Commands.none();
-        }
-    }
-
     public Command followPathPlannerPath(
             String pathName, BiFunction<Pose2d, Pose2d, Boolean> finished, boolean mirror) {
         try {
@@ -344,15 +313,15 @@ public class AutoPathFollowers implements AllianceObserver {
 
         BiFunction<Pose2d, Pose2d, Boolean> finished =
                 (finalPose, robotPose) -> {
-                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
+                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 4);
                 };
         return followPathPlannerPath(pathName, finished, false);
     }
 
-    public Command followMirriedPathPlannerPath(String pathName) {
+    public Command followMirroredPathPlannerPath(String pathName) {
         BiFunction<Pose2d, Pose2d, Boolean> finished =
                 (finalPose, robotPose) -> {
-                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.2, 4);
+                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 4);
                 };
         return followPathPlannerPath(pathName, finished, true);
     }

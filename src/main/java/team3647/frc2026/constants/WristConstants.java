@@ -29,7 +29,7 @@ public class WristConstants {
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
-    public static final Angle kMaxAngle = Degree.of(137); // need to verify physically
+    public static final Angle kMaxAngle = Degree.of(129); 
     public static final Angle kMinAngle = Degree.of(0);
 
     public static final Angle kInitialAngle = kMaxAngle;
@@ -41,21 +41,21 @@ public class WristConstants {
     public static final double kNativeToDeg = 360.0;
 
     // degrees/second
-    public static final double maxVel = 360;
-    public static final double maxAccel = 480;
+    public static final double maxVel = 540;
+    public static final double maxAccel = 640;
 
     // All gains are in wrist-rotation units (native = wrist rotations)
-    public static final double kV = 1.5;   // V / (wrist rot/s)
-    public static final double kA = 0.05;  // V / (wrist rot/s²)
+    public static final double kV = 4.0;   // V / (wrist rot/s)
+    public static final double kA = 1.5;  // V / (wrist rot/s²)
     public static final double kG = 0.4;   // V to hold wrist horizontal against gravity
 
     // 48T to 16T, 50T to 10T, 50T to 18T
     // 30T to 10T, 50T to 18T, 50T to 10T
 
     static {
-        kMasterConfig.Slot0.kP = 80;
+        kMasterConfig.Slot0.kP = 160;
         kMasterConfig.Slot0.kI = 0;
-        kMasterConfig.Slot0.kD = 6;
+        kMasterConfig.Slot0.kD = 8;
         kMasterConfig.Slot0.kV = kV;
         kMasterConfig.Slot0.kA = kA;
         kMasterConfig.Slot0.kG = kG;
@@ -70,8 +70,8 @@ public class WristConstants {
 
         kMasterConfig.MotionMagic.MotionMagicCruiseVelocity = maxVel / kNativeToDeg;
         kMasterConfig.MotionMagic.MotionMagicAcceleration = maxAccel / kNativeToDeg;
-        kMasterConfig.MotionMagic.MotionMagicExpo_kV = kV;
-        kMasterConfig.MotionMagic.MotionMagicExpo_kA = kA;
+        kMasterConfig.MotionMagic.MotionMagicExpo_kV = 2.0;
+        kMasterConfig.MotionMagic.MotionMagicExpo_kA = 0.1;
 
         kMasterConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         kMasterConfig.Feedback.FeedbackRemoteSensorID = GlobalConstants.WristIds.kWristCancoderId;

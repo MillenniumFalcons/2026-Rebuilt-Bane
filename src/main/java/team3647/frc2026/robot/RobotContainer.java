@@ -11,6 +11,7 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PathFollowingController;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -59,6 +60,7 @@ import team3647.frc2026.util.CurrentMonitor;
 import team3647.frc2026.util.MatchStateLogger;
 import team3647.frc2026.util.RobotTracker;
 import team3647.frc2026.util.TargetingUtil;
+import org.littletonrobotics.junction.Logger;
 import team3647.lib.GroupPrinter;
 import team3647.lib.inputs.Joysticks;
 import team3647.lib.team9442.AllianceChecker;
@@ -134,7 +136,14 @@ public class RobotContainer {
         PathFollowingController ppController =
                 new PPHolonomicDriveController(
                         new com.pathplanner.lib.config.PIDConstants(4.5, 0, 0.0),
-                        new com.pathplanner.lib.config.PIDConstants(2.75, 0, 0.0));
+                        new com.pathplanner.lib.config.PIDConstants(2.75, 0, 0.0)) {
+                    @Override
+                    public edu.wpi.first.math.kinematics.ChassisSpeeds calculateRobotRelativeSpeeds(
+                            Pose2d currentPose, PathPlannerTrajectoryState targetState) {
+                        Logger.recordOutput("Auto/ReferencePose", targetState.pose);
+                        return super.calculateRobotRelativeSpeeds(currentPose, targetState);
+                    }
+                };
 
         AutoBuilder.configure(
                 swerve::getOdoPose,
@@ -267,6 +276,7 @@ public class RobotContainer {
 
     public void updateRobotPoseForSmartdashboard() {
         smartDashboardField.setRobotPose(swerve.getOdoPose());
+        smartDashboardField.getObject("VisionPose").setPose(visionState.lastUsedMegatagPose());
     }
 
     /** Feed the latest odometry and yaw velocity into VisionState each cycle. */
