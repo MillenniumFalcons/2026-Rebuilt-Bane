@@ -459,11 +459,12 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
             reset();
             return;
         }
-        SwerveSetpoint setpoint = generateRobotOriented(x, y, -rotation);
-        this.robotCentric
-                .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
-                .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
-                .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
+        // SwerveSetpoint setpoint = generateRobotOriented(x, y, -rotation);
+        // this.robotCentric
+        //         .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
+        //         .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
+        //         .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
+        this.robotCentric.withVelocityX(x).withVelocityY(y).withRotationalRate(-rotation);
         this.masterRequest = this.robotCentric;
     }
 
@@ -497,13 +498,14 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
             reset();
             return;
         }
-        SwerveSetpoint setpoint = generate(x, y, -rotation);
-        this.robotCentric
-                .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
-                .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
-                .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
-
-        this.masterRequest = this.robotCentric;
+        // SwerveSetpoint setpoint = generate(x, y, -rotation);
+        // this.robotCentric
+        //         .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
+        //         .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
+        //         .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
+        // this.masterRequest = this.robotCentric;
+        this.fieldCentric.withVelocityX(x).withVelocityY(y).withRotationalRate(-rotation);
+        this.masterRequest = this.fieldCentric;
     }
 
     // public void resetSimOdo(){
@@ -515,12 +517,14 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
             reset();
             return;
         }
-        SwerveSetpoint setpoint = generate(x.getAsDouble(), y, -rotation);
-        this.robotCentric
-                .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
-                .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
-                .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
-        this.masterRequest = this.robotCentric;
+        // SwerveSetpoint setpoint = generate(x.getAsDouble(), y, -rotation);
+        // this.robotCentric
+        //         .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
+        //         .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
+        //         .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
+        // this.masterRequest = this.robotCentric;
+        this.fieldCentric.withVelocityX(x.getAsDouble()).withVelocityY(y).withRotationalRate(-rotation);
+        this.masterRequest = this.fieldCentric;
     }
 
     public void driveFieldOriented(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rotation) {
@@ -528,13 +532,18 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
             reset();
             return;
         }
-        SwerveSetpoint setpoint =
-                generate(x.getAsDouble(), y.getAsDouble(), -rotation.getAsDouble());
-        this.robotCentric
-                .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
-                .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
-                .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
-        this.masterRequest = this.robotCentric;
+        // SwerveSetpoint setpoint =
+        //         generate(x.getAsDouble(), y.getAsDouble(), -rotation.getAsDouble());
+        // this.robotCentric
+        //         .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
+        //         .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
+        //         .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
+        // this.masterRequest = this.robotCentric;
+        this.fieldCentric
+                .withVelocityX(x.getAsDouble())
+                .withVelocityY(y.getAsDouble())
+                .withRotationalRate(-rotation.getAsDouble());
+        this.masterRequest = this.fieldCentric;
     }
 
     @Override
