@@ -11,9 +11,14 @@ public class IndexerCommands {
         this.indexer = indexer;
     }
 
+    public Command openLoop(double dutyCycle) {
+        return Commands.runEnd(
+                () -> indexer.setOpenLoop(dutyCycle), () -> indexer.setOpenLoop(0), indexer);
+    }
+
     public Command index() {
         return Commands.runEnd(
-                () -> indexer.setOpenLoop(0.3), () -> indexer.setOpenLoop(0), indexer);
+                () -> indexer.setOpenLoop(0.5), () -> indexer.setOpenLoop(0), indexer);
     }
 
     public Command reverse() {

@@ -180,7 +180,7 @@ public class Superstructure extends VirtualSubsystem {
         return Commands.parallel(
                 wristCommands.deploy(),
                 rollerCommands.intake(),
-                indexerCommands.index());
+                indexerCommands.openLoop(0.3));
     }
 
     public Command intakeWithDelay() {

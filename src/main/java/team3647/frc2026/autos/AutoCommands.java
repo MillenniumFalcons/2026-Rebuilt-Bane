@@ -1,10 +1,11 @@
 package team3647.frc2026.autos;
 
 import choreo.trajectory.SwerveSample;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -12,10 +13,13 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import team3647.frc2026.commands.ShooterCommands;
+import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
+import team3647.frc2026.util.AllianceFlip;
 import team3647.frc2026.util.AutoDrive;
 
 public class AutoCommands extends AutoPathFollowers {
@@ -28,32 +32,57 @@ public class AutoCommands extends AutoPathFollowers {
     //         return followPathPlannerAuto("Right Mid Sweep");
     //     }
 
-    double spinUpSpeed = 10.0;
+    double spinUpSpeed = 9.0;
+
 
     public Command shoot(double time) {
         return Commands.deadline(
-                Commands.waitSeconds(time), autoAlign(), superstructure.shoot());
+                Commands.waitSeconds(time), autoAlign(), superstructure.shoot(),
+                Commands.waitSeconds(2).
+                        andThen(superstructure.wristCommands.retract()));
+    }
+
+    public double getShootSpeedForEndOfPath(String pathName, boolean mirrored) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+            if (mirrored) {
+                path = path.mirrorPath();
+            }
+            List<Pose2d> poses = path.getPathPoses();
+            Pose2d endPose = poses.get(poses.size() - 1);
+            Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+            Pose2d allianceEndPose = AllianceFlip.flip(endPose, alliance);
+            Pose2d hubPose = AllianceFlip.flip(FieldConstants.blueHubPose, alliance);
+            double distance = allianceEndPose.getTranslation().minus(hubPose.getTranslation()).getNorm();
+            return ShooterConstants.shootSpeedMap.get(distance);
+        } catch (Exception e) {
+            return spinUpSpeed;
+        }
+    }
+
+    public Command sweepAndShoot(String pathname, double shootTime, boolean mirror) {
+        Command pathFollow = mirror ?
+                followMirroredPathPlannerPath(pathname) :
+                followPathPlannerPath(pathname);
+        double spinUp = spinUpSpeed;
+        return Commands.sequence(
+                Commands.deadline(
+                        pathFollow,
+                        superstructure.intake(),
+                        superstructure.shooterCommands.setVelocity(() -> spinUp),
+                        superstructure.hoodCommands.setAngle(WristConstants.kMinAngle)),
+                shoot(shootTime)
+        );
     }
 
     public Command sweepAndShoot(String pathname, double shootTime) {
-        return Commands.sequence(
-                Commands.deadline(
-                        followPathPlannerPath(pathname),
-                        superstructure.intakeWithDelay(),
-                        superstructure.hoodCommands.setAngle(WristConstants.kMinAngle)),
-                shoot(shootTime)
-        );
+        return sweepAndShoot(pathname, shootTime, false);
     }
 
     public Command sweepShootMirror(String pathname, double shootTime) {
-        return Commands.sequence(
-                Commands.deadline(
-                        followMirroredPathPlannerPath(pathname),
-                        superstructure.intakeWithDelay(),
-                        superstructure.hoodCommands.setAngle(WristConstants.kMinAngle)),
-                shoot(shootTime)
-        );
+        return sweepAndShoot(pathname, shootTime, true);
     }
+    
     public Command rightMidBumpPP() {
         return Commands.sequence(
                 sweepAndShoot("Right Mid Bump 1", 4),
@@ -63,7 +92,7 @@ public class AutoCommands extends AutoPathFollowers {
 
     public Command leftMidBumpPP() {
         return Commands.sequence(
-                sweepShootMirror("Right Mid Bump 1", 2.5),
+                sweepShootMirror("Right Mid Bump 1", 4),
                 sweepShootMirror("Right Mid Bump 2", 10)
         );
     }
@@ -175,26 +204,15 @@ public class AutoCommands extends AutoPathFollowers {
                 midRushAuto(pathname + "CloseLoop"));
     }
 
-    public List<AutoMode> redAutosList;
-    public List<AutoMode> blueAutosList;
+    public List<AutoMode> autosList;
 
-    public final AutoMode leftMidRushBluePP;
-    public final AutoMode leftMidRushRedPP;
-
-    public final AutoMode rightMidRushBluePP;
-    public final AutoMode rightMidRushRedPP;
-
+    public final AutoMode leftMidRushPP;
+    public final AutoMode rightMidRushPP;
     public final AutoMode rightMidBump;
     public final AutoMode leftMidBump;
-
-    public final AutoMode depotBlue;
-    public final AutoMode depotRed;
-
-    public final AutoMode blueEmpty;
-    public final AutoMode preloadBlue;
-
-    public final AutoMode redEmpty;
-    public final AutoMode preloadRed;
+    public final AutoMode depot;
+    public final AutoMode empty;
+    public final AutoMode preload;
 
     public AutoCommands(
             SwerveDrive swerve,
@@ -204,55 +222,37 @@ public class AutoCommands extends AutoPathFollowers {
             AutoDrive autoDrive) {
         super(swerve, superstructure, autoDriveVelocities, hasTarget, autoDrive);
 
-        this.leftMidRushBluePP =
+        this.leftMidRushPP =
                 new AutoMode(
                         leftMidRushPathPlanner(),
-                        getInitialPPMirrored("Right Mid Sweep 1", Alliance.Blue),
-                        "Left Mid Sweep");
-        this.leftMidRushRedPP =
-                new AutoMode(
-                        leftMidRushPathPlanner(),
-                        getInitialPPMirrored("Right Mid Sweep 1", Alliance.Red),
+                        getInitialPPMirroredLazy("Right Mid Sweep 1"),
                         "Left Mid Sweep");
 
-        this.rightMidRushBluePP =
+        this.rightMidRushPP =
                 new AutoMode(
                         rightMidRushPathPlanner(),
-                        getInitialPP("Right Mid Sweep", Alliance.Blue),
-                        "Right Mid Sweep");
-        this.rightMidRushRedPP =
-                new AutoMode(
-                        rightMidRushPathPlanner(),
-                        getInitialPP("Right Mid Sweep", Alliance.Red),
+                        getInitialPPLazy("Right Mid Sweep"),
                         "Right Mid Sweep");
 
-        this.rightMidBump = 
+        this.rightMidBump =
                 new AutoMode(
-                        rightMidBumpPP(), 
-                        getInitialPP("Right Mid Bump 1", Alliance.Red),
+                        rightMidBumpPP(),
+                        getInitialPPLazy("Right Mid Bump 1"),
                         "Right Mid Bump");
 
-        this.leftMidBump = 
+        this.leftMidBump =
                 new AutoMode(
                         leftMidBumpPP(),
-                        getInitialPPMirrored(("Right Mid Bump 1"), Alliance.Red), 
+                        getInitialPPMirroredLazy("Right Mid Bump 1"),
                         "Left Mid Bump");
 
-        this.depotBlue = new AutoMode(depot(), getInitialPP("Depot", Alliance.Blue), "Depot");
-        this.depotRed = new AutoMode(depot(), getInitialPP("Depot", Alliance.Red), "Depot");
+        this.depot = new AutoMode(depot(), getInitialPPLazy("Depot"), "Depot");
 
-        this.preloadBlue = new AutoMode(preloadAuto(), new Pose2d(), "preload");
-        this.preloadRed = new AutoMode(preloadAuto(), new Pose2d(), "preload");
+        this.preload = new AutoMode(preloadAuto(), new Pose2d(), "preload");
 
-        this.blueEmpty =
-                new AutoMode(
-                        Commands.none(), Pose2d.kZero.rotateBy(Rotation2d.k180deg), "blue empty");
+        this.empty = new AutoMode(Commands.none(), new Pose2d(), "empty");
 
-        this.redEmpty = new AutoMode(Commands.none(), Pose2d.kZero, "red empty");
-
-        blueAutosList =
-                List.of(blueEmpty, leftMidRushBluePP, rightMidRushBluePP, preloadBlue, depotBlue);
-        redAutosList = List.of(redEmpty, leftMidRushRedPP, rightMidRushRedPP, rightMidBump, leftMidBump, preloadRed, depotRed);
+        autosList = List.of(empty, leftMidRushPP, rightMidRushPP, rightMidBump, leftMidBump, preload, depot);
     }
 
     public BooleanSupplier hasTarget() {

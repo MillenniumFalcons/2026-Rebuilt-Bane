@@ -3,7 +3,6 @@ package team3647.lib.team9442;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import java.util.List;
 import java.util.function.Consumer;
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.autos.AutoMode;
@@ -12,16 +11,17 @@ public class AutoChooser extends SendableChooser<AutoMode> implements AllianceOb
 
     public AutoCommands autoCommands;
     Consumer<Pose2d> setStartPose;
-    List<AutoMode> autosList;
-    Alliance chachedColor = Alliance.Red;
     public static boolean selected = false;
 
     public AutoChooser(AutoCommands commands, Consumer<Pose2d> setStartPose) {
         super();
         this.autoCommands = commands;
         this.setStartPose = setStartPose;
-        autosList = autoCommands.redAutosList;
-        setDefaultOption("DEFAULT AUTO CHANE THIS", autosList.get(0));
+        setDefaultOption(commands.autosList.get(0).getName(), commands.autosList.get(0));
+        for (int i = 1; i < commands.autosList.size(); i++) {
+            AutoMode mode = commands.autosList.get(i);
+            addOption(mode.getName(), mode);
+        }
         onChange(
                 (mode) -> {
                     AutoMode selectedMode = getSelected();
@@ -33,25 +33,13 @@ public class AutoChooser extends SendableChooser<AutoMode> implements AllianceOb
                     }
                     setStartPose.accept(startingPose);
                     selected = true;
-                    // Logger.recordOutput("sellected", getSelected().getName());
                 });
     }
 
     @Override
     public void onAllianceFound(Alliance color) {
-        if (color != chachedColor) {
-            if (getSelected() != null) {
-                setStartPose.accept(getSelected().getStartingPose());
-            }
-        }
-        autosList = color == Alliance.Blue ? autoCommands.blueAutosList : autoCommands.redAutosList;
-        addAutos();
-        chachedColor = color;
-    }
-
-    public void addAutos() {
-        for (AutoMode mode : this.autosList) {
-            addOption(mode.getName(), mode);
+        if (getSelected() != null) {
+            setStartPose.accept(getSelected().getStartingPose());
         }
     }
 }

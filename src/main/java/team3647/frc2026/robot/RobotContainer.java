@@ -135,7 +135,7 @@ public class RobotContainer {
 
         PathFollowingController ppController =
                 new PPHolonomicDriveController(
-                        new com.pathplanner.lib.config.PIDConstants(4.5, 0, 0.0),
+                        new com.pathplanner.lib.config.PIDConstants(6, 0, 0.0),
                         new com.pathplanner.lib.config.PIDConstants(2.75, 0, 0.0)) {
                     @Override
                     public edu.wpi.first.math.kinematics.ChassisSpeeds calculateRobotRelativeSpeeds(

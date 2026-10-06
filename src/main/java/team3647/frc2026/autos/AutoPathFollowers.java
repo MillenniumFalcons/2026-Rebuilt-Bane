@@ -34,6 +34,7 @@ import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.util.AllianceFlip;
 import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.PoseUtils;
+import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.lib.team9442.AllianceObserver;
 
 public class AutoPathFollowers implements AllianceObserver {
@@ -65,6 +66,7 @@ public class AutoPathFollowers implements AllianceObserver {
         return Commands.sequence(
                         Commands.runOnce(() -> swerve.drive(0, 0, 0)),
                         autoDrive.enableAutoDrive(),
+                        autoDrive.setDriveMode(DriveMode.SHOOT),
                         Commands.run(
                                 () ->
                                         swerve.driveFieldOriented(
@@ -224,6 +226,14 @@ public class AutoPathFollowers implements AllianceObserver {
 
     public Pose2d getInitial(Trajectory<SwerveSample> traj, Alliance color) {
         return traj.getInitialPose(color == Alliance.Red).orElse(new Pose2d());
+    }
+
+    public Supplier<Pose2d> getInitialPPLazy(String pathName) {
+        return () -> getInitialPP(pathName, DriverStation.getAlliance().orElse(Alliance.Blue));
+    }
+
+    public Supplier<Pose2d> getInitialPPMirroredLazy(String pathName) {
+        return () -> getInitialPPMirrored(pathName, DriverStation.getAlliance().orElse(Alliance.Blue));
     }
 
     public Pose2d getInitialPP(String pathName, Alliance color) {
