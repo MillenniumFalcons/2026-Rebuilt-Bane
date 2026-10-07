@@ -14,6 +14,9 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+
 import java.util.Optional;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.SimulatedArena;
@@ -178,6 +181,42 @@ public class SwerveDriveSim implements SwerveDrive {
 
     @Override
     public void brake() {}
+
+    @Override
+    public Command driveSysIdQuasi(Direction direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'driveSysIdQuasi'");
+    }
+
+    @Override
+    public Command driveSysIdDynamic(Direction direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'driveSysIdDynamic'");
+    }
+
+    @Override
+    public Command turnSysIdQuasi(Direction direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'turnSysIdQuasi'");
+    }
+
+    @Override
+    public Command turnSysIdDynamic(Direction direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'turnSysIdDynamic'");
+    }
+
+    @Override
+    public Command spinSysIdQuasi(Direction direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'spinSysIdQuasi'");
+    }
+
+    @Override
+    public Command spinSysIdDynamic(Direction direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'spinSysIdDynamic'");
+    }
 
     // @Override
     // public Command driveSysIdQuasi(Direction direction) {

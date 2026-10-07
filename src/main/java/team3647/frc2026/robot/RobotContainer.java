@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import java.util.List;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
@@ -202,76 +204,82 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        // preload balls, commented out for now, need to trigger after intake
-        // superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
-        // mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
-        mainController.buttonA.onTrue(shooterCommands.kill().alongWith(kickerCommands.reverse()));
-        // interp
-        mainController.buttonX.whileTrue(superstructure.interpShot());
-        // intake
-        mainController.leftBumper.whileTrue(superstructure.intake());
-        mainController.leftBumper.onFalse(rollerCommands.kill());
-        mainController.buttonB.onTrue(wristCommands.retract());
-        // shooting / feeding (pose-based: past trench = feed, otherwise = shoot)
-        mainController.rightTrigger.whileTrue(
-                Commands.run(() -> autoDrive.updateDriveModeByPose())
-                        .alongWith(superstructure.shoot()));
-        mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
-        mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
-        // Manual feed
-        mainController.buttonY.whileTrue(superstructure.shootInstantly());
-        // feed out of intake
+        mainController.buttonA.onTrue(swerve.driveSysIdDynamic(SysIdRoutine.Direction.kForward));
+        mainController.buttonB.onTrue(swerve.driveSysIdDynamic(SysIdRoutine.Direction.kReverse));
+        mainController.buttonX.onTrue(swerve.driveSysIdQuasi(SysIdRoutine.Direction.kForward));
+        mainController.buttonY.onTrue(swerve.driveSysIdQuasi(SysIdRoutine.Direction.kReverse));
+        
+        // // preload balls, commented out for now, need to trigger after intake
+        
+        // //superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
+        // // mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
+        // mainController.buttonA.onTrue(shooterCommands.kill().alongWith(kickerCommands.reverse()));
+        // // interp
+        // mainController.buttonX.whileTrue(superstructure.interpShot());
+        // // intake
+        // mainController.leftBumper.whileTrue(superstructure.intake());
+        // mainController.leftBumper.onFalse(rollerCommands.kill());
+        // mainController.buttonB.onTrue(wristCommands.retract());
+        // // shooting / feeding (pose-based: past trench = feed, otherwise = shoot)
+        // mainController.rightTrigger.whileTrue(
+        //         Commands.run(() -> autoDrive.updateDriveModeByPose())
+        //                 .alongWith(superstructure.shoot()));
+        // mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
+        // mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        // // Manual feed
+        // mainController.buttonY.whileTrue(superstructure.shootInstantly());
+        // // feed out of intake
 
-        // mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
-        mainController.rightBumper.whileTrue(superstructure.feed());
-        // mainController.rightBumper.onTrue(autoDrive.enableAutoDrive());
-        // mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
+        // //mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
+        // mainController.rightBumper.whileTrue(superstructure.feed());
+        // //mainController.rightBumper.onTrue(autoDrive.enableAutoDrive());
+        // //mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
 
-        // intake autoalign facing other wall — auto-disables once rotation aligned
-        mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.INTAKE));
-        mainController.dPadLeft.whileTrue(superstructure.intake());
-        mainController.dPadLeft.onTrue(
-                autoDrive
-                        .enableAutoDrive()
-                        .andThen(Commands.waitUntil(autoDrive::rotAligned))
-                        .andThen(autoDrive.disableAutoDrive()));
-        mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
-        // pre align + spin up (no indexing)
-        // Gate on !rightTrigger so that when rightTrigger is released while dPadRight is still
-        // held, prep() gets re-scheduled (whileTrue only fires on rising edges of the trigger).
-        mainController
-                .dPadRight
-                .and(mainController.rightTrigger.negate())
-                .whileTrue(superstructure.prep());
+        // // intake autoalign facing other wall — auto-disables once rotation aligned
+        // mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.INTAKE));
+        // mainController.dPadLeft.whileTrue(superstructure.intake());
+        // mainController.dPadLeft.onTrue(
+        //         autoDrive
+        //                 .enableAutoDrive()
+        //                 .andThen(Commands.waitUntil(autoDrive::rotAligned))
+        //                 .andThen(autoDrive.disableAutoDrive()));
+        // mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
+        // // pre align + spin up (no indexing)
+        // // Gate on !rightTrigger so that when rightTrigger is released while dPadRight is still
+        // // held, prep() gets re-scheduled (whileTrue only fires on rising edges of the trigger).
+        // mainController
+        //         .dPadRight
+        //         .and(mainController.rightTrigger.negate())
+        //         .whileTrue(superstructure.prep());
 
-        // cocontroller
-        coController.rightTrigger.whileTrue(superstructure.prep());
-        coController.buttonB.onTrue(autoDrive.disableAutoDrive());
-        coController.dPadRight.onTrue(Commands.runOnce(() -> shooter.enableIdle()));
-        coController.dPadLeft.onTrue(Commands.runOnce(() -> shooter.disableIdle()));
-        coController.dPadUp.onTrue(
-                autoDrive
-                        .setDriveMode(DriveMode.MANUAL_SHOOT)
-                        .alongWith(autoDrive.incrementHood(1)));
-        coController.dPadDown.onTrue(
-                autoDrive
-                        .setDriveMode(DriveMode.MANUAL_SHOOT)
-                        .alongWith(autoDrive.incrementHood(-1)));
-        coController.buttonX.onTrue(superstructure.retractIntake());
-        coController.rightBumper.whileTrue(superstructure.reverse());
-        // defense mode
-        coController.buttonA.onTrue(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.9)));
-        coController.buttonA.onFalse(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.6)));
+        // // cocontroller
+        // coController.rightTrigger.whileTrue(superstructure.prep());
+        // coController.buttonB.onTrue(autoDrive.disableAutoDrive());
+        // coController.dPadRight.onTrue(Commands.runOnce(() -> shooter.enableIdle()));
+        // coController.dPadLeft.onTrue(Commands.runOnce(() -> shooter.disableIdle()));
+        // coController.dPadUp.onTrue(
+        //         autoDrive
+        //                 .setDriveMode(DriveMode.MANUAL_SHOOT)
+        //                 .alongWith(autoDrive.incrementHood(1)));
+        // coController.dPadDown.onTrue(
+        //         autoDrive
+        //                 .setDriveMode(DriveMode.MANUAL_SHOOT)
+        //                 .alongWith(autoDrive.incrementHood(-1)));
+        // coController.buttonX.onTrue(superstructure.retractIntake());
+        // coController.rightBumper.whileTrue(superstructure.reverse());
+        // // defense mode
+        // coController.buttonA.onTrue(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.9)));
+        // coController.buttonA.onFalse(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.6)));
 
-        // sysid
-        // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
-        // mainController.dPadDown.whileTrue(swerve.driveRoutineQuasiStatic());
-        // mainController.dPadLeft.whileTrue(swerve.driveRoutineDynamicReverse());
-        // mainController.dPadRight.whileTrue(swerve.driveRoutineQuasiStaticReverse());
-        // mainController.buttonY.onTrue(shooter.getSysIdDynamic());
-        // mainController.buttonA.onTrue(shooter.getSysIdQuasiStatic());
-        // mainController.buttonX.onTrue(shooter.getSysIdDynamicReverse());
-        // mainController.buttonB.onTrue(shooter.getSysIdQuasistaticReverse());
+        // // sysid
+        // // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
+        // // mainController.dPadDown.whileTrue(swerve.driveRoutineQuasiStatic());
+        // // mainController.dPadLeft.whileTrue(swerve.driveRoutineDynamicReverse());
+        // // mainController.dPadRight.whileTrue(swerve.driveRoutineQuasiStaticReverse());
+        // // mainController.buttonY.onTrue(shooter.getSysIdDynamic());
+        // // mainController.buttonA.onTrue(shooter.getSysIdQuasiStatic());
+        // // mainController.buttonX.onTrue(shooter.getSysIdDynamicReverse());
+        // // mainController.buttonB.onTrue(shooter.getSysIdQuasistaticReverse());
     }
 
     public void updateRobotPoseForSmartdashboard() {

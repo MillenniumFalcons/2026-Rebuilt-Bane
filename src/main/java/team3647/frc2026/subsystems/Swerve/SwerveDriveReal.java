@@ -105,7 +105,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
                     new Config(
                             null,
                             null,
-                            Units.Second.of(4),
+                            Units.Second.of(3),
                             ModifiedSignalLogger.logState("drive routine")),
                     new Mechanism(
                             (Voltage volts) -> setControl(driveVoltageRequest.withVolts(volts)),
@@ -627,5 +627,37 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     public AbstractDriveTrainSimulation getSim() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getSim'");
+    }
+
+    public Command driveSysIdQuasi(Direction direction) {
+        return driveRoutine.quasistatic(direction);
+    }
+
+    public Command driveSysIdDynamic(Direction direction) {
+        return driveRoutine.dynamic(direction);
+    }
+
+    @Override
+    public Command turnSysIdQuasi(Direction direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'turnSysIdQuasi'");
+    }
+
+    @Override
+    public Command turnSysIdDynamic(Direction direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'turnSysIdDynamic'");
+    }
+
+    @Override
+    public Command spinSysIdQuasi(Direction direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'spinSysIdQuasi'");
+    }
+
+    @Override
+    public Command spinSysIdDynamic(Direction direction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'spinSysIdDynamic'");
     }
 }

@@ -9,6 +9,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import java.util.Optional;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
@@ -30,17 +33,17 @@ public interface SwerveDrive extends PeriodicSubsystem, AllianceObserver {
 
     public void setRobotPose(Pose2d pose);
 
-    // public Command driveSysIdQuasi(SysIdRoutine.Direction direction);
+    public Command driveSysIdQuasi(SysIdRoutine.Direction direction);
 
-    // public Command driveSysIdDynamic(SysIdRoutine.Direction direction);
+    public Command driveSysIdDynamic(SysIdRoutine.Direction direction);
 
-    // public Command turnSysIdQuasi(SysIdRoutine.Direction direction);
+    public Command turnSysIdQuasi(SysIdRoutine.Direction direction);
 
-    // public Command turnSysIdDynamic(SysIdRoutine.Direction direction);
+    public Command turnSysIdDynamic(SysIdRoutine.Direction direction);
 
-    // public Command spinSysIdQuasi(SysIdRoutine.Direction direction);
+    public Command spinSysIdQuasi(SysIdRoutine.Direction direction);
 
-    // public Command spinSysIdDynamic(SysIdRoutine.Direction direction);
+    public Command spinSysIdDynamic(SysIdRoutine.Direction direction);
 
     public Pose2d getOdoPose();
 
