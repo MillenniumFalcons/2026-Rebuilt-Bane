@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.List;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.autos.AutoCommands;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
@@ -60,7 +61,6 @@ import team3647.frc2026.util.CurrentMonitor;
 import team3647.frc2026.util.MatchStateLogger;
 import team3647.frc2026.util.RobotTracker;
 import team3647.frc2026.util.TargetingUtil;
-import org.littletonrobotics.junction.Logger;
 import team3647.lib.GroupPrinter;
 import team3647.lib.inputs.Joysticks;
 import team3647.lib.team9442.AllianceChecker;
@@ -193,17 +193,17 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         autoDrive::rotAligned));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        shooter.setDefaultCommand(shooterCommands.kill());
-        // shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
+        //shooter.setDefaultCommand(shooterCommands.kill());
+        shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
         hood.setDefaultCommand(hoodCommands.setAngle(HoodConstants.kMinAngle));
-        //hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
+        // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         rollers.setDefaultCommand(rollerCommands.kill());
         kicker.setDefaultCommand(kickerCommands.kill());
     }
 
     private void configureBindings() {
         // preload balls, commented out for now, need to trigger after intake
-        //superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
+        // superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
         // mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
         mainController.buttonA.onTrue(shooterCommands.kill().alongWith(kickerCommands.reverse()));
         // interp
@@ -222,10 +222,10 @@ public class RobotContainer {
         mainController.buttonY.whileTrue(superstructure.shootInstantly());
         // feed out of intake
 
-        //mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
+        // mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
         mainController.rightBumper.whileTrue(superstructure.feed());
-        //mainController.rightBumper.onTrue(autoDrive.enableAutoDrive());
-        //mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
+        // mainController.rightBumper.onTrue(autoDrive.enableAutoDrive());
+        // mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
 
         // intake autoalign facing other wall — auto-disables once rotation aligned
         mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.INTAKE));

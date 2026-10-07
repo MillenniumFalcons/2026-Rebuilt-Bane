@@ -43,8 +43,8 @@ public class ShooterConstants {
     public static final double kMaxSupplyCurrent = 50.0;
     public static final double kidSpeed = 9.0;
 
-    public static final double kIdleSpeed = 8.5;
-    public static final double kIdleSpeedMid = 8.0;
+    public static final double kIdleSpeed = 8.0;
+    public static final double kIdleSpeedMid = 7.0;
 
     public static final double kS = 4.3;
     public static final double kV = 0.43;
@@ -131,6 +131,7 @@ public class ShooterConstants {
         // final TalonFXConfigurator kSlaveConfigurator = kSlave.getConfigurator();
         // kSlaveConfigurator.apply(kSlaveConfig);
 
-        TunableSlotConfigs tunable = new TunableSlotConfigs(kMaster, "shooter", kMasterConfig.Slot0);
+        TunableSlotConfigs tunable =
+                new TunableSlotConfigs(kMaster, "shooter", kMasterConfig.Slot0);
     }
 }

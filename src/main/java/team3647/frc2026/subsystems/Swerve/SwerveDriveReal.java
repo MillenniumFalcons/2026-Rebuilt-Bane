@@ -523,7 +523,10 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         //         .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
         //         .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
         // this.masterRequest = this.robotCentric;
-        this.fieldCentric.withVelocityX(x.getAsDouble()).withVelocityY(y).withRotationalRate(-rotation);
+        this.fieldCentric
+                .withVelocityX(x.getAsDouble())
+                .withVelocityY(y)
+                .withRotationalRate(-rotation);
         this.masterRequest = this.fieldCentric;
     }
 
