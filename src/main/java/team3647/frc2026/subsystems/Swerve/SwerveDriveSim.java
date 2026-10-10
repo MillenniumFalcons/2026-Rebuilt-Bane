@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
 import java.util.Optional;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.SimulatedArena;
@@ -182,7 +181,7 @@ public class SwerveDriveSim implements SwerveDrive {
 
     @Override
     public void brake() {}
-    
+
     @Override
     public Command driveSysIdQuasi(Direction direction) {
         return Commands.none();

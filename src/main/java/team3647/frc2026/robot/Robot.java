@@ -74,16 +74,16 @@ public class Robot extends LoggedRobot {
         Logger.start(); // Start logging! No more data receivers, replay sources, or metadata
         // values may
         // be added.
-        // SignalLogger.setPath("/home/lvuser/logs");
-        // ModifiedSignalLogger.setPath("/home/lvuser/logs");
+        SignalLogger.setPath("/home/lvuser/logs");
+        ModifiedSignalLogger.setPath("/home/lvuser/logs");
 
         LiveWindow.disableAllTelemetry();
         LiveWindow.setEnabled(false);
         SignalLogger.enableAutoLogging(false);
 
-        // SignalLogger.start();
-        // ModifiedSignalLogger.start();
-        SignalLogger.stop();
+        SignalLogger.start();
+        ModifiedSignalLogger.start();
+        // SignalLogger.stop();
         m_robotContainer = new RobotContainer();
         RobotController.setBrownoutVoltage(6.0);
     }
@@ -102,8 +102,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledInit() {
         m_robotContainer.visionIO.setIMUMode(1);
-        SignalLogger.stop();
-        ModifiedSignalLogger.stop();
+        // SignalLogger.stop();
+        // ModifiedSignalLogger.stop();
         LimelightHelpers.SetThrottle(VisionConstants.kLimelightATableName, 100);
         LimelightHelpers.SetThrottle(VisionConstants.kLimelightBTableName, 100);
         LimelightHelpers.SetThrottle(VisionConstants.kLimelightCTableName, 100);
@@ -143,8 +143,8 @@ public class Robot extends LoggedRobot {
             m_autonomousCommand.cancel();
         }
 
-        // ModifiedSignalLogger.start();
-        ModifiedSignalLogger.stop();
+        ModifiedSignalLogger.start();
+        // ModifiedSignalLogger.stop();
         m_robotContainer.visionIO.setIMUMode(4);
     }
 

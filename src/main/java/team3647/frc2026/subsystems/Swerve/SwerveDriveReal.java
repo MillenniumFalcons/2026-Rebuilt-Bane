@@ -103,9 +103,9 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     SysIdRoutine driveRoutine =
             new SysIdRoutine(
                     new Config(
-                            null,
-                            null,
-                            Units.Second.of(3),
+                            Units.Volts.of(1.5).per(Units.Second),
+                            Units.Volts.of(6),
+                            Units.Second.of(4),
                             ModifiedSignalLogger.logState("drive routine")),
                     new Mechanism(
                             (Voltage volts) -> setControl(driveVoltageRequest.withVolts(volts)),
@@ -616,5 +616,4 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getSim'");
     }
-    
 }

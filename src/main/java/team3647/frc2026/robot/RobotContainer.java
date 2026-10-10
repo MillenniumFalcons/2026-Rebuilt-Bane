@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import java.util.List;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
@@ -58,7 +57,6 @@ import team3647.frc2026.subsystems.Swerve.SwerveDriveReal;
 import team3647.frc2026.subsystems.Swerve.SwerveDriveSim;
 import team3647.frc2026.subsystems.Wrist;
 import team3647.frc2026.util.AutoDrive;
-import team3647.frc2026.util.AutoDrive.DriveMode;
 import team3647.frc2026.util.CurrentMonitor;
 import team3647.frc2026.util.MatchStateLogger;
 import team3647.frc2026.util.RobotTracker;
@@ -195,10 +193,11 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         autoDrive::rotAligned));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        //shooter.setDefaultCommand(shooterCommands.kill());
+        // shooter.setDefaultCommand(shooterCommands.kill());
         shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
         hood.setDefaultCommand(hoodCommands.setAngle(HoodConstants.kMinAngle));
-        // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
+        // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodA
+        // ngle));
         rollers.setDefaultCommand(rollerCommands.kill());
         kicker.setDefaultCommand(kickerCommands.kill());
     }
@@ -208,9 +207,9 @@ public class RobotContainer {
         mainController.buttonB.onTrue(swerve.driveSysIdDynamic(SysIdRoutine.Direction.kReverse));
         mainController.buttonX.onTrue(swerve.driveSysIdQuasi(SysIdRoutine.Direction.kForward));
         mainController.buttonY.onTrue(swerve.driveSysIdQuasi(SysIdRoutine.Direction.kReverse));
-        
+
         // // preload balls, commented out for now, need to trigger after intake
-        
+
         // //superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
         // // mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
         // mainController.buttonA.onTrue(shooterCommands.kill().alongWith(kickerCommands.reverse()));
@@ -268,8 +267,10 @@ public class RobotContainer {
         // coController.buttonX.onTrue(superstructure.retractIntake());
         // coController.rightBumper.whileTrue(superstructure.reverse());
         // // defense mode
-        // coController.buttonA.onTrue(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.9)));
-        // coController.buttonA.onFalse(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.6)));
+        // coController.buttonA.onTrue(Commands.runOnce(() ->
+        // swerveCommands.setRotMultiplier(0.9)));
+        // coController.buttonA.onFalse(Commands.runOnce(() ->
+        // swerveCommands.setRotMultiplier(0.6)));
 
         // // sysid
         // // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
