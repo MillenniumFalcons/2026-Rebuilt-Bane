@@ -37,13 +37,13 @@ public interface SwerveDrive extends PeriodicSubsystem, AllianceObserver {
 
     public Command driveSysIdDynamic(SysIdRoutine.Direction direction);
 
-    public Command turnSysIdQuasi(SysIdRoutine.Direction direction);
+    // public Command turnSysIdQuasi(SysIdRoutine.Direction direction);
 
-    public Command turnSysIdDynamic(SysIdRoutine.Direction direction);
+    // public Command turnSysIdDynamic(SysIdRoutine.Direction direction);
 
-    public Command spinSysIdQuasi(SysIdRoutine.Direction direction);
+    // public Command spinSysIdQuasi(SysIdRoutine.Direction direction);
 
-    public Command spinSysIdDynamic(SysIdRoutine.Direction direction);
+    // public Command spinSysIdDynamic(SysIdRoutine.Direction direction);
 
     public Pose2d getOdoPose();
 

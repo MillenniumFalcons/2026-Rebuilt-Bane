@@ -576,30 +576,18 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         return "Swerve Drivetrain";
     }
 
-    public Command driveRoutineQuasiStatic() {
+    @Override
+    public Command driveSysIdQuasi(Direction direction) {
         return driveRoutine
-                .quasistatic(Direction.kForward)
+                .quasistatic(direction)
                 .beforeStarting(() -> this.isChar = true)
                 .finallyDo(() -> this.isChar = false);
     }
 
-    public Command driveRoutineDynamic() {
+    @Override
+    public Command driveSysIdDynamic(Direction direction) {
         return driveRoutine
-                .dynamic(Direction.kForward)
-                .beforeStarting(() -> this.isChar = true)
-                .finallyDo(() -> this.isChar = false);
-    }
-
-    public Command driveRoutineQuasiStaticReverse() {
-        return driveRoutine
-                .quasistatic(Direction.kReverse)
-                .beforeStarting(() -> this.isChar = true)
-                .finallyDo(() -> this.isChar = false);
-    }
-
-    public Command driveRoutineDynamicReverse() {
-        return driveRoutine
-                .dynamic(Direction.kReverse)
+                .dynamic(direction)
                 .beforeStarting(() -> this.isChar = true)
                 .finallyDo(() -> this.isChar = false);
     }
@@ -628,36 +616,5 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getSim'");
     }
-
-    public Command driveSysIdQuasi(Direction direction) {
-        return driveRoutine.quasistatic(direction);
-    }
-
-    public Command driveSysIdDynamic(Direction direction) {
-        return driveRoutine.dynamic(direction);
-    }
-
-    @Override
-    public Command turnSysIdQuasi(Direction direction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'turnSysIdQuasi'");
-    }
-
-    @Override
-    public Command turnSysIdDynamic(Direction direction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'turnSysIdDynamic'");
-    }
-
-    @Override
-    public Command spinSysIdQuasi(Direction direction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'spinSysIdQuasi'");
-    }
-
-    @Override
-    public Command spinSysIdDynamic(Direction direction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'spinSysIdDynamic'");
-    }
+    
 }
