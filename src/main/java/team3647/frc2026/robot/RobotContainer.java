@@ -135,7 +135,7 @@ public class RobotContainer {
 
         PathFollowingController ppController =
                 new PPHolonomicDriveController(
-                        new com.pathplanner.lib.config.PIDConstants(6, 0, 0.0),
+                        new com.pathplanner.lib.config.PIDConstants(8.0, 0, 0.0),
                         new com.pathplanner.lib.config.PIDConstants(2.75, 0, 0.0)) {
                     @Override
                     public edu.wpi.first.math.kinematics.ChassisSpeeds calculateRobotRelativeSpeeds(
@@ -194,7 +194,7 @@ public class RobotContainer {
                         autoDrive::rotAligned));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         shooter.setDefaultCommand(shooterCommands.kill());
-        // shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
+        shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
         hood.setDefaultCommand(hoodCommands.setAngle(HoodConstants.kMinAngle));
         //hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         rollers.setDefaultCommand(rollerCommands.kill());

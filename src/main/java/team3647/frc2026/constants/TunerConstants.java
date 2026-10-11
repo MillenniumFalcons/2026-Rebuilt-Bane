@@ -36,9 +36,9 @@ public class TunerConstants {
                     .withKP(0.1)
                     .withKI(0)
                     .withKD(0)
-                    .withKS(0.14813)
-                    .withKV(0.11938)
-                    .withKA(0.010311);
+                    .withKS(0.308)
+                    .withKV(0.116)
+                    .withKA(0.0115);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -68,7 +68,7 @@ public class TunerConstants {
             new TalonFXConfiguration()
                     .withCurrentLimits(
                             new CurrentLimitsConfigs()
-                                    .withSupplyCurrentLimit(Amps.of(40))
+                                    .withSupplyCurrentLimit(Amps.of(50))
                                     .withSupplyCurrentLimitEnable(true));
     private static final TalonFXConfiguration steerInitialConfigs =
             new TalonFXConfiguration()

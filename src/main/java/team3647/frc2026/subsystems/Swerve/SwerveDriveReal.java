@@ -492,18 +492,26 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         this.robotCentric.withVelocityX(x).withVelocityY(y).withRotationalRate(rotation);
     }
 
-    public void driveFieldOriented(double x, double y, double rotation) {
-        if (!periodicIO.good) {
-            reset();
-            return;
-        }
-        SwerveSetpoint setpoint = generate(x, y, -rotation);
-        this.robotCentric
-                .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
-                .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
-                .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
+    // public void driveFieldOriented(double x, double y, double rotation) {
+    //     if (!periodicIO.good) {
+    //         reset();
+    //         return;
+    //     }
+    //     SwerveSetpoint setpoint = generate(x, y, -rotation);
+    //     this.robotCentric
+    //             .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
+    //             .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
+    //             .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
 
-        this.masterRequest = this.robotCentric;
+    //     this.masterRequest = this.robotCentric;
+    // }
+
+    public void driveFieldOriented(double x, double y, double rotation) {
+        this.fieldCentric
+                .withVelocityX(x)
+                .withVelocityY(y)
+                .withRotationalRate(rotation);
+        this.masterRequest = this.fieldCentric;
     }
 
     // public void resetSimOdo(){

@@ -70,7 +70,7 @@ public class AutoPathFollowers implements AllianceObserver {
                         Commands.run(
                                 () ->
                                         swerve.driveFieldOriented(
-                                                0, 0, autoDriveVelocities.get().dtheta),
+                                                0, 0, -autoDriveVelocities.get().dtheta),
                                 swerve))
                 .finallyDo(() -> autoDrive.setEnabled(false));
     }
