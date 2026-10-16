@@ -39,7 +39,7 @@ public class RollerCommands {
     }
 
     public Command spit() {
-        return Commands.run(() -> rollers.setVelocityTorque(-80), rollers);
+        return Commands.run(() -> rollers.setOpenLoop(-0.6), rollers);
     }
 
     public boolean currentGreater(double current) {

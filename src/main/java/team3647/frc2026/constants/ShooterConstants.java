@@ -70,7 +70,7 @@ public class ShooterConstants {
         // need to reinterpolate
         shootSpeedMap.put(1.0, 8.5 + tempOffset); // made up
         shootSpeedMap.put(1.5, 8.5 + tempOffset);
-        shootSpeedMap.put(2.0, 8.75 + tempOffset);
+        shootSpeedMap.put(2.0, 8.6 + tempOffset);
         shootSpeedMap.put(2.5, 9.25 + tempOffset);
         shootSpeedMap.put(3.0, 9.4 + tempOffset);
         shootSpeedMap.put(3.5, 10.0 + tempOffset);

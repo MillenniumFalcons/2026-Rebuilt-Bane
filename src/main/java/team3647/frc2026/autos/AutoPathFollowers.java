@@ -66,7 +66,7 @@ public class AutoPathFollowers implements AllianceObserver {
         return Commands.sequence(
                         Commands.runOnce(() -> swerve.drive(0, 0, 0)),
                         autoDrive.enableAutoDrive(),
-                        autoDrive.setDriveMode(DriveMode.SHOOT),
+                        autoDrive.setDriveMode(DriveMode.SHOOT_ON_THE_MOVE),
                         Commands.run(
                                 () ->
                                         swerve.driveFieldOriented(

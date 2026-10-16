@@ -46,10 +46,10 @@ public class HoodConstants {
         hoodAngleMap.put(1.0, 1.0); // made up
         hoodAngleMap.put(1.5, 1.0);
         hoodAngleMap.put(2.0, 13.0);
-        hoodAngleMap.put(2.5, 20.0);
-        hoodAngleMap.put(3.0, 21.0);
-        hoodAngleMap.put(3.5, 23.0);
-        hoodAngleMap.put(4.0, 26.0);
+        hoodAngleMap.put(2.5, 16.0);
+        hoodAngleMap.put(3.0, 18.0);
+        hoodAngleMap.put(3.5, 21.0);
+        hoodAngleMap.put(4.0, 23.0);
         hoodAngleMap.put(4.5, 30.0); // made up
         hoodAngleMap.put(5.0, 30.0); // made up
         hoodAngleMap.put(6.0, 45.0); // made up

@@ -197,6 +197,10 @@ public class Superstructure extends VirtualSubsystem {
         return Commands.parallel(wristCommands.deploy());
     }
 
+    public Command intakeDown() {
+        return Commands.parallel(wristCommands.deploy(), rollerCommands.intake());
+    }
+
     public Command spinUpTest() {
         return Commands.parallel(shooterCommands.setOpenLoop(1));
     }

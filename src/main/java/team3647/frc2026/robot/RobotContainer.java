@@ -136,7 +136,7 @@ public class RobotContainer {
         PathFollowingController ppController =
                 new PPHolonomicDriveController(
                         new com.pathplanner.lib.config.PIDConstants(8.0, 0, 0.0),
-                        new com.pathplanner.lib.config.PIDConstants(2.75, 0, 0.0)) {
+                        new com.pathplanner.lib.config.PIDConstants(3.0, 0, 0.0)) {
                     @Override
                     public edu.wpi.first.math.kinematics.ChassisSpeeds calculateRobotRelativeSpeeds(
                             Pose2d currentPose, PathPlannerTrajectoryState targetState) {
@@ -211,7 +211,9 @@ public class RobotContainer {
         // intake
         mainController.leftBumper.whileTrue(superstructure.intake());
         mainController.leftBumper.onFalse(rollerCommands.kill());
+
         mainController.buttonB.onTrue(wristCommands.retract());
+        mainController.buttonA.onTrue(superstructure.intakeDown());
         // shooting / feeding (pose-based: past trench = feed, otherwise = shoot)
         mainController.rightTrigger.whileTrue(
                 Commands.run(() -> autoDrive.updateDriveModeByPose())
@@ -219,7 +221,7 @@ public class RobotContainer {
         mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         // Manual feed
-        mainController.buttonY.whileTrue(superstructure.shootInstantly());
+        // mainController.buttonY.whileTrue(superstructure.shootInstantly());
         // feed out of intake
 
         //mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));

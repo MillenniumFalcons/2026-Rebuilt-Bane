@@ -87,7 +87,7 @@ public class TargetingUtil {
 
         // 5. Calculate Hood Angle
         // We use the distance from the compensated position to the target.
-        double hoodAngle = hoodAngleMap.get(compensatedDistance) + offset;
+        double hoodAngle = hoodAngleMap.get(compensatedDistance);
 
         // 6. Calculate Shoot Speed
         kShootSpeed = shootSpeedMap.get(compensatedDistance);
@@ -106,8 +106,9 @@ public class TargetingUtil {
         Rotation2d heading = robotToTarget.getAngle();
 
         double hoodAngle = hoodAngleMap.get(distance) + offset;
+        double speed = shootSpeedMap.get(distance);
 
-        return new AimingParameters(heading, hoodAngle, kShootSpeed, distance, robotToTarget);
+        return new AimingParameters(heading, hoodAngle, speed, distance, robotToTarget);
     }
 
     public double getCompensatedDistance() {
