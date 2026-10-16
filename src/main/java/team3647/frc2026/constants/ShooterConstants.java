@@ -131,6 +131,7 @@ public class ShooterConstants {
         // final TalonFXConfigurator kSlaveConfigurator = kSlave.getConfigurator();
         // kSlaveConfigurator.apply(kSlaveConfig);
 
-        TunableSlotConfigs tunable = new TunableSlotConfigs(kMaster, "shooter", kMasterConfig.Slot0);
+        TunableSlotConfigs tunable =
+                new TunableSlotConfigs(kMaster, "shooter", kMasterConfig.Slot0);
     }
 }

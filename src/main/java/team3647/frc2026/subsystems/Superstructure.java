@@ -17,7 +17,6 @@ import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.WristCommands;
 import team3647.frc2026.constants.ShooterConstants;
-import team3647.frc2026.util.AutoDrive;
 import team3647.frc2026.util.RobotTracker;
 import team3647.lib.team6328.VirtualSubsystem;
 
@@ -100,7 +99,7 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command feed() {
         return Commands.sequence(
-                //Commands.waitUntil(readyToShoot), 
+                // Commands.waitUntil(readyToShoot),
                 Commands.parallel(deployIntake(), reverse()));
     }
 
@@ -141,8 +140,9 @@ public class Superstructure extends VirtualSubsystem {
     }
 
     public Command prep() {
-        return shooterCommands.setVelocity(shotSpeed)
-            .alongWith(hoodCommands.setAngleDeg(hoodAngle::getAsDouble));
+        return shooterCommands
+                .setVelocity(shotSpeed)
+                .alongWith(hoodCommands.setAngleDeg(hoodAngle::getAsDouble));
     }
 
     public Command prepKids() {
@@ -178,9 +178,7 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command intake() {
         return Commands.parallel(
-                wristCommands.deploy(),
-                rollerCommands.intake(),
-                indexerCommands.openLoop(0.3));
+                wristCommands.deploy(), rollerCommands.intake(), indexerCommands.openLoop(0.3));
     }
 
     public Command intakeWithDelay() {
@@ -218,9 +216,7 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command loadWhenDetected() {
         return Commands.sequence(
-                Commands.race(
-                        kickerCommands.preload(),
-                        Commands.waitUntil(kickerCurrent)),
+                Commands.race(kickerCommands.preload(), Commands.waitUntil(kickerCurrent)),
                 Commands.waitSeconds(2.0),
                 kickerCommands.spinRotations(0.5));
     }

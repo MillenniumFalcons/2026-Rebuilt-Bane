@@ -3,13 +3,11 @@ package team3647.frc2026.subsystems;
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Radian;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import java.util.List;
-import team3647.frc2026.constants.WristConstants;
 import team3647.lib.TalonFXSubsystem;
 
 public class Wrist extends TalonFXSubsystem {
@@ -85,7 +83,7 @@ public class Wrist extends TalonFXSubsystem {
     }
 
     public void initCancoderPos() {
-        cancoder.setPosition(cancoder.getAbsolutePosition().getValueAsDouble()+1);
+        cancoder.setPosition(cancoder.getAbsolutePosition().getValueAsDouble() + 1);
     }
 
     public double getAngleRads() {

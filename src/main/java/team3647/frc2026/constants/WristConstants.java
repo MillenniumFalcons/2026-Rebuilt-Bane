@@ -29,7 +29,7 @@ public class WristConstants {
 
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
-    public static final Angle kMaxAngle = Degree.of(129); 
+    public static final Angle kMaxAngle = Degree.of(129);
     public static final Angle kMinAngle = Degree.of(0);
 
     public static final Angle kInitialAngle = kMaxAngle;
@@ -45,9 +45,9 @@ public class WristConstants {
     public static final double maxAccel = 640;
 
     // All gains are in wrist-rotation units (native = wrist rotations)
-    public static final double kV = 4.0;   // V / (wrist rot/s)
-    public static final double kA = 1.5;  // V / (wrist rot/s²)
-    public static final double kG = 0.4;   // V to hold wrist horizontal against gravity
+    public static final double kV = 4.0; // V / (wrist rot/s)
+    public static final double kA = 1.5; // V / (wrist rot/s²)
+    public static final double kG = 0.4; // V to hold wrist horizontal against gravity
 
     // 48T to 16T, 50T to 10T, 50T to 18T
     // 30T to 10T, 50T to 18T, 50T to 10T
@@ -94,7 +94,8 @@ public class WristConstants {
 
         kMaster.getConfigurator().apply(kMasterConfig);
 
-        kCancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        kCancoderConfig.MagnetSensor.SensorDirection =
+                SensorDirectionValue.CounterClockwise_Positive;
         kCancoderConfig.MagnetSensor.MagnetOffset = -1.0315; // need to change
         kCancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
         cancoder.getConfigurator().apply(kCancoderConfig);

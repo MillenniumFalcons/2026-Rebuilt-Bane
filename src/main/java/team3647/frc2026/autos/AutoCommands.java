@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.WristConstants;
@@ -34,12 +33,12 @@ public class AutoCommands extends AutoPathFollowers {
 
     double spinUpSpeed = 9.0;
 
-
     public Command shoot(double time) {
         return Commands.deadline(
-                Commands.waitSeconds(time), autoAlign(), superstructure.shoot(),
-                Commands.waitSeconds(2).
-                        andThen(superstructure.wristCommands.retract()));
+                Commands.waitSeconds(time),
+                autoAlign(),
+                superstructure.shoot(),
+                Commands.waitSeconds(2).andThen(superstructure.wristCommands.retract()));
     }
 
     public double getShootSpeedForEndOfPath(String pathName, boolean mirrored) {
@@ -53,7 +52,8 @@ public class AutoCommands extends AutoPathFollowers {
             Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
             Pose2d allianceEndPose = AllianceFlip.flip(endPose, alliance);
             Pose2d hubPose = AllianceFlip.flip(FieldConstants.blueHubPose, alliance);
-            double distance = allianceEndPose.getTranslation().minus(hubPose.getTranslation()).getNorm();
+            double distance =
+                    allianceEndPose.getTranslation().minus(hubPose.getTranslation()).getNorm();
             return ShooterConstants.shootSpeedMap.get(distance);
         } catch (Exception e) {
             return spinUpSpeed;
@@ -61,9 +61,8 @@ public class AutoCommands extends AutoPathFollowers {
     }
 
     public Command sweepAndShoot(String pathname, double shootTime, boolean mirror) {
-        Command pathFollow = mirror ?
-                followMirroredPathPlannerPath(pathname) :
-                followPathPlannerPath(pathname);
+        Command pathFollow =
+                mirror ? followMirroredPathPlannerPath(pathname) : followPathPlannerPath(pathname);
         double spinUp = spinUpSpeed;
         return Commands.sequence(
                 Commands.deadline(
@@ -71,8 +70,7 @@ public class AutoCommands extends AutoPathFollowers {
                         superstructure.intake(),
                         superstructure.shooterCommands.setVelocity(() -> spinUp),
                         superstructure.hoodCommands.setAngle(WristConstants.kMinAngle)),
-                shoot(shootTime)
-        );
+                shoot(shootTime));
     }
 
     public Command sweepAndShoot(String pathname, double shootTime) {
@@ -82,19 +80,15 @@ public class AutoCommands extends AutoPathFollowers {
     public Command sweepShootMirror(String pathname, double shootTime) {
         return sweepAndShoot(pathname, shootTime, true);
     }
-    
+
     public Command rightMidBumpPP() {
         return Commands.sequence(
-                sweepAndShoot("Right Mid Bump 1", 4),
-                sweepAndShoot("Right Mid Bump 2", 10)
-        );
+                sweepAndShoot("Right Mid Bump 1", 4), sweepAndShoot("Right Mid Bump 2", 10));
     }
 
     public Command leftMidBumpPP() {
         return Commands.sequence(
-                sweepShootMirror("Right Mid Bump 1", 4),
-                sweepShootMirror("Right Mid Bump 2", 10)
-        );
+                sweepShootMirror("Right Mid Bump 1", 4), sweepShootMirror("Right Mid Bump 2", 10));
     }
 
     public Command leftMidRushPathPlanner() {
@@ -236,9 +230,7 @@ public class AutoCommands extends AutoPathFollowers {
 
         this.rightMidBump =
                 new AutoMode(
-                        rightMidBumpPP(),
-                        getInitialPPLazy("Right Mid Bump 1"),
-                        "Right Mid Bump");
+                        rightMidBumpPP(), getInitialPPLazy("Right Mid Bump 1"), "Right Mid Bump");
 
         this.leftMidBump =
                 new AutoMode(
@@ -252,7 +244,15 @@ public class AutoCommands extends AutoPathFollowers {
 
         this.empty = new AutoMode(Commands.none(), new Pose2d(), "empty");
 
-        autosList = List.of(empty, leftMidRushPP, rightMidRushPP, rightMidBump, leftMidBump, preload, depot);
+        autosList =
+                List.of(
+                        empty,
+                        leftMidRushPP,
+                        rightMidRushPP,
+                        rightMidBump,
+                        leftMidBump,
+                        preload,
+                        depot);
     }
 
     public BooleanSupplier hasTarget() {

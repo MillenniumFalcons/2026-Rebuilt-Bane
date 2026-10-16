@@ -507,10 +507,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     // }
 
     public void driveFieldOriented(double x, double y, double rotation) {
-        this.fieldCentric
-                .withVelocityX(x)
-                .withVelocityY(y)
-                .withRotationalRate(rotation);
+        this.fieldCentric.withVelocityX(x).withVelocityY(y).withRotationalRate(rotation);
         this.masterRequest = this.fieldCentric;
     }
 
