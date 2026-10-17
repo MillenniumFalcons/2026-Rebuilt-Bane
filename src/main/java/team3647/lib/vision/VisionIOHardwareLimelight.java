@@ -65,13 +65,14 @@ public class VisionIOHardwareLimelight implements VisionIO {
 
     @Override
     public void readInputs(VisionIOInputs inputs) {
-        double yawDeg = visionState.getLatestFieldToRobot().getRotation().getDegrees();
-        LimelightHelpers.SetRobotOrientation(
-                VisionConstants.kLimelightATableName, yawDeg, 0, 0, 0, 0, 0);
-        LimelightHelpers.SetRobotOrientation(
-                VisionConstants.kLimelightBTableName, yawDeg, 0, 0, 0, 0, 0);
-        LimelightHelpers.SetRobotOrientation(
-                VisionConstants.kLimelightCTableName, yawDeg, 0, 0, 0, 0, 0);
+        // MegaTag1 does not use robot orientation, so these are not needed.
+        // double yawDeg = visionState.getLatestFieldToRobot().getRotation().getDegrees();
+        // LimelightHelpers.SetRobotOrientation(
+        //         VisionConstants.kLimelightATableName, yawDeg, 0, 0, 0, 0, 0);
+        // LimelightHelpers.SetRobotOrientation(
+        //         VisionConstants.kLimelightBTableName, yawDeg, 0, 0, 0, 0, 0);
+        // LimelightHelpers.SetRobotOrientation(
+        //         VisionConstants.kLimelightCTableName, yawDeg, 0, 0, 0, 0, 0);
         readCameraData(tableA, inputs.cameraA, VisionConstants.kLimelightATableName);
         readCameraData(tableB, inputs.cameraB, VisionConstants.kLimelightBTableName);
         readCameraData(tableC, inputs.cameraC, VisionConstants.kLimelightCTableName);
@@ -91,7 +92,7 @@ public class VisionIOHardwareLimelight implements VisionIO {
         if (camera.seesTarget) {
             try {
                 var maybeMegatag =
-                        LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+                        LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
                 var maybeRobotPose3d =
                         LimelightHelpers.toPose3D(
                                 LimelightHelpers.getBotPose_wpiBlue(limelightName));
