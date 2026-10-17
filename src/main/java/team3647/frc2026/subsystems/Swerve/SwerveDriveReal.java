@@ -75,6 +75,11 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
 
     private double cachedSpeed = 0;
 
+    // Offset applied to the raw Pigeon yaw so that gyro heading lines up with the field.
+    // Seeded whenever the pose is reset; never corrected by vision, so field-centric
+    // driving stays stable even when vision nudges the estimated heading.
+    private Rotation2d fieldGyroOffset = new Rotation2d();
+
     Notifier m_simNotifier;
 
     // private static final double kSimLoopPeriod = 0.002;
@@ -300,6 +305,21 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         periodicIO = new PeriodicIOAutoLogged();
     }
 
+    @Override
+    public void resetPose(Pose2d pose) {
+        super.resetPose(pose);
+        // Re-seed the gyro-only field heading to match the pose we just set.
+        this.fieldGyroOffset =
+                pose.getRotation()
+                        .minus(Rotation2d.fromDegrees(this.getPigeon2().getYaw().getValueAsDouble()));
+    }
+
+    // Field heading derived purely from the gyro (Pigeon yaw + seed offset), with no vision fusion.
+    public Rotation2d getGyroFieldHeading() {
+        return Rotation2d.fromDegrees(this.getPigeon2().getYaw().getValueAsDouble())
+                .plus(this.fieldGyroOffset);
+    }
+
     public void resetEncoders() {
         for (int i = 0; i < 4; i++) {
             this.getModules()[i].getEncoder().setPosition(0);
@@ -507,8 +527,15 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     // }
 
     public void driveFieldOriented(double x, double y, double rotation) {
-        this.fieldCentric.withVelocityX(x).withVelocityY(y).withRotationalRate(rotation);
-        this.masterRequest = this.fieldCentric;
+        // Convert the field-relative command to robot-relative using ONLY the gyro heading,
+        // then drive robot-centric. This keeps field orientation independent of vision fusion.
+        ChassisSpeeds robotRelative =
+                ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, getGyroFieldHeading());
+        this.robotCentric
+                .withVelocityX(robotRelative.vxMetersPerSecond)
+                .withVelocityY(robotRelative.vyMetersPerSecond)
+                .withRotationalRate(robotRelative.omegaRadiansPerSecond);
+        this.masterRequest = this.robotCentric;
     }
 
     // public void resetSimOdo(){
