@@ -250,6 +250,8 @@ public class RobotContainer {
                 .and(mainController.rightTrigger.negate())
                 .whileTrue(superstructure.prep());
 
+        mainController.rightMidButton.onTrue(swerveCommands.seedFieldCentric(robotTracker::getColor));
+
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());

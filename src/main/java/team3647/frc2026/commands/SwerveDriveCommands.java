@@ -1,5 +1,7 @@
 package team3647.frc2026.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -102,5 +104,13 @@ public class SwerveDriveCommands implements AllianceObserver {
                                                 0, 0, autoDriveVelocities.get().dtheta),
                                 swerve))
                 .finallyDo(() -> autoDrive.setEnabled(false));
+    }
+
+    public Command seedFieldCentric(Supplier<Alliance> color){
+        return Commands.runOnce(()->{
+            Rotation2d rot = color.get() == Alliance.Blue ? Rotation2d.kZero : Rotation2d.k180deg;
+            swerve.setRobotPose(new Pose2d(swerve.getOdoPose().getTranslation(), rot));
+
+        });
     }
 }
