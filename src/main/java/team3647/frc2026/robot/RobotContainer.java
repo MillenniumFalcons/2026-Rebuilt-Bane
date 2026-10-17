@@ -222,6 +222,8 @@ public class RobotContainer {
                         .alongWith(superstructure.shoot()));
         mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+        // hardcoded shot from fixed 3.35m distance, no auto-align (driver aims)
+        mainController.leftTrigger.whileTrue(superstructure.shootFixed());
         // Manual feed
         // mainController.buttonY.whileTrue(superstructure.shootInstantly());
         // feed out of intake

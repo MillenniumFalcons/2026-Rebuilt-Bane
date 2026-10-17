@@ -16,6 +16,7 @@ import team3647.frc2026.commands.KickerCommands;
 import team3647.frc2026.commands.RollerCommands;
 import team3647.frc2026.commands.ShooterCommands;
 import team3647.frc2026.commands.WristCommands;
+import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.util.RobotTracker;
 import team3647.lib.team6328.VirtualSubsystem;
@@ -38,6 +39,16 @@ public class Superstructure extends VirtualSubsystem {
 
     public final DoubleSupplier hoodAngle;
     public final DoubleSupplier shotSpeed;
+
+    // Fixed shooting distance (meters). Hood angle and shot speed are looked up from the
+    // interpolation tables at this distance; no auto-align is used (driver aims manually).
+    public static final double kFixedShootDistance = 3.35;
+
+    private final DoubleSupplier fixedShotSpeed =
+            () -> ShooterConstants.shootSpeedMap.get(kFixedShootDistance);
+    private final DoubleSupplier fixedHoodAngle =
+            () -> HoodConstants.hoodAngleMap.get(kFixedShootDistance);
+
     public Angle wantedIntakeAngle = Degrees.of(70);
     public final BooleanSupplier isRotAligned;
 
@@ -126,6 +137,36 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command shoot() {
         return Commands.parallel(prep(), indexWhenReady());
+    }
+
+    /**
+     * Same as {@link #shoot()} but with hood angle and shot speed hardcoded from the {@link
+     * #kFixedShootDistance} lookup, with no auto-align (driver aims manually).
+     */
+    public Command shootFixed() {
+        return Commands.parallel(prepFixed(), indexWhenReadyFixed());
+    }
+
+    public Command prepFixed() {
+        return shooterCommands
+                .setVelocity(fixedShotSpeed)
+                .alongWith(hoodCommands.setAngleDeg(fixedHoodAngle::getAsDouble));
+    }
+
+    public Command indexWhenReadyFixed() {
+        return Commands.sequence(
+                Commands.waitUntil(
+                        readyToShoot
+                                .and(() -> shooterCommands.isAtVelocity(fixedShotSpeed))
+                                .and(() -> hoodCommands.angleReached(fixedHoodAngle, 2.0))),
+                indexFixed());
+    }
+
+    public Command indexFixed() {
+        return Commands.parallel(
+                indexerCommands.index(),
+                kickerCommands.matchShooterSpeed(fixedShotSpeed),
+                setFuelLoaded(false));
     }
 
     public Command shootInstantly() {
