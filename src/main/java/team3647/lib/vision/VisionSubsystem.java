@@ -37,10 +37,6 @@ public class VisionSubsystem extends SubsystemBase {
     // single-tag estimate from snapping odometry while the pose/path follower is initializing.
     private double visionSuppressedUntil = 0.0;
 
-    // Count of consecutive estimates rejected for disagreeing with odometry. Used to avoid locking
-    // vision out permanently if odometry itself has drifted far from truth.
-    private int consecutiveOdoJumpRejects = 0;
-
     public VisionSubsystem(VisionIO io, VisionState state) {
         this.io = io;
         this.state = state;
@@ -371,40 +367,22 @@ public class VisionSubsystem extends SubsystemBase {
             return Optional.empty();
         }
 
-        var loggedPose = state.getFieldToRobot(poseEstimate.timestampSeconds());
-        if (loggedPose.isEmpty()) {
-            return Optional.empty();
-        }
-
         Pose2d estimatePose = poseEstimate.fieldToRobot();
 
-        // Reject estimates that disagree wildly with current odometry while enabled. This stops a
-        // noisy single-tag MegaTag1 pose from teleporting the robot (and stalling the path
-        // follower) right at auto start. Disabled is left ungated so vision can seed/converge.
-        // A long run of rejections means odometry itself is probably wrong, so we stop rejecting
-        // and let vision pull us back rather than locking it out forever.
-        if (DriverStation.isEnabled()) {
-            double odoJump =
-                    estimatePose.getTranslation().getDistance(loggedPose.get().getTranslation());
-            Logger.recordOutput(logPrefix + "/OdoJumpMeters", odoJump);
-            if (odoJump > VisionConstants.kMaxOdometryJumpMeters
-                    && consecutiveOdoJumpRejects < VisionConstants.kOdoJumpRejectRecoveryFrames) {
-                consecutiveOdoJumpRejects++;
-                Logger.recordOutput(logPrefix + "/RejectedOdoJump", true);
-                return Optional.empty();
-            }
-            consecutiveOdoJumpRejects = 0;
-            Logger.recordOutput(logPrefix + "/RejectedOdoJump", false);
-        }
-
         double scaleFactor = 1.0 / poseEstimate.quality();
-        double xStd = cam.standardDeviations[VisionConstants.kMegatag2XStdDevIndex] * scaleFactor;
-        double yStd = cam.standardDeviations[VisionConstants.kMegatag2YStdDevIndex] * scaleFactor;
+        double xStd = cam.standardDeviations[VisionConstants.kMegatag1XStdDevIndex] * scaleFactor;
+        double yStd = cam.standardDeviations[VisionConstants.kMegatag1YStdDevIndex] * scaleFactor;
 
-        double xyStd = Math.max(xStd, yStd);
-        // Rotation comes from the gyro via SetRobotOrientation — don't let vision override it
-        Matrix<N3, N1> visionStdDevs =
-                VecBuilder.fill(xyStd, xyStd, VisionConstants.kLargeVariance);
+        double xyStd =
+                Math.max(
+                        Math.max(xStd, yStd),
+                        VisionConstants.kMinVisionXYStdDev);
+    
+        double rotStd =
+                cam.standardDeviations[VisionConstants.kMegatag1YawStdDevIndex] * scaleFactor;
+
+
+        Matrix<N3, N1> visionStdDevs = VecBuilder.fill(xyStd, xyStd, rotStd);
 
         return Optional.of(
                 new VisionFieldPoseEstimate(

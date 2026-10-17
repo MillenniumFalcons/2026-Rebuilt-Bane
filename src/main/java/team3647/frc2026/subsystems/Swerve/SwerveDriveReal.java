@@ -529,13 +529,15 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     public void driveFieldOriented(double x, double y, double rotation) {
         // Convert the field-relative command to robot-relative using ONLY the gyro heading,
         // then drive robot-centric. This keeps field orientation independent of vision fusion.
-        ChassisSpeeds robotRelative =
-                ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, getGyroFieldHeading());
-        this.robotCentric
-                .withVelocityX(robotRelative.vxMetersPerSecond)
-                .withVelocityY(robotRelative.vyMetersPerSecond)
-                .withRotationalRate(robotRelative.omegaRadiansPerSecond);
-        this.masterRequest = this.robotCentric;
+        this.fieldCentric.withVelocityX(x).withVelocityY(y).withRotationalRate(rotation);
+        this.masterRequest = this.fieldCentric;
+        // ChassisSpeeds robotRelative =
+        //         ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, getGyroFieldHeading());
+        // this.robotCentric
+        //         .withVelocityX(robotRelative.vxMetersPerSecond)
+        //         .withVelocityY(robotRelative.vyMetersPerSecond)
+        //         .withRotationalRate(robotRelative.omegaRadiansPerSecond);
+        // this.masterRequest = this.robotCentric;
     }
 
     // public void resetSimOdo(){
