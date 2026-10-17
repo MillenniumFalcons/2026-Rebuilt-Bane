@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.autos.AutoCommands;
+import team3647.frc2026.autos.AutoMode;
 import team3647.frc2026.commands.HoodCommands;
 import team3647.frc2026.commands.IndexerCommands;
 import team3647.frc2026.commands.KickerCommands;
@@ -44,6 +45,7 @@ import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants;
+import team3647.frc2026.constants.VisionConstants;
 import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
@@ -292,6 +294,20 @@ public class RobotContainer {
         return autoChooser.getSelected().getAutoCommand();
     }
 
+    /**
+     * Re-assert the selected auto's starting pose and briefly suppress vision at auto start. The
+     * pose is otherwise only set on auto-selection/alliance-found in Disabled, so a
+     * vision-corrupted odometry pose could carry into Autonomous and stall the path follower. Call
+     * from {@code autonomousInit}.
+     */
+    public void resetPoseForAuto() {
+        AutoMode selected = autoChooser.getSelected();
+        if (selected != null) {
+            swerve.setRobotPose(selected.getStartingPose());
+        }
+        visionSubsystem.suppressVisionForSeconds(VisionConstants.kAutoStartVisionSuppressSeconds);
+    }
+
     @SuppressWarnings("unchecked")
     public final SwerveDrive swerve =
             Utils.isSimulation()
@@ -430,9 +446,23 @@ public class RobotContainer {
     public final VisionState visionState =
             new VisionState(
                     (VisionFieldPoseEstimate est) -> {
+                        // Use the pipeline's distance/quality-scaled std devs, floored so a single
+                        // optimistic frame can't near-absolutely trust vision. Previously these
+                        // were pinned at 0.05 m, which let a noisy pose snap odometry and stall
+                        // the auto path follower.
                         var dynamicStdDevs = est.getVisionMeasurementStdDevs();
-                        dynamicStdDevs.set(0, 0, 0.05);
-                        dynamicStdDevs.set(1, 0, 0.05);
+                        dynamicStdDevs.set(
+                                0,
+                                0,
+                                Math.max(
+                                        dynamicStdDevs.get(0, 0),
+                                        VisionConstants.kMinVisionXYStdDev));
+                        dynamicStdDevs.set(
+                                1,
+                                0,
+                                Math.max(
+                                        dynamicStdDevs.get(1, 0),
+                                        VisionConstants.kMinVisionXYStdDev));
                         swerve.addVisionMeasurement(
                                 est.getVisionRobotPoseMeters(),
                                 Utils.fpgaToCurrentTime(est.getTimestampSeconds()),

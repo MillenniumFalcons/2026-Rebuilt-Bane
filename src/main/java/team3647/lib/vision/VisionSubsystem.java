@@ -33,9 +33,25 @@ public class VisionSubsystem extends SubsystemBase {
 
     private boolean useVision = true;
 
+    // Vision fusion is ignored until this FPGA timestamp (set at auto start). Prevents a noisy
+    // single-tag estimate from snapping odometry while the pose/path follower is initializing.
+    private double visionSuppressedUntil = 0.0;
+
+    // Count of consecutive estimates rejected for disagreeing with odometry. Used to avoid locking
+    // vision out permanently if odometry itself has drifted far from truth.
+    private int consecutiveOdoJumpRejects = 0;
+
     public VisionSubsystem(VisionIO io, VisionState state) {
         this.io = io;
         this.state = state;
+    }
+
+    /**
+     * Ignore all vision fusion for {@code seconds} from now. Call at autonomous start so a jittery
+     * single-tag MegaTag1 pose can't teleport odometry while the path follower is spinning up.
+     */
+    public void suppressVisionForSeconds(double seconds) {
+        visionSuppressedUntil = Timer.getFPGATimestamp() + seconds;
     }
 
     /** Fuses two vision pose estimates using inverse-variance weighting. */
@@ -115,7 +131,9 @@ public class VisionSubsystem extends SubsystemBase {
         var maybeMTB = processCamera(inputs.cameraB, "CameraB", VisionConstants.kRobotToCameraB);
         var maybeMTC = processCamera(inputs.cameraC, "CameraC", VisionConstants.kRobotToCameraC);
 
-        if (!useVision) {
+        boolean suppressed = Timer.getFPGATimestamp() < visionSuppressedUntil;
+        Logger.recordOutput("Vision/suppressed", suppressed);
+        if (!useVision || suppressed) {
             Logger.recordOutput("Vision/usingVision", false);
             Logger.recordOutput("Vision/exclusiveTagId", state.getExclusiveTag().orElse(-1));
             Logger.recordOutput("Vision/latencyPeriodicSec", Timer.getFPGATimestamp() - startTime);
@@ -359,6 +377,25 @@ public class VisionSubsystem extends SubsystemBase {
         }
 
         Pose2d estimatePose = poseEstimate.fieldToRobot();
+
+        // Reject estimates that disagree wildly with current odometry while enabled. This stops a
+        // noisy single-tag MegaTag1 pose from teleporting the robot (and stalling the path
+        // follower) right at auto start. Disabled is left ungated so vision can seed/converge.
+        // A long run of rejections means odometry itself is probably wrong, so we stop rejecting
+        // and let vision pull us back rather than locking it out forever.
+        if (DriverStation.isEnabled()) {
+            double odoJump =
+                    estimatePose.getTranslation().getDistance(loggedPose.get().getTranslation());
+            Logger.recordOutput(logPrefix + "/OdoJumpMeters", odoJump);
+            if (odoJump > VisionConstants.kMaxOdometryJumpMeters
+                    && consecutiveOdoJumpRejects < VisionConstants.kOdoJumpRejectRecoveryFrames) {
+                consecutiveOdoJumpRejects++;
+                Logger.recordOutput(logPrefix + "/RejectedOdoJump", true);
+                return Optional.empty();
+            }
+            consecutiveOdoJumpRejects = 0;
+            Logger.recordOutput(logPrefix + "/RejectedOdoJump", false);
+        }
 
         double scaleFactor = 1.0 / poseEstimate.quality();
         double xStd = cam.standardDeviations[VisionConstants.kMegatag2XStdDevIndex] * scaleFactor;

@@ -40,6 +40,19 @@ public class VisionConstants {
     public static final double kDefaultZThreshold = 0.2; // meters
     public static final double kDefaultNormThreshold = 1.0; // meters
 
+    // ---- Pose-fusion guards (added to stop vision from snapping odometry at auto start) ----
+    // Reject vision estimates this far (meters) from current odometry while enabled, so a noisy
+    // single-tag MegaTag1 pose can't teleport the robot and stall the path follower.
+    public static final double kMaxOdometryJumpMeters = 1.0;
+    // If we reject this many frames in a row, assume odometry is the wrong one and accept vision
+    // again so we can recover (never lock vision out permanently).
+    public static final int kOdoJumpRejectRecoveryFrames = 50;
+    // Ignore all vision fusion for this long at autonomous start while the pose/path initializes.
+    public static final double kAutoStartVisionSuppressSeconds = 0.75;
+    // Floor on the fused XY std dev so a single optimistic frame can't near-absolutely trust vision
+    // (previously the acceptor pinned this at 0.05 m).
+    public static final double kMinVisionXYStdDev = 0.1; // meters
+
     // ---- Camera specs ----
     public static final int kCameraImageWidth = 1280;
     public static final int kCameraImageHeight = 800;

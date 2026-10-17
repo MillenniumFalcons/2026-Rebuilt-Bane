@@ -91,8 +91,7 @@ public class VisionIOHardwareLimelight implements VisionIO {
         camera.seesTarget = table.getEntry("tv").getDouble(0) == 1.0;
         if (camera.seesTarget) {
             try {
-                var maybeMegatag =
-                        LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+                var maybeMegatag = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
                 var maybeRobotPose3d =
                         LimelightHelpers.toPose3D(
                                 LimelightHelpers.getBotPose_wpiBlue(limelightName));

@@ -230,7 +230,7 @@ public class AutoCommands extends AutoPathFollowers {
 
         this.rightMidBump =
                 new AutoMode(
-                        rightMidBumpPP(), getInitialPPLazy("Right Mid Bump 1"), "Right Mid Bump");
+                        rightMidBumpPP(), getInitialPPLazy("Right Mid Bump"), "Right Mid Bump");
 
         this.leftMidBump =
                 new AutoMode(

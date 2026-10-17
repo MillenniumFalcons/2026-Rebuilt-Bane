@@ -124,6 +124,10 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousInit() {
 
+        // Re-assert the selected auto's starting pose (and briefly suppress vision) so a stale or
+        // vision-corrupted odometry pose from Disabled can't stall the path follower at auto start.
+        m_robotContainer.resetPoseForAuto();
+
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
