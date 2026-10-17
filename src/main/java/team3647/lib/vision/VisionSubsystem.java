@@ -361,13 +361,13 @@ public class VisionSubsystem extends SubsystemBase {
         Pose2d estimatePose = poseEstimate.fieldToRobot();
 
         double scaleFactor = 1.0 / poseEstimate.quality();
-        double xStd = cam.standardDeviations[VisionConstants.kMegatag1XStdDevIndex] * scaleFactor;
-        double yStd = cam.standardDeviations[VisionConstants.kMegatag1YStdDevIndex] * scaleFactor;
-        double rotStd =
-                cam.standardDeviations[VisionConstants.kMegatag1YawStdDevIndex] * scaleFactor;
+        double xStd = cam.standardDeviations[VisionConstants.kMegatag2XStdDevIndex] * scaleFactor;
+        double yStd = cam.standardDeviations[VisionConstants.kMegatag2YStdDevIndex] * scaleFactor;
 
         double xyStd = Math.max(xStd, yStd);
-        Matrix<N3, N1> visionStdDevs = VecBuilder.fill(xyStd, xyStd, rotStd);
+        // Rotation comes from the gyro via SetRobotOrientation — don't let vision override it
+        Matrix<N3, N1> visionStdDevs =
+                VecBuilder.fill(xyStd, xyStd, VisionConstants.kLargeVariance);
 
         return Optional.of(
                 new VisionFieldPoseEstimate(
