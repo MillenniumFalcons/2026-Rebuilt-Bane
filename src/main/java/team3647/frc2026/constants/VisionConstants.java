@@ -40,6 +40,12 @@ public class VisionConstants {
     public static final double kDefaultZThreshold = 0.2; // meters
     public static final double kDefaultNormThreshold = 1.0; // meters
 
+    // ---- Field-bounds rejection ----
+    // Reject vision estimates whose translation falls outside the field by more than this margin.
+    public static final double kFieldBoundsMarginMeters = 0.5; // meters
+    public static final double kFieldLengthMeters = kAprilTagLayout.getFieldLength();
+    public static final double kFieldWidthMeters = kAprilTagLayout.getFieldWidth();
+
     // ---- Pose-fusion guards (added to stop vision from snapping odometry at auto start) ----
     // Ignore all vision fusion for this long at autonomous start while the pose/path initializes.
     public static final double kAutoStartVisionSuppressSeconds = 0.75;
@@ -47,12 +53,21 @@ public class VisionConstants {
     // (previously the acceptor pinned this at 0.05 m).
     public static final double kMinVisionXYStdDev = 0.1; // meters
 
-    // ---- Vision-vs-gyro trust tuning (lower std dev = pose estimator leans on vision over gyro) --
+    // ---- Vision-only ("beached") mode ----
+    // When the robot is beached/high-centered the wheels slip and odometry is garbage. Holding the
+    // beached button overrides every accepted vision measurement with these tiny std devs so the
+    // pose estimator trusts vision almost absolutely and effectively ignores wheel odometry.
+    public static final double kVisionOnlyXYStdDev = 0.001; // meters
+    public static final double kVisionOnlyYawStdDev = 0.001; // radians
+
+    // ---- Vision-vs-gyro trust tuning (lower std dev = pose estimator leans on vision over gyro)
+    // --
     // Scales the Limelight-reported XY std devs before fusion; < 1 pulls the fused pose harder
     // toward vision instead of wheel odometry.
     public static final double kVisionXYTrustMultiplier = 0.5;
     // Heading std devs (radians) fed to the pose estimator. Previously this was kLargeVariance
-    // (1e6), which meant heading came 100% from the gyro. Smaller values let vision correct heading.
+    // (1e6), which meant heading came 100% from the gyro. Smaller values let vision correct
+    // heading.
     // Multi-tag yaw is reliable, so trust it hard; single-tag yaw is noisier, so trust it weakly.
     public static final double kVisionYawStdDevMultiTag = 0.2;
     public static final double kVisionYawStdDevSingleTag = 1.0;

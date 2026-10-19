@@ -9,12 +9,14 @@ import dev.doglog.DogLog;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RuntimeType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import org.littletonrobotics.junction.AutoLogOutputManager;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -84,6 +86,16 @@ public class Robot extends LoggedRobot {
         // SignalLogger.start();
         // ModifiedSignalLogger.start();
         SignalLogger.stop();
+
+        // Must run BEFORE RobotContainer is constructed: SwerveDriveSim calls
+        // SimulatedArena.getInstance() in its constructor, which lazily creates the default
+        // Arena2026Rebuilt and registers the drivetrain sim into it. Overriding the instance
+        // afterward (e.g. in simulationInit) discards that arena and leaves the drivetrain
+        // unregistered, so the robot never moves in sim.
+        if (RobotBase.isSimulation()) {
+            SimulatedArena.overrideInstance(new Arena2026Rebuilt(false));
+        }
+
         m_robotContainer = new RobotContainer();
         RobotController.setBrownoutVoltage(6.0);
     }

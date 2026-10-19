@@ -9,7 +9,7 @@ public class GlobalConstants {
 
     public static final double kFalconTicksPerRotation = 1;
 
-    public static final Mass kRobotMass = Units.Kilogram.of(125); // WRONG
+    public static final Mass kRobotMass = Units.Kilogram.of(115); // WRONG
     public static final MomentOfInertia kRobotMoi =
             Units.KilogramSquareMeters.of(3.20472599); // WRONG
 

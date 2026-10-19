@@ -347,7 +347,7 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
             masterConfigurator.apply(masterConfiguration);
         }
     }
-
+ 
     /** Sets the selected sensor to 0 (default) */
     public void resetEncoder() {
         setEncoder(0);
@@ -407,7 +407,10 @@ public abstract class TalonFXSubsystem implements PeriodicSubsystem {
     }
 
     public double getTotalCurrent() {
-        double total = ioAutoLogged.supplyCurrent;
+        double total = 0.0;
+        for (TalonFX master : masters) {
+            total += master.getSupplyCurrent().getValueAsDouble();
+        }
         for (TalonFX follower : followers) {
             total += follower.getSupplyCurrent().getValueAsDouble();
         }

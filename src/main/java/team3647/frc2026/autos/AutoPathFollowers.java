@@ -4,10 +4,8 @@ import choreo.Choreo;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,12 +18,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import java.io.IOException;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.autos.AutoCommands.ChoreoController;
 import team3647.frc2026.constants.AutoConstants;
@@ -240,12 +236,8 @@ public class AutoPathFollowers implements AllianceObserver {
     public Pose2d getInitialPP(String pathName, Alliance color) {
         Pose2d startPose;
         try {
-            startPose =
-                    PathPlannerAuto.getPathGroupFromAutoFile(pathName)
-                            .get(0)
-                            .getStartingHolonomicPose()
-                            .get();
-        } catch (FileVersionException | IOException | ParseException e) {
+            startPose = PathPlannerPath.fromPathFile(pathName).getStartingHolonomicPose().get();
+        } catch (Exception e) {
             startPose = new Pose2d();
             e.printStackTrace();
         }

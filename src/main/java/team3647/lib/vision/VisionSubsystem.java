@@ -356,6 +356,12 @@ public class VisionSubsystem extends SubsystemBase {
             return Optional.empty();
         }
 
+        // Reject poses outside the field boundary (plus a small margin)
+        if (isOutsideField(poseEstimate.fieldToRobot().getTranslation())) {
+            Logger.recordOutput(logPrefix + "/RejectedOutOfField", poseEstimate.fieldToRobot());
+            return Optional.empty();
+        }
+
         // Exclusive-tag filtering
         var exclusiveTag = state.getExclusiveTag();
         boolean hasExclusiveId =
@@ -373,14 +379,10 @@ public class VisionSubsystem extends SubsystemBase {
         double xStd = cam.standardDeviations[VisionConstants.kMegatag1XStdDevIndex] * scaleFactor;
         double yStd = cam.standardDeviations[VisionConstants.kMegatag1YStdDevIndex] * scaleFactor;
 
-        double xyStd =
-                Math.max(
-                        Math.max(xStd, yStd),
-                        VisionConstants.kMinVisionXYStdDev);
-    
+        double xyStd = Math.max(Math.max(xStd, yStd), VisionConstants.kMinVisionXYStdDev);
+
         double rotStd =
                 cam.standardDeviations[VisionConstants.kMegatag1YawStdDevIndex] * scaleFactor;
-
 
         Matrix<N3, N1> visionStdDevs = VecBuilder.fill(xyStd, xyStd, rotStd);
 
@@ -390,6 +392,15 @@ public class VisionSubsystem extends SubsystemBase {
                         poseEstimate.timestampSeconds(),
                         visionStdDevs,
                         poseEstimate.fiducialIds().length));
+    }
+
+    /** Returns true if the translation lies outside the field perimeter plus a small margin. */
+    private static boolean isOutsideField(Translation2d translation) {
+        double margin = VisionConstants.kFieldBoundsMarginMeters;
+        return translation.getX() < -margin
+                || translation.getX() > VisionConstants.kFieldLengthMeters + margin
+                || translation.getY() < -margin
+                || translation.getY() > VisionConstants.kFieldWidthMeters + margin;
     }
 
     public void setUseVision(boolean useVision) {

@@ -18,7 +18,7 @@ public class WristCommands {
     }
 
     public Command retract() {
-        return setAngle(WristConstants.kMaxAngle);
+        return setAngleDeg(127);
     }
 
     public Command stowSlow() {

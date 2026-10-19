@@ -56,6 +56,12 @@ public interface SwerveDrive extends PeriodicSubsystem, AllianceObserver {
 
     public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs);
 
+    /**
+     * When enabled, the pose estimator trusts vision almost absolutely and effectively ignores
+     * wheel odometry. Use while the robot is beached/high-centered and the wheels are slipping.
+     */
+    default void setVisionOnlyMode(boolean enabled) {}
+
     public Optional<IntakeSimulation> getSimIntake();
 
     public AbstractDriveTrainSimulation getSim();

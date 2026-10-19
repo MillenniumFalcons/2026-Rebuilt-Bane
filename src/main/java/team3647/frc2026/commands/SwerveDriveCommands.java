@@ -106,11 +106,12 @@ public class SwerveDriveCommands implements AllianceObserver {
                 .finallyDo(() -> autoDrive.setEnabled(false));
     }
 
-    public Command seedFieldCentric(Supplier<Alliance> color){
-        return Commands.runOnce(()->{
-            Rotation2d rot = color.get() == Alliance.Blue ? Rotation2d.kZero : Rotation2d.k180deg;
-            swerve.setRobotPose(new Pose2d(swerve.getOdoPose().getTranslation(), rot));
-
-        });
+    public Command seedFieldCentric(Supplier<Alliance> color) {
+        return Commands.runOnce(
+                () -> {
+                    Rotation2d rot =
+                            color.get() == Alliance.Blue ? Rotation2d.kZero : Rotation2d.k180deg;
+                    swerve.setRobotPose(new Pose2d(swerve.getOdoPose().getTranslation(), rot));
+                });
     }
 }

@@ -250,8 +250,6 @@ public class RobotContainer {
                 .and(mainController.rightTrigger.negate())
                 .whileTrue(superstructure.prep());
 
-        mainController.rightMidButton.onTrue(swerveCommands.seedFieldCentric(robotTracker::getColor));
-
         // cocontroller
         coController.rightTrigger.whileTrue(superstructure.prep());
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
@@ -270,6 +268,25 @@ public class RobotContainer {
         // defense mode
         coController.buttonA.onTrue(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.9)));
         coController.buttonA.onFalse(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.6)));
+
+        // beached mode: hold to make the pose estimator rely entirely on vision (wheels slipping)
+        coController.leftBumper.onTrue(
+                Commands.runOnce(() -> swerve.setVisionOnlyMode(true)).ignoringDisable(true));
+        coController.leftBumper.onFalse(
+                Commands.runOnce(() -> swerve.setVisionOnlyMode(false)).ignoringDisable(true));
+
+        // snap pose estimation to the latest accepted vision pose (one-shot hard reset).
+        // Skip if no vision has ever been accepted or the last accepted pose is stale (>2s old).
+        coController.buttonY.onTrue(
+                Commands.runOnce(
+                                () -> {
+                                    double lastTs = visionState.lastUsedMegatagTimestamp();
+                                    double age = Timer.getFPGATimestamp() - lastTs;
+                                    if (lastTs > 0 && age <= 2.0) {
+                                        swerve.resetPose(visionState.lastUsedMegatagPose());
+                                    }
+                                })
+                        .ignoringDisable(true));
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());

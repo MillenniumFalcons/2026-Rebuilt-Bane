@@ -1,8 +1,10 @@
 package team3647.frc2026.autos;
 
 import choreo.trajectory.SwerveSample;
+import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -30,6 +32,7 @@ public class AutoCommands extends AutoPathFollowers {
     //     public Command rightMidRushPathPlanner() {
     //         return followPathPlannerAuto("Right Mid Sweep");
     //     }
+
 
     double spinUpSpeed = 9.0;
 
@@ -89,6 +92,17 @@ public class AutoCommands extends AutoPathFollowers {
     public Command leftMidBumpPP() {
         return Commands.sequence(
                 sweepShootMirror("Right Mid Bump 1", 4), sweepShootMirror("Right Mid Bump 2", 10));
+    }
+
+    public Command rightBumpLong() {
+        return Commands.sequence(
+                sweepAndShoot("Right Mid Bump 1", 4), sweepAndShoot("Right Mid Bump 2 Long", 10));
+    }
+
+    public Command leftBumpLong() {
+        return Commands.sequence(
+                sweepShootMirror("Right Mid Bump 1", 4),
+                sweepShootMirror("Right Mid Bump 2 Long", 10));
     }
 
     public Command leftMidRushPathPlanner() {
@@ -204,6 +218,8 @@ public class AutoCommands extends AutoPathFollowers {
     public final AutoMode rightMidRushPP;
     public final AutoMode rightMidBump;
     public final AutoMode leftMidBump;
+    public final AutoMode rightBumpLong;
+    public final AutoMode leftBumpLong;
     public final AutoMode depot;
     public final AutoMode empty;
     public final AutoMode preload;
@@ -225,12 +241,12 @@ public class AutoCommands extends AutoPathFollowers {
         this.rightMidRushPP =
                 new AutoMode(
                         rightMidRushPathPlanner(),
-                        getInitialPPLazy("Right Mid Sweep"),
+                        getInitialPPLazy("Right Mid Sweep 1"),
                         "Right Mid Sweep");
 
         this.rightMidBump =
                 new AutoMode(
-                        rightMidBumpPP(), getInitialPPLazy("Right Mid Bump"), "Right Mid Bump");
+                        rightMidBumpPP(), getInitialPPLazy("Right Mid Bump 1"), "Right Mid Bump");
 
         this.leftMidBump =
                 new AutoMode(
@@ -238,7 +254,17 @@ public class AutoCommands extends AutoPathFollowers {
                         getInitialPPMirroredLazy("Right Mid Bump 1"),
                         "Left Mid Bump");
 
-        this.depot = new AutoMode(depot(), getInitialPPLazy("Depot"), "Depot");
+        this.rightBumpLong =
+                new AutoMode(
+                        rightBumpLong(), getInitialPPLazy("Right Mid Bump 1"), "Right Bump Long");
+
+        this.leftBumpLong =
+                new AutoMode(
+                        leftBumpLong(),
+                        getInitialPPMirroredLazy("Right Mid Bump 1"),
+                        "Left Bump Long");
+
+        this.depot = new AutoMode(depot(), getInitialPPLazy("Depot 1"), "Depot");
 
         this.preload = new AutoMode(preloadAuto(), new Pose2d(), "preload");
 
@@ -251,8 +277,40 @@ public class AutoCommands extends AutoPathFollowers {
                         rightMidRushPP,
                         rightMidBump,
                         leftMidBump,
+                        rightBumpLong,
+                        leftBumpLong,
                         preload,
                         depot);
+    }
+
+    /**
+     * Resolve + cache every auto's starting pose and generate one trajectory up front, so the
+     * PathPlanner file parsing and first-run JIT/class-loading happen at boot instead of
+     * synchronously in {@code autonomousInit}, where they would stall the first path at auto start.
+     * Safe to call while disabled; it never commands the drivetrain. Call once from robot init.
+     */
+    public void warmup(RobotConfig config) {
+        // Touch each auto's start pose so the .path file read + caching happens now, not at enable.
+        for (AutoMode mode : autosList) {
+            try {
+                mode.getStartingPose();
+            } catch (Exception e) {
+                // best-effort warmup; ignore
+            }
+        }
+
+        // Generate one trajectory so PathPlanner's generation code is loaded/JIT'd before the
+        // first path's initialize() runs at auto start.
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile("Right Mid Bump 1");
+            Rotation2d startRot =
+                    path.getStartingHolonomicPose()
+                            .map(Pose2d::getRotation)
+                            .orElse(new Rotation2d());
+            path.generateTrajectory(new ChassisSpeeds(), startRot, config);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public BooleanSupplier hasTarget() {

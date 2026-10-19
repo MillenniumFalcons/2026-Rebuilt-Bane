@@ -16,6 +16,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -41,6 +42,7 @@ import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 import org.littletonrobotics.junction.Logger;
 import team3647.frc2026.constants.SwerveDriveConstants;
 import team3647.frc2026.constants.TunerConstants.TunerSwerveDrivetrain;
+import team3647.frc2026.constants.VisionConstants;
 import team3647.lib.ModifiedSignalLogger;
 import team3647.lib.PeriodicSubsystem;
 import team3647.lib.SwerveFOCRequest;
@@ -63,6 +65,9 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     public final Field2d field = new Field2d();
 
     private boolean isChar = false;
+
+    // Beached mode: when true, vision measurements are trusted almost absolutely (odometry ignored).
+    private boolean visionOnlyMode = false;
 
     private final double maxSpeedMpS;
     private final double maxRotRadPerSec;
@@ -264,6 +269,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
 
         readPeriodicInputs();
         writePeriodicOutputs();
+        clampPoseToField();
 
         // Logger.recordOutput("HEADING", this.getHeading());
     }
@@ -311,7 +317,9 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         // Re-seed the gyro-only field heading to match the pose we just set.
         this.fieldGyroOffset =
                 pose.getRotation()
-                        .minus(Rotation2d.fromDegrees(this.getPigeon2().getYaw().getValueAsDouble()));
+                        .minus(
+                                Rotation2d.fromDegrees(
+                                        this.getPigeon2().getYaw().getValueAsDouble()));
     }
 
     // Field heading derived purely from the gyro (Pigeon yaw + seed offset), with no vision fusion.
@@ -453,8 +461,59 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
 
     @Override
     public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
+        // Reject any vision measurement that places the robot outside the field.
+        if (isOutsideField(pose.getTranslation())) {
+            Logger.recordOutput("Swerve/RejectedVisionOutOfField", pose);
+            return;
+        }
+        // Beached mode: wheels are slipping, so trust vision almost absolutely by shrinking its std
+        // devs. This makes the pose estimator effectively ignore wheel odometry.
+        if (visionOnlyMode) {
+            stdDevs =
+                    edu.wpi.first.math.VecBuilder.fill(
+                            VisionConstants.kVisionOnlyXYStdDev,
+                            VisionConstants.kVisionOnlyXYStdDev,
+                            VisionConstants.kVisionOnlyYawStdDev);
+        }
         periodicIO.visionPose = pose;
         super.addVisionMeasurement(pose, timestamp, stdDevs);
+    }
+
+    @Override
+    public void setVisionOnlyMode(boolean enabled) {
+        this.visionOnlyMode = enabled;
+        Logger.recordOutput("Swerve/VisionOnlyMode", enabled);
+    }
+
+    /** Returns true if the translation lies outside the field perimeter plus a small margin. */
+    private static boolean isOutsideField(Translation2d translation) {
+        double margin = VisionConstants.kFieldBoundsMarginMeters;
+        return translation.getX() < -margin
+                || translation.getX() > VisionConstants.kFieldLengthMeters + margin
+                || translation.getY() < -margin
+                || translation.getY() > VisionConstants.kFieldWidthMeters + margin;
+    }
+
+    /**
+     * Clamps the fused pose estimate back inside the field when it drifts out. Odometry integrates
+     * continuously and cannot be "rejected" like a vision measurement, so instead we snap the
+     * estimator's pose to the nearest in-field point whenever it leaves the field boundary.
+     */
+    private void clampPoseToField() {
+        Pose2d pose = periodicIO.pose;
+        if (pose == null || !isOutsideField(pose.getTranslation())) {
+            return;
+        }
+        double margin = VisionConstants.kFieldBoundsMarginMeters;
+        double x =
+                MathUtil.clamp(
+                        pose.getX(), -margin, VisionConstants.kFieldLengthMeters + margin);
+        double y =
+                MathUtil.clamp(
+                        pose.getY(), -margin, VisionConstants.kFieldWidthMeters + margin);
+        Pose2d clamped = new Pose2d(x, y, pose.getRotation());
+        Logger.recordOutput("Swerve/ClampedPoseToField", clamped);
+        resetPose(clamped);
     }
 
     public void onAllianceFound(Alliance color) {
