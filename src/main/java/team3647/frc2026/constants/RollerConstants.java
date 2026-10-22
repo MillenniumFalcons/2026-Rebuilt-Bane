@@ -37,7 +37,7 @@ public class RollerConstants {
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 60.0;
+        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 50.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimit = 90.0;
         kMasterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 

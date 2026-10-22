@@ -96,7 +96,7 @@ public class WristConstants {
 
         kCancoderConfig.MagnetSensor.SensorDirection =
                 SensorDirectionValue.CounterClockwise_Positive;
-        kCancoderConfig.MagnetSensor.MagnetOffset = -1.0315; // need to change
+        kCancoderConfig.MagnetSensor.MagnetOffset = -0.79; // need to change
         kCancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
         cancoder.getConfigurator().apply(kCancoderConfig);
     }

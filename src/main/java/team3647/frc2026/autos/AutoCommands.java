@@ -16,6 +16,7 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import team3647.frc2026.constants.FieldConstants;
+import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Superstructure;
@@ -36,14 +37,6 @@ public class AutoCommands extends AutoPathFollowers {
 
     double spinUpSpeed = 9.0;
 
-    public Command shoot(double time) {
-        return Commands.deadline(
-                Commands.waitSeconds(time),
-                autoAlign(),
-                superstructure.shoot(),
-                Commands.waitSeconds(2).andThen(superstructure.wristCommands.retract()));
-    }
-
     public double getShootSpeedForEndOfPath(String pathName, boolean mirrored) {
         try {
             PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
@@ -63,17 +56,27 @@ public class AutoCommands extends AutoPathFollowers {
         }
     }
 
-    public Command sweepAndShoot(String pathname, double shootTime, boolean mirror) {
+    public Command shoot(double time) {
+        return Commands.deadline(
+                Commands.waitSeconds(time),
+                autoAlign(),
+                superstructure.shoot(),
+                Commands.waitSeconds(1.5).andThen(superstructure.wristCommands.retract()));
+    }
+
+    public Command sweep(String pathname, boolean mirror) {
         Command pathFollow =
                 mirror ? followMirroredPathPlannerPath(pathname) : followPathPlannerPath(pathname);
         double spinUp = spinUpSpeed;
-        return Commands.sequence(
-                Commands.deadline(
+        return Commands.deadline(
                         pathFollow,
-                        superstructure.intake(),
+                        superstructure.intakeFast(),
                         superstructure.shooterCommands.setVelocity(() -> spinUp),
-                        superstructure.hoodCommands.setAngle(WristConstants.kMinAngle)),
-                shoot(shootTime));
+                        superstructure.hoodCommands.setAngle(HoodConstants.kMinAngle));
+    }
+
+    public Command sweepAndShoot(String pathname, double shootTime, boolean mirror) {
+        return Commands.sequence(sweep(pathname, mirror), shoot(shootTime));
     }
 
     public Command sweepAndShoot(String pathname, double shootTime) {
@@ -86,12 +89,16 @@ public class AutoCommands extends AutoPathFollowers {
 
     public Command rightMidBumpPP() {
         return Commands.sequence(
-                sweepAndShoot("Right Mid Bump 1", 4), sweepAndShoot("Right Mid Bump 2", 10));
+                sweepAndShoot("Right Mid Bump 1", 3.5), 
+                sweepAndShoot("Right Mid Bump 2", 3),
+                sweep("Right Mid Bump 3", false));
     }
 
     public Command leftMidBumpPP() {
         return Commands.sequence(
-                sweepShootMirror("Right Mid Bump 1", 4), sweepShootMirror("Right Mid Bump 2", 10));
+                sweepShootMirror("Right Mid Bump 1", 3.5), 
+                sweepShootMirror("Right Mid Bump 2", 3),
+                sweep("Right Mid Bump 3", true));
     }
 
     public Command rightBumpLong() {

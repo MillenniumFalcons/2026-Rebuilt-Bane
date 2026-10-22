@@ -39,12 +39,12 @@ public class ShooterConstants {
     public static final double kNativeVelToSurfaceMpS = kWheelRotationMeters * kGearboxReduction;
 
     public static final double kNominalVoltage = 11.0;
-    public static final double kMaxStatorCurrent = 90.0;
+    public static final double kMaxStatorCurrent = 100.0;
     public static final double kMaxSupplyCurrent = 50.0;
     public static final double kidSpeed = 9.0;
 
     public static final double kIdleSpeed = 8.5;
-    public static final double kIdleSpeedMid = 8.0;
+    public static final double kIdleSpeedMid = 8.5;
 
     public static final double kS = 4.3;
     public static final double kV = 0.43;
@@ -73,7 +73,7 @@ public class ShooterConstants {
         shootSpeedMap.put(2.0, 8.6 + tempOffset);
         shootSpeedMap.put(2.5, 9.25 + tempOffset);
         shootSpeedMap.put(3.0, 9.4 + tempOffset);
-        shootSpeedMap.put(3.5, 10.0 + tempOffset);
+        shootSpeedMap.put(3.5, 10.2 + tempOffset);
         shootSpeedMap.put(4.0, 10.75 + tempOffset);
         shootSpeedMap.put(4.5, 11.5 + tempOffset); // made up
         shootSpeedMap.put(5.0, 12.0 + tempOffset); // made up

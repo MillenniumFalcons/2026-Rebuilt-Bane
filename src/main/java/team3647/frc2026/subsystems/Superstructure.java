@@ -222,6 +222,11 @@ public class Superstructure extends VirtualSubsystem {
                 wristCommands.deploy(), rollerCommands.intake(), indexerCommands.openLoop(0.3));
     }
 
+    public Command intakeFast() {
+        return Commands.parallel(
+                wristCommands.deploy(), rollerCommands.intakeFast(), indexerCommands.openLoop(0.3));
+    }
+
     public Command intakeWithDelay() {
         return Commands.sequence(
                 Commands.waitSeconds(0.1),

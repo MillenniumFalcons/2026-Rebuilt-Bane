@@ -31,6 +31,10 @@ public class RollerCommands {
         //         rollers);
     }
 
+    public Command intakeFast() {
+        return Commands.run(() -> rollers.setOpenLoop(0.8), rollers);
+    }
+
     public Command jerkOff() {
         return Commands.sequence(
                         Commands.run(() -> rollers.setOpenLoop(0.5), rollers).withTimeout(0.05),

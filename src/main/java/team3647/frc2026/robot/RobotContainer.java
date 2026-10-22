@@ -416,7 +416,7 @@ public class RobotContainer {
     public final SwerveDriveCommands swerveCommands =
             new SwerveDriveCommands(
                     swerve,
-                    SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
+                    6.5,
                     SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
 
     public final ShooterCommands shooterCommands = new ShooterCommands(shooter);
