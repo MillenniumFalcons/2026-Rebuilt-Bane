@@ -65,7 +65,6 @@ public class SwerveDriveCommands implements AllianceObserver {
                             Math.pow(y.getAsDouble(), 2) * Math.signum(y.getAsDouble()) * 1.05;
                     double xSquared =
                             Math.pow(x.getAsDouble(), 2) * Math.signum(x.getAsDouble()) * 1.05;
-
                     double xyMult = 1.0;
                     double motionTurnComponent = rot.getAsDouble() * kMaxRotRadPs * rotMultiplier;
 

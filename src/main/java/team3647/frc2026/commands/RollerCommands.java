@@ -20,7 +20,7 @@ public class RollerCommands {
     }
 
     public Command intake() {
-        return Commands.run(() -> rollers.setOpenLoop(0.6), rollers);
+        return Commands.run(() -> rollers.setOpenLoop(0.75), rollers);
         // return Commands.runEnd(
         //         () ->
         //                 rollers.setVelocityTorque(

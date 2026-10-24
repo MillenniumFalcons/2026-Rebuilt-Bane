@@ -15,6 +15,12 @@
           "data": {
             "pathName": "Right Mid Bump 2"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Mid Bump 3"
+          }
         }
       ]
     }

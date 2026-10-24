@@ -74,6 +74,9 @@ public interface SwerveDrive extends PeriodicSubsystem, AllianceObserver {
         return 0;
     }
 
+    /** Sets the supply current limit (amps) applied to all four drive motors at runtime. */
+    default void setDriveSupplyCurrentLimit(double amps) {}
+
     @AutoLog
     public static class PeriodicIO {
         // inputs

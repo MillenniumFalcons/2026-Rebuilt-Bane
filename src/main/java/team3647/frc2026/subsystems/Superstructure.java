@@ -62,6 +62,11 @@ public class Superstructure extends VirtualSubsystem {
     public final Trigger kickerCurrent;
     public final Trigger notLoaded;
 
+    // Manual override: when true, the indexWhenReady* gates fire immediately instead of waiting
+    // for alignment/velocity/hood. Lets the co-driver force-start feeding on an already-running
+    // shoot() without scheduling a competing command that would interrupt the spin-up.
+    public boolean forceIndex = false;
+
     public Superstructure(
             Shooter shooter,
             Indexer indexer,
@@ -104,6 +109,15 @@ public class Superstructure extends VirtualSubsystem {
         return Commands.runOnce(() -> fuelLoaded = loaded);
     }
 
+    /**
+     * Hold to force any active shooting mode to start indexing immediately, bypassing the
+     * alignment/velocity/hood gate. Requires no subsystems, so it won't interrupt the running
+     * shoot/prep command.
+     */
+    public Command forceIndex() {
+        return Commands.startEnd(() -> forceIndex = true, () -> forceIndex = false);
+    }
+
     public Angle getIntakeAngle() {
         return wantedIntakeAngle;
     }
@@ -140,6 +154,19 @@ public class Superstructure extends VirtualSubsystem {
     }
 
     /**
+     * Same as {@link #shoot()} but does not wait for rotation alignment before indexing. Still
+     * spins up and waits for shot velocity and hood angle; the driver aims rotation manually.
+     */
+    public Command shootNoAlign() {
+        return Commands.parallel(prep(), indexWhenReadyNoAlign());
+    }
+
+    public Command indexWhenReadyNoAlign() {
+        return Commands.sequence(
+                Commands.waitUntil(atShotVel.and(atHoodAngle).or(() -> forceIndex)), index());
+    }
+
+    /**
      * Same as {@link #shoot()} but with hood angle and shot speed hardcoded from the {@link
      * #kFixedShootDistance} lookup, with no auto-align (driver aims manually).
      */
@@ -158,7 +185,8 @@ public class Superstructure extends VirtualSubsystem {
                 Commands.waitUntil(
                         readyToShoot
                                 .and(() -> shooterCommands.isAtVelocity(fixedShotSpeed))
-                                .and(() -> hoodCommands.angleReached(fixedHoodAngle, 2.0))),
+                                .and(() -> hoodCommands.angleReached(fixedHoodAngle, 2.0))
+                                .or(() -> forceIndex)),
                 indexFixed());
     }
 
@@ -178,6 +206,10 @@ public class Superstructure extends VirtualSubsystem {
                                         shooterCommands.isAtVelocity(
                                                 () -> ShooterConstants.kidSpeed)),
                         index()));
+    }
+
+    public Command prepShoot() {
+        return shooterCommands.setVelocity(shotSpeed);
     }
 
     public Command prep() {
@@ -200,7 +232,9 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command indexWhenReady() {
         return Commands.sequence(
-                Commands.waitUntil(readyToShoot.and(atShotVel).and(atHoodAngle)), index());
+                Commands.waitUntil(
+                        readyToShoot.and(atShotVel).and(atHoodAngle).or(() -> forceIndex)),
+                index());
         // .onlyWhile(readyToShoot)
         //         .repeatedly());
     }
@@ -220,6 +254,10 @@ public class Superstructure extends VirtualSubsystem {
     public Command intake() {
         return Commands.parallel(
                 wristCommands.deploy(), rollerCommands.intake(), indexerCommands.openLoop(0.3));
+    }
+
+    public Command intakeNoIndex() {
+        return Commands.parallel(wristCommands.deploy(), rollerCommands.intake());
     }
 
     public Command intakeFast() {

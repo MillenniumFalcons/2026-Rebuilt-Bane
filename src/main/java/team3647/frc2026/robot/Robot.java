@@ -116,9 +116,9 @@ public class Robot extends LoggedRobot {
         m_robotContainer.visionIO.setIMUMode(1);
         SignalLogger.stop();
         ModifiedSignalLogger.stop();
-        LimelightHelpers.SetThrottle(VisionConstants.kLimelightATableName, 100);
-        LimelightHelpers.SetThrottle(VisionConstants.kLimelightBTableName, 100);
-        LimelightHelpers.SetThrottle(VisionConstants.kLimelightCTableName, 100);
+        LimelightHelpers.SetThrottle(VisionConstants.kLimelightATableName, 10);
+        LimelightHelpers.SetThrottle(VisionConstants.kLimelightBTableName, 10);
+        LimelightHelpers.SetThrottle(VisionConstants.kLimelightCTableName, 10);
     }
 
     @Override
@@ -140,6 +140,9 @@ public class Robot extends LoggedRobot {
         // vision-corrupted odometry pose from Disabled can't stall the path follower at auto start.
         m_robotContainer.resetPoseForAuto();
 
+        // Bump the drive supply current limit up for auto; reverted in autonomousExit.
+        // m_robotContainer.swerve.setDriveSupplyCurrentLimit(70);
+
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
@@ -151,7 +154,10 @@ public class Robot extends LoggedRobot {
     public void autonomousPeriodic() {}
 
     @Override
-    public void autonomousExit() {}
+    public void autonomousExit() {
+        // Restore the normal (teleop) drive supply current limit after auto.
+        // m_robotContainer.swerve.setDriveSupplyCurrentLimit(60);
+    }
 
     @Override
     public void teleopInit() {

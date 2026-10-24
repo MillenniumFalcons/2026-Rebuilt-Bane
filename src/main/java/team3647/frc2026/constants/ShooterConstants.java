@@ -46,7 +46,8 @@ public class ShooterConstants {
     public static final double kIdleSpeed = 8.5;
     public static final double kIdleSpeedMid = 8.5;
 
-    public static final double kS = 4.3;
+    public static final double kS = 12.0;
+    //    public static final double kS = 4.3;
     public static final double kV = 0.43;
     public static final double kA = 0;
 
@@ -74,9 +75,9 @@ public class ShooterConstants {
         shootSpeedMap.put(2.5, 9.25 + tempOffset);
         shootSpeedMap.put(3.0, 9.4 + tempOffset);
         shootSpeedMap.put(3.5, 10.2 + tempOffset);
-        shootSpeedMap.put(4.0, 10.75 + tempOffset);
-        shootSpeedMap.put(4.5, 11.5 + tempOffset); // made up
-        shootSpeedMap.put(5.0, 12.0 + tempOffset); // made up
+        shootSpeedMap.put(4.0, 10.5 + tempOffset);
+        shootSpeedMap.put(4.5, 11.0 + tempOffset); // made up
+        shootSpeedMap.put(5.0, 11.75 + tempOffset); // made up
         shootSpeedMap.put(8.0, 14.5 + tempOffset); // made up
         shootSpeedMap.put(14.0, 17.5);
 

@@ -31,7 +31,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
     // public final PIDController rotController;
 
     // this is for real robot
-    public final PIDController rotController = new PIDController(3.25, 0, 0);
+    public final PIDController rotController = new PIDController(4.0, 0, 0);
 
     private Alliance color = Alliance.Red;
 
@@ -105,6 +105,13 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                                         * 100.0)
                         / 100.0);
         return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 3;
+    }
+
+    public boolean rotAlignedAuto() {
+        final Pose2d robotPose = getPose();
+        Rotation2d angleToTarget =
+                cachedAimingParams != null ? cachedAimingParams.rotation : new Rotation2d();
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 6;
     }
 
     public double getHoodAngle() {

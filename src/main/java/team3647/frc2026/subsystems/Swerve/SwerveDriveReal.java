@@ -2,6 +2,7 @@ package team3647.frc2026.subsystems.Swerve;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -66,7 +67,8 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
 
     private boolean isChar = false;
 
-    // Beached mode: when true, vision measurements are trusted almost absolutely (odometry ignored).
+    // Beached mode: when true, vision measurements are trusted almost absolutely (odometry
+    // ignored).
     private boolean visionOnlyMode = false;
 
     private final double maxSpeedMpS;
@@ -244,6 +246,20 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
                 + periodicIO.frontRightSteerCurrent
                 + periodicIO.backLeftSteerCurrent
                 + periodicIO.backRightSteerCurrent;
+    }
+
+    @Override
+    public void setDriveSupplyCurrentLimit(double amps) {
+        // Keep the stator limit matching driveInitialConfigs (120A); only the supply limit varies.
+        var currentLimits =
+                new CurrentLimitsConfigs()
+                        .withStatorCurrentLimit(120)
+                        .withStatorCurrentLimitEnable(true)
+                        .withSupplyCurrentLimit(amps)
+                        .withSupplyCurrentLimitEnable(true);
+        for (var module : this.getModules()) {
+            module.getDriveMotor().getConfigurator().apply(currentLimits);
+        }
     }
 
     public void writePeriodicOutputs() {
@@ -506,11 +522,8 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         }
         double margin = VisionConstants.kFieldBoundsMarginMeters;
         double x =
-                MathUtil.clamp(
-                        pose.getX(), -margin, VisionConstants.kFieldLengthMeters + margin);
-        double y =
-                MathUtil.clamp(
-                        pose.getY(), -margin, VisionConstants.kFieldWidthMeters + margin);
+                MathUtil.clamp(pose.getX(), -margin, VisionConstants.kFieldLengthMeters + margin);
+        double y = MathUtil.clamp(pose.getY(), -margin, VisionConstants.kFieldWidthMeters + margin);
         Pose2d clamped = new Pose2d(x, y, pose.getRotation());
         Logger.recordOutput("Swerve/ClampedPoseToField", clamped);
         resetPose(clamped);

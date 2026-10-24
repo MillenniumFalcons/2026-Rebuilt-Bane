@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.lib.ModifiedSignalLogger;
 import team3647.lib.TalonFXSubsystem;
@@ -22,6 +23,10 @@ public class Shooter extends TalonFXSubsystem {
     public double idleSpeed = ShooterConstants.kIdleSpeed;
     public double idleSpeedInMid = ShooterConstants.kIdleSpeedMid;
     private BooleanSupplier isInMidSupplier = () -> false;
+    // Pre-spin: when prepping, the idle speed is raised to the target shot speed so the default
+    // command spins the shooter up ahead of a shot without a separate shooter-requiring command.
+    private boolean prepping = false;
+    private DoubleSupplier prepSpeedSupplier = () -> 0;
     TunableSlotConfigs configs;
     SysIdRoutine sysIdRoutine =
             new SysIdRoutine(
@@ -56,11 +61,29 @@ public class Shooter extends TalonFXSubsystem {
     }
 
     public double getIdleSpeed() {
-        return isInMidSupplier.getAsBoolean() ? idleSpeedInMid : idleSpeed;
+        double baseIdle = isInMidSupplier.getAsBoolean() ? idleSpeedInMid : idleSpeed;
+        if (prepping) {
+            // never idle slower than the base idle, even if the shot-speed lookup is lower
+            return Math.max(prepSpeedSupplier.getAsDouble(), baseIdle);
+        }
+        return baseIdle;
     }
 
     public void setInMidSupplier(BooleanSupplier supplier) {
         this.isInMidSupplier = supplier;
+    }
+
+    /** Supplies the target shot speed used while {@link #startPrepIdle()} is active. */
+    public void setPrepSpeedSupplier(DoubleSupplier supplier) {
+        this.prepSpeedSupplier = supplier;
+    }
+
+    public void startPrepIdle() {
+        prepping = true;
+    }
+
+    public void stopPrepIdle() {
+        prepping = false;
     }
 
     public void disableIdle() {

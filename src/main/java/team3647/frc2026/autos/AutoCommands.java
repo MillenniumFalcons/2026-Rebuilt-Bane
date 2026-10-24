@@ -18,7 +18,6 @@ import java.util.function.Supplier;
 import team3647.frc2026.constants.FieldConstants;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.ShooterConstants;
-import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Superstructure;
 import team3647.frc2026.subsystems.Swerve.SwerveDrive;
 import team3647.frc2026.util.AllianceFlip;
@@ -33,7 +32,6 @@ public class AutoCommands extends AutoPathFollowers {
     //     public Command rightMidRushPathPlanner() {
     //         return followPathPlannerAuto("Right Mid Sweep");
     //     }
-
 
     double spinUpSpeed = 9.0;
 
@@ -61,55 +59,59 @@ public class AutoCommands extends AutoPathFollowers {
                 Commands.waitSeconds(time),
                 autoAlign(),
                 superstructure.shoot(),
-                Commands.waitSeconds(1.5).andThen(superstructure.wristCommands.retract()));
+                Commands.waitSeconds(2).andThen(superstructure.wristCommands.retract()));
     }
 
-    public Command sweep(String pathname, boolean mirror) {
+    public Command sweep(String pathname, boolean mirror, double intakeDelay) {
         Command pathFollow =
                 mirror ? followMirroredPathPlannerPath(pathname) : followPathPlannerPath(pathname);
         double spinUp = spinUpSpeed;
         return Commands.deadline(
-                        pathFollow,
-                        superstructure.intakeFast(),
-                        superstructure.shooterCommands.setVelocity(() -> spinUp),
-                        superstructure.hoodCommands.setAngle(HoodConstants.kMinAngle));
+                pathFollow,
+                Commands.waitSeconds(intakeDelay).andThen(superstructure.intakeFast()),
+                superstructure.shooterCommands.setVelocity(() -> spinUp),
+                superstructure.hoodCommands.setAngle(HoodConstants.kMinAngle));
     }
 
-    public Command sweepAndShoot(String pathname, double shootTime, boolean mirror) {
-        return Commands.sequence(sweep(pathname, mirror), shoot(shootTime));
+    public Command sweepAndShoot(
+            String pathname, double shootTime, double intakeDelay, boolean mirror) {
+        return Commands.sequence(sweep(pathname, mirror, intakeDelay), shoot(shootTime));
     }
 
-    public Command sweepAndShoot(String pathname, double shootTime) {
-        return sweepAndShoot(pathname, shootTime, false);
+    public Command sweepAndShoot(String pathname, double shootTime, double intakeDelay) {
+        return sweepAndShoot(pathname, shootTime, intakeDelay, false);
     }
 
-    public Command sweepShootMirror(String pathname, double shootTime) {
-        return sweepAndShoot(pathname, shootTime, true);
+    public Command sweepShootMirror(String pathname, double shootTime, double intakeDelay) {
+        return sweepAndShoot(pathname, shootTime, intakeDelay, true);
     }
+
+    double intakeDelay = 1.0;
 
     public Command rightMidBumpPP() {
         return Commands.sequence(
-                sweepAndShoot("Right Mid Bump 1", 3.5), 
-                sweepAndShoot("Right Mid Bump 2", 3),
-                sweep("Right Mid Bump 3", false));
+                sweepAndShoot("Right Mid Bump 1", 3.5, 0.0),
+                sweepAndShoot("Right Mid Bump 2", 3, intakeDelay),
+                sweep("Right Mid Bump 3", false, intakeDelay));
     }
 
     public Command leftMidBumpPP() {
         return Commands.sequence(
-                sweepShootMirror("Right Mid Bump 1", 3.5), 
-                sweepShootMirror("Right Mid Bump 2", 3),
-                sweep("Right Mid Bump 3", true));
+                sweepShootMirror("Right Mid Bump 1", 3.5, 0.0),
+                sweepShootMirror("Right Mid Bump 2", 3, intakeDelay),
+                sweep("Right Mid Bump 3", true, intakeDelay));
     }
 
     public Command rightBumpLong() {
         return Commands.sequence(
-                sweepAndShoot("Right Mid Bump 1", 4), sweepAndShoot("Right Mid Bump 2 Long", 10));
+                sweepAndShoot("Right Mid Bump 1", 3.5, 0.0),
+                sweepAndShoot("Right Mid Bump 2 Long", 9.5, intakeDelay));
     }
 
     public Command leftBumpLong() {
         return Commands.sequence(
-                sweepShootMirror("Right Mid Bump 1", 4),
-                sweepShootMirror("Right Mid Bump 2 Long", 10));
+                sweepShootMirror("Right Mid Bump 1", 3.5, 0.0),
+                sweepShootMirror("Right Mid Bump 2 Long", 9.5, intakeDelay));
     }
 
     public Command leftMidRushPathPlanner() {

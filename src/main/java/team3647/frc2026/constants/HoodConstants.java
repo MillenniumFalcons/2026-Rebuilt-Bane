@@ -31,7 +31,7 @@ public class HoodConstants {
 
     public static final Angle kInitialAngle = Degree.of(0);
 
-    public static final Angle kFeedAngle = Degree.of(33);
+    public static final Angle kFeedAngle = Degree.of(40);
 
     public static final double kNativeToDeg =
             46 / 5.724122; // this converts rotations to degrees so the units should be
@@ -49,9 +49,9 @@ public class HoodConstants {
         hoodAngleMap.put(2.5, 17.0);
         hoodAngleMap.put(3.0, 18.0);
         hoodAngleMap.put(3.5, 21.0);
-        hoodAngleMap.put(4.0, 24.0);
-        hoodAngleMap.put(4.5, 30.0); // made up
-        hoodAngleMap.put(5.0, 30.0); // made up
+        hoodAngleMap.put(4.0, 23.0);
+        hoodAngleMap.put(4.5, 24.0); // made up
+        hoodAngleMap.put(5.0, 24.0); // made up
         hoodAngleMap.put(6.0, 45.0); // made up
         hoodAngleMap.put(16.0, 45.0);
 

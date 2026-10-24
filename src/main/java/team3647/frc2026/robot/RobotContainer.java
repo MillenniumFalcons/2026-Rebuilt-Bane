@@ -82,6 +82,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         shooter.setInMidSupplier(autoDrive::isInMid);
+        shooter.setPrepSpeedSupplier(autoDrive::getShotSpeed);
         idleSpeed = shooter::getIdleSpeed;
 
         configureBindings();
@@ -195,7 +196,7 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         autoDrive::rotAligned));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        shooter.setDefaultCommand(shooterCommands.kill());
+        //shooter.setDefaultCommand(shooterCommands.kill());
         shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
         hood.setDefaultCommand(hoodCommands.setAngle(HoodConstants.kMinAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
@@ -211,7 +212,9 @@ public class RobotContainer {
         // interp
         mainController.buttonX.whileTrue(superstructure.interpShot());
         // intake
-        mainController.leftBumper.whileTrue(superstructure.intake());
+        mainController.leftBumper.whileTrue(superstructure.intakeNoIndex());
+        mainController.leftBumper.and(mainController.rightTrigger.negate())
+                .whileTrue(superstructure.indexerCommands.openLoop(0.3));
         mainController.leftBumper.onFalse(rollerCommands.kill());
 
         mainController.buttonB.onTrue(wristCommands.retract());
@@ -251,7 +254,16 @@ public class RobotContainer {
                 .whileTrue(superstructure.prep());
 
         // cocontroller
-        coController.rightTrigger.whileTrue(superstructure.prep());
+        // pre-spin: hold ~2s before shooting to raise the shooter idle speed to the target shot
+        // speed. This only bumps the idle setpoint (consumed by the shooter default command), so
+        // it never commands the shooter directly and can't interrupt an in-progress shoot().
+        coController.rightTrigger.whileTrue(
+                Commands.startEnd(shooter::startPrepIdle, shooter::stopPrepIdle));
+        // force-start indexing on an already-running shoot(): flips an override flag that opens
+        // the indexWhenReady gate early. Requires no subsystems, so it won't interrupt the
+        // shooter/hood spin-up that shoot() is driving.
+        coController.leftTrigger.whileTrue(superstructure.forceIndex());
+
         coController.buttonB.onTrue(autoDrive.disableAutoDrive());
         coController.dPadRight.onTrue(Commands.runOnce(() -> shooter.enableIdle()));
         coController.dPadLeft.onTrue(Commands.runOnce(() -> shooter.disableIdle()));
@@ -264,20 +276,20 @@ public class RobotContainer {
                         .setDriveMode(DriveMode.MANUAL_SHOOT)
                         .alongWith(autoDrive.incrementHood(-1)));
         coController.buttonX.onTrue(superstructure.retractIntake());
-        coController.rightBumper.whileTrue(superstructure.reverse());
+        coController.buttonY.whileTrue(superstructure.reverse());
         // defense mode
         coController.buttonA.onTrue(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.9)));
         coController.buttonA.onFalse(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.6)));
 
         // beached mode: hold to make the pose estimator rely entirely on vision (wheels slipping)
         coController.leftBumper.onTrue(
-                Commands.runOnce(() -> swerve.setVisionOnlyMode(true)).ignoringDisable(true));
+                Commands.runOnce(() -> swerve.setVisionOnlyMode(true)));
         coController.leftBumper.onFalse(
-                Commands.runOnce(() -> swerve.setVisionOnlyMode(false)).ignoringDisable(true));
+                Commands.runOnce(() -> swerve.setVisionOnlyMode(false)));
 
         // snap pose estimation to the latest accepted vision pose (one-shot hard reset).
         // Skip if no vision has ever been accepted or the last accepted pose is stale (>2s old).
-        coController.buttonY.onTrue(
+        coController.rightBumper.onTrue(
                 Commands.runOnce(
                                 () -> {
                                     double lastTs = visionState.lastUsedMegatagTimestamp();
@@ -285,8 +297,7 @@ public class RobotContainer {
                                     if (lastTs > 0 && age <= 2.0) {
                                         swerve.resetPose(visionState.lastUsedMegatagPose());
                                     }
-                                })
-                        .ignoringDisable(true));
+                                }));
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());
@@ -415,9 +426,7 @@ public class RobotContainer {
 
     public final SwerveDriveCommands swerveCommands =
             new SwerveDriveCommands(
-                    swerve,
-                    6.5,
-                    SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
+                    swerve, 6.5, SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
 
     public final ShooterCommands shooterCommands = new ShooterCommands(shooter);
 
