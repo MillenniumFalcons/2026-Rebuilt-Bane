@@ -196,7 +196,7 @@ public class RobotContainer {
                         autoDrive::getAutoDriveEnabled,
                         autoDrive::rotAligned));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
-        //shooter.setDefaultCommand(shooterCommands.kill());
+        // shooter.setDefaultCommand(shooterCommands.kill());
         shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
         hood.setDefaultCommand(hoodCommands.setAngle(HoodConstants.kMinAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
@@ -213,7 +213,9 @@ public class RobotContainer {
         mainController.buttonX.whileTrue(superstructure.interpShot());
         // intake
         mainController.leftBumper.whileTrue(superstructure.intakeNoIndex());
-        mainController.leftBumper.and(mainController.rightTrigger.negate())
+        mainController
+                .leftBumper
+                .and(mainController.rightTrigger.negate())
                 .whileTrue(superstructure.indexerCommands.openLoop(0.3));
         mainController.leftBumper.onFalse(rollerCommands.kill());
 
@@ -282,22 +284,20 @@ public class RobotContainer {
         coController.buttonA.onFalse(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.6)));
 
         // beached mode: hold to make the pose estimator rely entirely on vision (wheels slipping)
-        coController.leftBumper.onTrue(
-                Commands.runOnce(() -> swerve.setVisionOnlyMode(true)));
-        coController.leftBumper.onFalse(
-                Commands.runOnce(() -> swerve.setVisionOnlyMode(false)));
+        coController.leftBumper.onTrue(Commands.runOnce(() -> swerve.setVisionOnlyMode(true)));
+        coController.leftBumper.onFalse(Commands.runOnce(() -> swerve.setVisionOnlyMode(false)));
 
         // snap pose estimation to the latest accepted vision pose (one-shot hard reset).
         // Skip if no vision has ever been accepted or the last accepted pose is stale (>2s old).
         coController.rightBumper.onTrue(
                 Commands.runOnce(
-                                () -> {
-                                    double lastTs = visionState.lastUsedMegatagTimestamp();
-                                    double age = Timer.getFPGATimestamp() - lastTs;
-                                    if (lastTs > 0 && age <= 2.0) {
-                                        swerve.resetPose(visionState.lastUsedMegatagPose());
-                                    }
-                                }));
+                        () -> {
+                            double lastTs = visionState.lastUsedMegatagTimestamp();
+                            double age = Timer.getFPGATimestamp() - lastTs;
+                            if (lastTs > 0 && age <= 2.0) {
+                                swerve.resetPose(visionState.lastUsedMegatagPose());
+                            }
+                        }));
 
         // sysid
         // mainController.dPadUp.whileTrue(swerve.driveRoutineDynamic());

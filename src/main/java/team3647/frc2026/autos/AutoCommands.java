@@ -86,7 +86,7 @@ public class AutoCommands extends AutoPathFollowers {
         return sweepAndShoot(pathname, shootTime, intakeDelay, true);
     }
 
-    double intakeDelay = 1.0;
+    double intakeDelay = 0.0;
 
     public Command rightMidBumpPP() {
         return Commands.sequence(
@@ -112,6 +112,15 @@ public class AutoCommands extends AutoPathFollowers {
         return Commands.sequence(
                 sweepShootMirror("Right Mid Bump 1", 3.5, 0.0),
                 sweepShootMirror("Right Mid Bump 2 Long", 9.5, intakeDelay));
+    }
+
+    public Command rightBumpDelayed() {
+        return Commands.waitSeconds(5).andThen(sweepAndShoot("Right Mid Bump 1 Delayed", 10, 0.0));
+    }
+
+    public Command leftBumpDelayed() {
+        return Commands.waitSeconds(5)
+                .andThen(sweepShootMirror("Right Mid Bump 1 Delayed", 10, 0.0));
     }
 
     public Command leftMidRushPathPlanner() {
@@ -229,6 +238,9 @@ public class AutoCommands extends AutoPathFollowers {
     public final AutoMode leftMidBump;
     public final AutoMode rightBumpLong;
     public final AutoMode leftBumpLong;
+    public final AutoMode rightBumpDelayed;
+    public final AutoMode leftBumpDelayed;
+
     public final AutoMode depot;
     public final AutoMode empty;
     public final AutoMode preload;
@@ -273,6 +285,18 @@ public class AutoCommands extends AutoPathFollowers {
                         getInitialPPMirroredLazy("Right Mid Bump 1"),
                         "Left Bump Long");
 
+        this.rightBumpDelayed =
+                new AutoMode(
+                        rightBumpDelayed(),
+                        getInitialPPLazy("Right Mid Bump 1 Delayed"),
+                        "Right Bump Delayed");
+
+        this.leftBumpDelayed =
+                new AutoMode(
+                        leftBumpDelayed(),
+                        getInitialPPMirroredLazy("Right Mid Bump 1 Delayed"),
+                        "Left Bump Delayed");
+
         this.depot = new AutoMode(depot(), getInitialPPLazy("Depot 1"), "Depot");
 
         this.preload = new AutoMode(preloadAuto(), new Pose2d(), "preload");
@@ -282,12 +306,14 @@ public class AutoCommands extends AutoPathFollowers {
         autosList =
                 List.of(
                         empty,
-                        leftMidRushPP,
-                        rightMidRushPP,
+                        // leftMidRushPP,
+                        // rightMidRushPP,
                         rightMidBump,
                         leftMidBump,
                         rightBumpLong,
                         leftBumpLong,
+                        rightBumpDelayed,
+                        leftBumpDelayed,
                         preload,
                         depot);
     }

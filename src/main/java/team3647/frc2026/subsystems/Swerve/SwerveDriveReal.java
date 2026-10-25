@@ -25,7 +25,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
@@ -70,6 +69,10 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     // Beached mode: when true, vision measurements are trusted almost absolutely (odometry
     // ignored).
     private boolean visionOnlyMode = false;
+
+    // FPGA timestamp (s) of the last accepted vision measurement; used to gate auto path
+    // completion.
+    private double lastVisionTimestamp = -1;
 
     private final double maxSpeedMpS;
     private final double maxRotRadPerSec;
@@ -460,14 +463,10 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     }
 
     public boolean shouldAddData(VisionMeasurement measurement) {
-        double distance = measurement.pose.minus(getOdoPose()).getTranslation().getNorm();
-        double angle =
-                measurement.pose.getRotation().minus(getOdoPose().getRotation()).getDegrees();
-        // System.out.println(
-        //         (distance < MathUtil.clamp(getVel(), 0.25, 1) && Math.abs(angle) < 15)
-        //                 || DriverStation.isAutonomous());
-        return (distance < MathUtil.clamp(getVel(), 0.25, 1) && Math.abs(angle) < 15)
-                || DriverStation.isAutonomous();
+        // Always accept vision; we no longer reject measurements that are far from the current odo
+        // pose, since odometry drift (e.g. slipping over a bump) is exactly when a far-off but
+        // correct vision fix is needed.
+        return true;
     }
 
     public void addVisionData(VisionMeasurement data) {
@@ -492,6 +491,7 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
                             VisionConstants.kVisionOnlyYawStdDev);
         }
         periodicIO.visionPose = pose;
+        lastVisionTimestamp = Timer.getFPGATimestamp();
         super.addVisionMeasurement(pose, timestamp, stdDevs);
     }
 
@@ -709,6 +709,16 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     @Override
     public Pose2d getRealPose() {
         return periodicIO.pose;
+    }
+
+    @Override
+    public Pose2d getVisionPose() {
+        return periodicIO.visionPose;
+    }
+
+    @Override
+    public double getLastVisionTimestamp() {
+        return lastVisionTimestamp;
     }
 
     @Override

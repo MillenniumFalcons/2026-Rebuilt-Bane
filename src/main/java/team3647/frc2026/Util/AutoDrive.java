@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -104,7 +105,10 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                                                         - angleToTarget.getDegrees())
                                         * 100.0)
                         / 100.0);
-        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 3;
+        // Loosen the aiming tolerance in auto (6 deg) vs teleop (3 deg).
+        double thresholdDeg = DriverStation.isAutonomous() ? 6 : 3;
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees())
+                < thresholdDeg;
     }
 
     public boolean rotAlignedAuto() {

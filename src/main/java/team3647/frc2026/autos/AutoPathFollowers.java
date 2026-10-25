@@ -313,20 +313,70 @@ public class AutoPathFollowers implements AllianceObserver {
     }
 
     public Command followPathPlannerPath(String pathName) {
-
-        BiFunction<Pose2d, Pose2d, Boolean> finished =
-                (finalPose, robotPose) -> {
-                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 4);
-                };
-        return followPathPlannerPath(pathName, finished, false);
+        return followPathPlannerPath(pathName, visionGatedFinished(), false);
     }
 
     public Command followMirroredPathPlannerPath(String pathName) {
-        BiFunction<Pose2d, Pose2d, Boolean> finished =
-                (finalPose, robotPose) -> {
-                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 4);
-                };
-        return followPathPlannerPath(pathName, finished, true);
+        return followPathPlannerPath(pathName, visionGatedFinished(), true);
+    }
+
+    // Odometry-only variants: original finish behavior, no vision required. Kept available in case
+    // the vision gate is undesirable for a given path.
+    public Command followPathPlannerPathOdoOnly(String pathName) {
+        return followPathPlannerPath(pathName, plainFinished(), false);
+    }
+
+    public Command followMirroredPathPlannerPathOdoOnly(String pathName) {
+        return followPathPlannerPath(pathName, plainFinished(), true);
+    }
+
+    /** Original finish: robot simply aligned with the endpoint, no vision required. */
+    private BiFunction<Pose2d, Pose2d, Boolean> plainFinished() {
+        return (robotPose, endPose) -> PoseUtils.aligned(robotPose, endPose, 0.1, 4);
+    }
+
+    /**
+     * Finish condition for a PathPlanner path: either the robot is aligned with the endpoint AND a
+     * recent vision fix places us near it (so we don't end on drifted odometry), OR — as a fallback
+     * — no vision fix has arrived for {@link AutoConstants#kVisionEndpointFallbackSeconds} after
+     * the trajectory ended while odometry still places us at the endpoint, so the path doesn't hang
+     * forever waiting on vision. The supplier passes {@code (robotPose, endPose)}.
+     *
+     * <p>This predicate is only evaluated once the trajectory has played out (it's gated behind
+     * {@code ppCommand.isFinished()}), so its first evaluation marks the path-end time.
+     */
+    private BiFunction<Pose2d, Pose2d, Boolean> visionGatedFinished() {
+        return new BiFunction<Pose2d, Pose2d, Boolean>() {
+            double pathEndTime = -1;
+            double lastEval = -1;
+
+            @Override
+            public Boolean apply(Pose2d robotPose, Pose2d endPose) {
+                double now = Timer.getFPGATimestamp();
+                // (Re)start the grace timer on the first eval, or if a gap since the last eval
+                // indicates this command is being run again.
+                if (pathEndTime < 0 || now - lastEval > 0.5) {
+                    pathEndTime = now;
+                }
+                lastEval = now;
+
+                // Normal completion: aligned + a recent vision fix near the endpoint.
+                if (PoseUtils.aligned(robotPose, endPose, 0.1, 6)
+                        && swerve.hasRecentVisionNear(
+                                endPose,
+                                AutoConstants.kVisionEndpointRadiusMeters,
+                                AutoConstants.kVisionEndpointMaxAgeSeconds)) {
+                    return true;
+                }
+
+                // Fallback: no vision for the grace period after the path ended, but odometry
+                // still says we're at the endpoint -> end anyway.
+                boolean graceElapsed =
+                        now - pathEndTime >= AutoConstants.kVisionEndpointFallbackSeconds;
+                boolean poseGood = PoseUtils.aligned(robotPose, endPose, 0.1, 6);
+                return graceElapsed && poseGood;
+            }
+        };
     }
 
     /** Run a full PathPlanner auto by name (loads from deploy/pathplanner/autos/). */

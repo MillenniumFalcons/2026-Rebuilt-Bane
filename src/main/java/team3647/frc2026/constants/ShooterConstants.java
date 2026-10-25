@@ -40,7 +40,7 @@ public class ShooterConstants {
 
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxStatorCurrent = 100.0;
-    public static final double kMaxSupplyCurrent = 50.0;
+    public static final double kMaxSupplyCurrent = 45.0;
     public static final double kidSpeed = 9.0;
 
     public static final double kIdleSpeed = 8.5;

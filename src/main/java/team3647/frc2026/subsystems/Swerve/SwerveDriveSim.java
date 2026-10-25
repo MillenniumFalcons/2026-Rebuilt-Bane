@@ -4,14 +4,12 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Meters;
 
 import com.ctre.phoenix6.Utils;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.Optional;
@@ -32,6 +30,10 @@ public class SwerveDriveSim implements SwerveDrive {
 
     private PeriodicIOAutoLogged periodicIO = new PeriodicIOAutoLogged();
     private final double kDt;
+
+    // FPGA timestamp (s) of the last accepted vision measurement; used to gate auto path
+    // completion.
+    private double lastVisionTimestamp = -1;
 
     public SwerveDriveSim(DriveTrainSimulationConfig config, double kDt) {
         if (!Utils.isSimulation())
@@ -78,29 +80,21 @@ public class SwerveDriveSim implements SwerveDrive {
     }
 
     public boolean shouldAddData(VisionMeasurement measurement) {
-        double distance = measurement.pose.minus(getOdoPose()).getTranslation().getNorm();
-        double angle =
-                measurement.pose.getRotation().minus(getOdoPose().getRotation()).getDegrees();
-        return (distance < MathUtil.clamp(getVelSquared(), 0.25, 1.5) && Math.abs(angle) < 15)
-                || DriverStation.isAutonomous();
-    }
-
-    private double getVelSquared() {
-        return periodicIO.measuredSpeeds.vxMetersPerSecond
-                        * periodicIO.measuredSpeeds.vxMetersPerSecond
-                + periodicIO.measuredSpeeds.vyMetersPerSecond
-                        * periodicIO.measuredSpeeds.vyMetersPerSecond;
+        // Always accept vision; see SwerveDriveReal#shouldAddData.
+        return true;
     }
 
     public void addVisionData(VisionMeasurement data) {
         simSwerve.addVisionEstimation(data.pose, data.timestamp, data.stdDevs);
         periodicIO.visionPose = data.pose;
+        lastVisionTimestamp = Timer.getFPGATimestamp();
     }
 
     @Override
     public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
         simSwerve.addVisionEstimation(pose, timestamp, stdDevs);
         periodicIO.visionPose = pose;
+        lastVisionTimestamp = Timer.getFPGATimestamp();
     }
 
     @Override
@@ -149,6 +143,16 @@ public class SwerveDriveSim implements SwerveDrive {
     @Override
     public Pose2d getRealPose() {
         return periodicIO.simPose;
+    }
+
+    @Override
+    public Pose2d getVisionPose() {
+        return periodicIO.visionPose;
+    }
+
+    @Override
+    public double getLastVisionTimestamp() {
+        return lastVisionTimestamp;
     }
 
     @Override

@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import java.util.Optional;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
@@ -45,6 +46,24 @@ public interface SwerveDrive extends PeriodicSubsystem, AllianceObserver {
     public Pose2d getOdoPose();
 
     public Pose2d getRealPose();
+
+    /** Most recent accepted vision measurement pose. */
+    public Pose2d getVisionPose();
+
+    /** FPGA timestamp (s) at which the last vision measurement was accepted. */
+    public double getLastVisionTimestamp();
+
+    /**
+     * Returns true if a vision measurement was accepted within the last {@code maxAgeSeconds} and
+     * that measurement places the robot within {@code radiusMeters} of {@code target}. Used to gate
+     * auto path completion on an actual vision fix near the endpoint rather than trusting odometry
+     * alone.
+     */
+    default boolean hasRecentVisionNear(Pose2d target, double radiusMeters, double maxAgeSeconds) {
+        return (Timer.getFPGATimestamp() - getLastVisionTimestamp()) <= maxAgeSeconds
+                && getVisionPose().getTranslation().getDistance(target.getTranslation())
+                        <= radiusMeters;
+    }
 
     public ChassisSpeeds getChassisSpeeds();
 
