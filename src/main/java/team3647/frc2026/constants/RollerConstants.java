@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class RollerConstants {
     public static final TalonFX kMaster =
@@ -37,9 +38,13 @@ public class RollerConstants {
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 50.0;
+        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 35.0;
+        kMasterConfig.CurrentLimits.SupplyCurrentLowerLimit = 20.0;
+        kMasterConfig.CurrentLimits.SupplyCurrentLowerTime = 0.5;
         kMasterConfig.CurrentLimits.StatorCurrentLimit = 90.0;
         kMasterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+        kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kMaster.getConfigurator().apply(kMasterConfig);
         kSlave.getConfigurator()

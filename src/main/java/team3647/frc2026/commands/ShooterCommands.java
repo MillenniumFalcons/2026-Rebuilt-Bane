@@ -34,7 +34,7 @@ public class ShooterCommands {
         if (velocity.getAsDouble() > 12.0) {
             return Math.abs(shooter.getVelocity() - velocity.getAsDouble()) < 1;
         }
-        return shooter.getVelocity() > velocity.getAsDouble();
+        return shooter.getVelocity() > velocity.getAsDouble() - 0.1;
     }
 
     public Command setVelocityTunable() {

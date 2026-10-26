@@ -18,8 +18,10 @@ public class IndexerConstants {
         kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // change if needed
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
+        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 15.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimit = 50.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        kMasterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         kMaster.getConfigurator().apply(kMasterConfig);
     }

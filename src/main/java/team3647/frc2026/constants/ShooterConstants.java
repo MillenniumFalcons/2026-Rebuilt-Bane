@@ -40,11 +40,11 @@ public class ShooterConstants {
 
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxStatorCurrent = 100.0;
-    public static final double kMaxSupplyCurrent = 45.0;
+    public static final double kMaxSupplyCurrent = 36.0;
     public static final double kidSpeed = 9.0;
 
-    public static final double kIdleSpeed = 8.5;
-    public static final double kIdleSpeedMid = 8.5;
+    public static final double kIdleSpeed = 6.0;
+    public static final double kIdleSpeedMid = 4.0;
 
     public static final double kS = 12.0;
     //    public static final double kS = 4.3;
@@ -79,7 +79,7 @@ public class ShooterConstants {
         shootSpeedMap.put(4.5, 11.0 + tempOffset); // made up
         shootSpeedMap.put(5.0, 11.75 + tempOffset); // made up
         shootSpeedMap.put(8.0, 14.5 + tempOffset); // made up
-        shootSpeedMap.put(14.0, 17.5);
+        shootSpeedMap.put(14.0, 14.5);
 
         kMasterConfig.Slot0.kP = kP;
         kMasterConfig.Slot0.kI = kI;

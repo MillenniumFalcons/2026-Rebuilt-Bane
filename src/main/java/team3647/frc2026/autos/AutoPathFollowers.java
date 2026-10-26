@@ -312,6 +312,10 @@ public class AutoPathFollowers implements AllianceObserver {
         }
     }
 
+    // public Command followPathPlannerPath(String pathName) {
+    //     return followPathPlannerPath(pathName, plainFinished(), false);
+    // }
+
     public Command followPathPlannerPath(String pathName) {
         return followPathPlannerPath(pathName, visionGatedFinished(), false);
     }
@@ -332,7 +336,7 @@ public class AutoPathFollowers implements AllianceObserver {
 
     /** Original finish: robot simply aligned with the endpoint, no vision required. */
     private BiFunction<Pose2d, Pose2d, Boolean> plainFinished() {
-        return (robotPose, endPose) -> PoseUtils.aligned(robotPose, endPose, 0.1, 4);
+        return (robotPose, endPose) -> PoseUtils.aligned(robotPose, endPose, 0.2, 10);
     }
 
     /**
@@ -373,7 +377,7 @@ public class AutoPathFollowers implements AllianceObserver {
                 // still says we're at the endpoint -> end anyway.
                 boolean graceElapsed =
                         now - pathEndTime >= AutoConstants.kVisionEndpointFallbackSeconds;
-                boolean poseGood = PoseUtils.aligned(robotPose, endPose, 0.1, 6);
+                boolean poseGood = PoseUtils.aligned(robotPose, endPose, 0.2, 10);
                 return graceElapsed && poseGood;
             }
         };

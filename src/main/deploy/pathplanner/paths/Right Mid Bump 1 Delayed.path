@@ -80,12 +80,12 @@
     },
     {
       "anchor": {
-        "x": 2.2923395149786017,
-        "y": 2.4370756062767476
+        "x": 2.719315263908701,
+        "y": 2.450014265335236
       },
       "prevControl": {
-        "x": 2.5423395149786017,
-        "y": 2.4370756062767476
+        "x": 2.969315263908701,
+        "y": 2.450014265335236
       },
       "nextControl": null,
       "isLocked": false,
@@ -95,7 +95,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": -108.43494882292228
+      "rotationDegrees": -108.4349488229223
     },
     {
       "waypointRelativePos": 1.8230277185501031,
@@ -145,7 +145,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 35.32029647372215
+    "rotation": 39.72932924835902
   },
   "reversed": false,
   "folder": "Right Mid Bump",

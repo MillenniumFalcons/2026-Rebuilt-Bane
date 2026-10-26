@@ -82,6 +82,8 @@ public class WristConstants {
 
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
+        kMasterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         kMasterConfig.CurrentLimits.StatorCurrentLimit = 40.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
