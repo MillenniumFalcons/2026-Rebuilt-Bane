@@ -20,7 +20,8 @@ public class SwerveDriveCommands implements AllianceObserver {
     private final SwerveDrive swerve;
     private final double kMaxSpeedMps;
     private final double kMaxRotRadPs;
-    private double rotMultiplier = 0.6;
+    private double rotMultiplier = 0.5;
+    private double slowCoeff;
 
     @SuppressWarnings("unused")
     private Alliance color = Alliance.Red;
@@ -29,6 +30,7 @@ public class SwerveDriveCommands implements AllianceObserver {
         this.swerve = swerve;
         this.kMaxSpeedMps = maxSpeedMps;
         this.kMaxRotRadPs = kMaxRotRadPs;
+        this.slowCoeff = 1.0 / (2 * kMaxRotRadPs);
     }
 
     @Override
@@ -65,8 +67,8 @@ public class SwerveDriveCommands implements AllianceObserver {
                             Math.pow(y.getAsDouble(), 2) * Math.signum(y.getAsDouble()) * 1.05;
                     double xSquared =
                             Math.pow(x.getAsDouble(), 2) * Math.signum(x.getAsDouble()) * 1.05;
-                    double xyMult = 1.0;
                     double motionTurnComponent = rot.getAsDouble() * kMaxRotRadPs * rotMultiplier;
+                    double xyMult = 1.0 - motionTurnComponent * slowCoeff;
 
                     if (isAutoDrive) {
                         motionTurnComponent = -velocities.dtheta;

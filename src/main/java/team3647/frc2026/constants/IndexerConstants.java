@@ -15,7 +15,8 @@ public class IndexerConstants {
     public static final TalonFXConfiguration kMasterConfig = new TalonFXConfiguration();
 
     static {
-        kMasterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // change if needed
+        kMasterConfig.MotorOutput.Inverted =
+                InvertedValue.CounterClockwise_Positive; // change if needed
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kMasterConfig.CurrentLimits.SupplyCurrentLimit = 15.0;

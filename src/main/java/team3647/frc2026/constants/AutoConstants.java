@@ -36,7 +36,7 @@ public class AutoConstants {
      * Radius (m) a vision fix must be within of the endpoint before an auto path may finish. Kept
      * loose so a roughly-correct vision fix is enough to allow completion.
      */
-    public static final double kVisionEndpointRadiusMeters = 0.3;
+    public static final double kVisionEndpointRadiusMeters = 0.4;
 
     /**
      * Grace period (s) after the trajectory ends during which, if no vision fix arrives but

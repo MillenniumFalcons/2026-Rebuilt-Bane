@@ -32,6 +32,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final PIDController rotController = new PIDController(4.0, 0, 0);
+    public final double kFF = 0.5;
 
     private Alliance color = Alliance.Red;
 
@@ -254,17 +255,18 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         // FF = (Linear Speed * FF Gain) * sign of the error
         // This effectively "boosts" the rotation command more when moving fast
         // double angleROC = targeting.getHubAngleROC();
-        double customFF =
-                (robotToTarget.getY() * fieldSpeeds.vxMetersPerSecond
-                                - robotToTarget.getX() * fieldSpeeds.vyMetersPerSecond)
-                        / (distanceToTarget * distanceToTarget);
+        // double customFF = kFF * Math.signum(robotPose.getRotation().getRadians() -
+        // angleToTarget.getRadians());
+        // (robotToTarget.getY() * fieldSpeeds.vxMetersPerSecond
+        //                 - robotToTarget.getX() * fieldSpeeds.vyMetersPerSecond)
+        //         / (distanceToTarget * distanceToTarget);
 
         // Logger.recordOutput("linear velocity", linearVelocityMag);
         // Logger.recordOutput("angular error", angularError);
-        Logger.recordOutput("SOTMAutoAlign/DEBUG/ff output", customFF);
+        // Logger.recordOutput("SOTMAutoAlign/DEBUG/ff output", customFF);
         Logger.recordOutput("SOTMAutoAlign/DEBUG/pid output", rotFeedback);
 
-        double rotComp = rotFeedback + customFF;
+        double rotComp = rotFeedback;
 
         return new Twist2d(0, 0, rotComp);
     }

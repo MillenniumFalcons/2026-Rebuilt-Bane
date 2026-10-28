@@ -52,6 +52,14 @@ public class Superstructure extends VirtualSubsystem {
     public Angle wantedIntakeAngle = Degrees.of(70);
     public final BooleanSupplier isRotAligned;
 
+    // True while the robot is in feed mode (past the trench). Feeding uses a looser 2 rps
+    // shot-velocity
+    // tolerance so indexing starts sooner; shooting keeps the stricter isAtVelocity tolerance.
+    public final BooleanSupplier isFeeding;
+
+    // Shot-velocity tolerance (rps) used to gate indexing while feeding.
+    public static final double kFeedVelocityTolerance = 2.0;
+
     public final RobotTracker robotTracker;
 
     public final Trigger atShotVel;
@@ -77,7 +85,8 @@ public class Superstructure extends VirtualSubsystem {
             RobotTracker robotTracker,
             DoubleSupplier hoodAngle,
             DoubleSupplier shotSpeed,
-            BooleanSupplier isRotAligned) {
+            BooleanSupplier isRotAligned,
+            BooleanSupplier isFeeding) {
         this.shooter = shooter;
         this.indexer = indexer;
         this.hood = hood;
@@ -88,6 +97,7 @@ public class Superstructure extends VirtualSubsystem {
         this.hoodAngle = hoodAngle;
         this.shotSpeed = shotSpeed;
         this.isRotAligned = isRotAligned;
+        this.isFeeding = isFeeding;
 
         this.shooterCommands = new ShooterCommands(this.shooter);
         this.indexerCommands = new IndexerCommands(this.indexer);
@@ -97,7 +107,13 @@ public class Superstructure extends VirtualSubsystem {
         this.rollerCommands = new RollerCommands(this.rollers);
         this.rollerCommands.setVxSupplier(this.robotTracker::getIntakeDirectionSpeed);
 
-        this.atShotVel = new Trigger(() -> shooterCommands.isAtVelocity(this.shotSpeed));
+        this.atShotVel =
+                new Trigger(
+                        () ->
+                                isFeeding.getAsBoolean()
+                                        ? shooterCommands.isAtVelocity(
+                                                this.shotSpeed, kFeedVelocityTolerance)
+                                        : shooterCommands.isAtVelocity(this.shotSpeed));
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
 
@@ -149,8 +165,31 @@ public class Superstructure extends VirtualSubsystem {
         logShooting();
     }
 
+    // Maximum age (seconds) of an accepted vision pose for shootWithVision() to allow firing.
+    public static final double kVisionRecencyWindow = 1.0;
+
     public Command shoot() {
         return Commands.parallel(prep(), indexWhenReady());
+    }
+
+    /**
+     * Same as {@link #shoot()} but only indexes (fires) while a vision pose has been accepted
+     * within the last {@link #kVisionRecencyWindow} seconds. Still spins up and aligns normally; if
+     * vision goes stale the shot gate holds until a fresh vision frame comes in.
+     */
+    public Command shootWithVision() {
+        return Commands.parallel(prep(), indexWhenReadyWithVision());
+    }
+
+    public Command indexWhenReadyWithVision() {
+        return Commands.sequence(
+                Commands.waitUntil(
+                        readyToShoot
+                                .and(atShotVel)
+                                .and(atHoodAngle)
+                                .and(() -> robotTracker.hasRecentVision(kVisionRecencyWindow))
+                                .or(() -> forceIndex)),
+                index());
     }
 
     /**

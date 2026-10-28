@@ -37,6 +37,10 @@ public class ShooterCommands {
         return shooter.getVelocity() > velocity.getAsDouble() - 0.1;
     }
 
+    public boolean isAtVelocity(DoubleSupplier velocity, double tolerance) {
+        return Math.abs(shooter.getVelocity() - velocity.getAsDouble()) < tolerance;
+    }
+
     public Command setVelocityTunable() {
         return Commands.run(() -> shooter.setVelocityFOC(interpSpeed.get()), shooter);
     }

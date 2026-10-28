@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.Supplier;
@@ -28,6 +29,10 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
     Supplier<ChassisSpeeds> driveSpeeds;
 
     private PeriodicIO periodicIO = new PeriodicIO();
+
+    // FPGA timestamp of the most recently accepted vision pose measurement. Seeded to -infinity so
+    // hasRecentVision() reports false until the first vision frame is accepted.
+    private double lastVisionAcceptedTimestamp = Double.NEGATIVE_INFINITY;
 
     private static final InterpolatingDoubleTreeMap timeOfFlightMap =
             new InterpolatingDoubleTreeMap();
@@ -70,6 +75,20 @@ public class RobotTracker extends VirtualSubsystem implements AllianceObserver {
 
     public void setPose() {
         periodicIO.pose = drivePose.get();
+    }
+
+    /** Records that a vision pose measurement was just accepted into the pose estimator. */
+    public void recordVisionAccepted() {
+        lastVisionAcceptedTimestamp = Timer.getFPGATimestamp();
+    }
+
+    /**
+     * Returns true if a vision pose was accepted within the last {@code seconds} seconds.
+     *
+     * @param seconds the recency window in seconds
+     */
+    public boolean hasRecentVision(double seconds) {
+        return Timer.getFPGATimestamp() - lastVisionAcceptedTimestamp < seconds;
     }
 
     public double getIntakeDirectionSpeed() {

@@ -207,10 +207,14 @@ public class RobotContainer {
     private void configureBindings() {
         // preload balls, commented out for now, need to trigger after intake
         // superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
-        // mainController.buttonA.whileTrue(Commands.run(() -> swerve.brake()));
+        // X lock: press A to toggle brake on; it cancels automatically once the driver moves a
+        // stick (or by pressing A again). Requires swerve so it interrupts the default drive
+        // command, and ending restores the default command.
+        mainController.buttonX.toggleOnTrue(
+                Commands.run(() -> swerve.brake(), swerve).until(mainController::anyStickMoved));
         mainController.buttonA.onTrue(shooterCommands.kill().alongWith(kickerCommands.reverse()));
         // interp
-        mainController.buttonX.whileTrue(superstructure.interpShot());
+        // mainController.buttonX.whileTrue(superstructure.interpShot());
         // intake
         mainController.leftBumper.whileTrue(superstructure.intakeNoIndex());
         mainController
@@ -470,7 +474,8 @@ public class RobotContainer {
                     robotTracker,
                     autoDrive::getHoodAngle,
                     autoDrive::getShotSpeed,
-                    autoDrive::rotAligned);
+                    autoDrive::rotAligned,
+                    () -> autoDrive.getWantedMode() == DriveMode.FEED);
 
     // 254-style vision system
     public final VisionState visionState =
@@ -497,6 +502,7 @@ public class RobotContainer {
                                 est.getVisionRobotPoseMeters(),
                                 Utils.fpgaToCurrentTime(est.getTimestampSeconds()),
                                 dynamicStdDevs);
+                        robotTracker.recordVisionAccepted();
                     });
 
     public final VisionIOHardwareLimelight visionIO = new VisionIOHardwareLimelight(visionState);

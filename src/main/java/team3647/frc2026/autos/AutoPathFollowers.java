@@ -317,11 +317,20 @@ public class AutoPathFollowers implements AllianceObserver {
     // }
 
     public Command followPathPlannerPath(String pathName) {
-        return followPathPlannerPath(pathName, visionGatedFinished(), false);
+
+        BiFunction<Pose2d, Pose2d, Boolean> finished =
+                (finalPose, robotPose) -> {
+                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 10);
+                };
+        return followPathPlannerPath(pathName, finished, false);
     }
 
     public Command followMirroredPathPlannerPath(String pathName) {
-        return followPathPlannerPath(pathName, visionGatedFinished(), true);
+        BiFunction<Pose2d, Pose2d, Boolean> finished =
+                (finalPose, robotPose) -> {
+                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 10);
+                };
+        return followPathPlannerPath(pathName, finished, true);
     }
 
     // Odometry-only variants: original finish behavior, no vision required. Kept available in case
@@ -365,7 +374,7 @@ public class AutoPathFollowers implements AllianceObserver {
                 lastEval = now;
 
                 // Normal completion: aligned + a recent vision fix near the endpoint.
-                if (PoseUtils.aligned(robotPose, endPose, 0.1, 6)
+                if (PoseUtils.aligned(robotPose, endPose, 0.2, 360)
                         && swerve.hasRecentVisionNear(
                                 endPose,
                                 AutoConstants.kVisionEndpointRadiusMeters,
@@ -377,7 +386,7 @@ public class AutoPathFollowers implements AllianceObserver {
                 // still says we're at the endpoint -> end anyway.
                 boolean graceElapsed =
                         now - pathEndTime >= AutoConstants.kVisionEndpointFallbackSeconds;
-                boolean poseGood = PoseUtils.aligned(robotPose, endPose, 0.2, 10);
+                boolean poseGood = PoseUtils.aligned(robotPose, endPose, 0.5, 360);
                 return graceElapsed && poseGood;
             }
         };
