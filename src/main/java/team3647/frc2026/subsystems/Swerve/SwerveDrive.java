@@ -27,6 +27,11 @@ public interface SwerveDrive extends PeriodicSubsystem, AllianceObserver {
 
     public void brake();
 
+    /** True while the drivetrain is holding the X-lock (brake) request. */
+    default boolean isBraked() {
+        return false;
+    }
+
     public void resetPose(Pose2d pose);
 
     public void setRobotPose(Pose2d pose);

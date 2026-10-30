@@ -17,14 +17,13 @@ import com.ctre.phoenix6.signals.StripTypeValue;
 public class LEDConstants {
 
     public static final int CANdleID = 29;
-    public static final CANdle m_candle =
-            new CANdle(LEDConstants.CANdleID, GlobalConstants.kSubsystemCanbusName);
+    public static final CANdle m_candle = new CANdle(LEDConstants.CANdleID, "rio");
 
     public static LEDConfigs config = new LEDConfigs();
 
     static {
         config.BrightnessScalar = 0.67;
-        config.LossOfSignalBehavior = LossOfSignalBehaviorValue.DisableLEDs;
+        config.LossOfSignalBehavior = LossOfSignalBehaviorValue.KeepRunning;
         config.StripType = StripTypeValue.RGB;
         m_candle.getConfigurator().apply(config);
     }
@@ -32,11 +31,9 @@ public class LEDConstants {
     // LED COUNT
     public static final int candleLEDCount = 8;
 
-    public static final int shooterLEDCount = 50;
+    public static final int hopperLEDCount = 160;
 
-    public static final int hopperLEDCount = 100;
-
-    public static final int LEDCOUNT = candleLEDCount + 2 * shooterLEDCount + hopperLEDCount;
+    public static final int LEDCOUNT = candleLEDCount + hopperLEDCount;
 
     // ANIMATIONS
     public static final EmptyAnimation EMPTY = new EmptyAnimation(0);
@@ -55,6 +52,9 @@ public class LEDConstants {
 
     public static final StrobeAnimation STROBE_GREEN =
             new StrobeAnimation(0, LEDCOUNT).withColor(new RGBWColor(0, 255, 0)).withFrameRate(8);
+
+    public static final StrobeAnimation STROBE_RED =
+            new StrobeAnimation(0, LEDCOUNT).withColor(new RGBWColor(255, 0, 0)).withFrameRate(8);
 
     public static final SingleFadeAnimation FADE_GREEN =
             new SingleFadeAnimation(0, LEDCOUNT)
@@ -75,5 +75,10 @@ public class LEDConstants {
     public static final SingleFadeAnimation FADE_PURPLE =
             new SingleFadeAnimation(0, LEDCOUNT)
                     .withColor(new RGBWColor(255, 0, 255))
+                    .withFrameRate(200);
+
+    public static final SingleFadeAnimation FADE_BLUE =
+            new SingleFadeAnimation(0, LEDCOUNT)
+                    .withColor(new RGBWColor(0, 0, 255))
                     .withFrameRate(200);
 }

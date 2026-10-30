@@ -1,6 +1,7 @@
 package team3647.frc2026.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import java.util.List;
 import team3647.lib.TalonFXSubsystem;
 
@@ -13,7 +14,8 @@ public class Rollers extends TalonFXSubsystem {
             double positionConversion,
             double nominalVoltage,
             double kDt) {
-        super(List.of(master, slave), velocityConversion, positionConversion, nominalVoltage, kDt);
+        super(List.of(master), velocityConversion, positionConversion, nominalVoltage, kDt);
+        super.addFollower(slave, MotorAlignmentValue.Opposed);
     }
 
     public void setOpenLoop(double percent) {

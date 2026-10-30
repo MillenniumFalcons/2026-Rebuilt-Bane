@@ -41,6 +41,7 @@ import team3647.frc2026.constants.GlobalConstants;
 import team3647.frc2026.constants.HoodConstants;
 import team3647.frc2026.constants.IndexerConstants;
 import team3647.frc2026.constants.KickerConstants;
+import team3647.frc2026.constants.LEDConstants;
 import team3647.frc2026.constants.RollerConstants;
 import team3647.frc2026.constants.ShooterConstants;
 import team3647.frc2026.constants.SwerveDriveConstants;
@@ -50,6 +51,7 @@ import team3647.frc2026.constants.WristConstants;
 import team3647.frc2026.subsystems.Hood;
 import team3647.frc2026.subsystems.Indexer;
 import team3647.frc2026.subsystems.Kicker;
+import team3647.frc2026.subsystems.LEDs;
 import team3647.frc2026.subsystems.Rollers;
 import team3647.frc2026.subsystems.Shooter;
 import team3647.frc2026.subsystems.Superstructure;
@@ -194,7 +196,8 @@ public class RobotContainer {
                         autoDrive::getVelocities,
                         autoDrive::getWantedMode,
                         autoDrive::getAutoDriveEnabled,
-                        autoDrive::rotAligned));
+                        autoDrive::rotAligned,
+                        () -> autoDrive.headingErrorDegrees() > 8));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         // shooter.setDefaultCommand(shooterCommands.kill());
         shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
@@ -328,6 +331,34 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected().getAutoCommand();
+    }
+
+    // Set when autonomous ends, consumed at teleop start. Lets a shoot trigger held through the
+    // auto->teleop transition start shooting immediately once teleop enables. The rightTrigger
+    // whileTrue binding needs a fresh rising edge to fire, which a press held across the disabled
+    // transition never produces (the button loop already saw it pressed while disabled), so without
+    // this the driver has to release and re-press after the match resumes.
+    private boolean shootQueuedFromAuto = false;
+
+    /** Call from {@code autonomousExit}. */
+    public void onAutonomousExit() {
+        shootQueuedFromAuto = true;
+    }
+
+    /**
+     * Call from {@code teleopInit}. If the driver is holding the shoot trigger coming out of auto,
+     * start shooting right away. The command ends when the trigger is released, after which the
+     * normal rightTrigger binding (and its onFalse disableAutoDrive) takes over.
+     */
+    public void startQueuedTeleopShoot() {
+        if (shootQueuedFromAuto && mainController.rightTrigger.getAsBoolean()) {
+            autoDrive.enableAutoDrive().schedule();
+            Commands.run(() -> autoDrive.updateDriveModeByPose())
+                    .alongWith(superstructure.shoot())
+                    .until(mainController.rightTrigger.negate())
+                    .schedule();
+        }
+        shootQueuedFromAuto = false;
     }
 
     /**
@@ -475,7 +506,11 @@ public class RobotContainer {
                     autoDrive::getHoodAngle,
                     autoDrive::getShotSpeed,
                     autoDrive::rotAligned,
-                    () -> autoDrive.getWantedMode() == DriveMode.FEED);
+                    () -> autoDrive.getWantedMode() == DriveMode.FEED,
+                    autoDrive::getAutoDriveEnabled);
+
+    public final LEDs leds =
+            new LEDs(LEDConstants.m_candle, superstructure, mainController, swerve::isBraked);
 
     // 254-style vision system
     public final VisionState visionState =

@@ -4,7 +4,10 @@
       "Bash(./gradlew build:*)",
       "Bash(./gradlew spotlessApply)",
       "Bash(./gradlew spotlessApply compileJava -q)",
-      "PowerShell(Test-Path \"C:\\\\Users\\\\chris\\\\wpilib\"; \\(Get-Command java -ErrorAction SilentlyContinue\\).Source)"
+      "PowerShell(Test-Path \"C:\\\\Users\\\\chris\\\\wpilib\"; \\(Get-Command java -ErrorAction SilentlyContinue\\).Source)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Users\\\\Public\\\\wpilib\\\\2026\\\\jdk\"; .\\\\gradlew.bat compileJava -q 2>&1 | Select-Object -Last 30)",
+      "Bash(./gradlew compileJava -q)",
+      "PowerShell($jdk = Get-ChildItem \"C:\\\\Users\\\\chris\\\\wpilib\" -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1; $env:JAVA_HOME = \"$\\($jdk.FullName\\)\\\\jdk\"; Write-Output $env:JAVA_HOME; & .\\\\gradlew.bat compileJava -q 2>&1 | Select-Object -Last 30)"
     ]
   }
 }

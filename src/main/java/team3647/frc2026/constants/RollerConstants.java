@@ -27,14 +27,16 @@ public class RollerConstants {
     public static final double kIntakeBaseSpeed = 75.0;
     public static final double kIntakeVxGain = 3.0;
 
-    public static final double kP = 15.0;
+    public static final double kP = 0.7;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
+    public static final double kV = 0.1;
 
     static {
         kMasterConfig.Slot0.kP = kP;
         kMasterConfig.Slot0.kI = kI;
         kMasterConfig.Slot0.kD = kD;
+        kMasterConfig.Slot0.kV = kV;
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 

@@ -32,9 +32,17 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
     // this is for real robot
     public final PIDController rotController = new PIDController(4.0, 0, 0);
-    public final double kFF = 0.5;
+    // public final double kFF = 0.5;
+
+    // Distance (m) from the nearer tower upright (the outer edge of the tower) within which
+    // auto-align orbits that upright instead of spinning about the robot center.
+    public static final double kTowerPivotDistance = 1.0;
 
     private Alliance color = Alliance.Red;
+
+    // Tower uprights for the current alliance (defaults to blue; swapped in onAllianceFound).
+    private Translation2d towerPoleA = FieldConstants.blueTowerPoleA;
+    private Translation2d towerPoleB = FieldConstants.blueTowerPoleB;
 
     private DriveMode wantedMode = DriveMode.SHOOT;
 
@@ -106,7 +114,15 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
                                         * 100.0)
                         / 100.0);
 
-        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 5;
+        return Math.abs(robotPose.getRotation().getDegrees() - angleToTarget.getDegrees()) < 4;
+    }
+
+    /** Absolute heading error (degrees) between the robot and the current aim target. */
+    public double headingErrorDegrees() {
+        final Pose2d robotPose = getPose();
+        Rotation2d angleToTarget =
+                cachedAimingParams != null ? cachedAimingParams.rotation : new Rotation2d();
+        return Math.abs(robotPose.getRotation().minus(angleToTarget).getDegrees());
     }
 
     public boolean rotAlignedAuto() {
@@ -268,13 +284,68 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
 
         double rotComp = rotFeedback;
 
+        // When auto-aligning to shoot up close to the tower, orbit the nearer upright instead of
+        // spinning about the robot center. For a rigid body rotating about a pivot P at angular
+        // rate w, the center C must translate with v = w x (C - P). Here w = rotComp (CCW, field
+        // frame), so vx = -w * (Cy - Py), vy = w * (Cx - Px). The heading PID keeps correcting the
+        // aim as the robot swings around, so the two stay coupled.
+        // double dx = 0;
+        // double dy = 0;
+        // if (enabled
+        //         && (wantedMode == DriveMode.SHOOT || wantedMode == DriveMode.SHOOT_ON_THE_MOVE))
+        // {
+        //     Translation2d pivot = getPivotPole();
+        //     if (pivot != null) {
+        //         double rx = robotPose.getX() - pivot.getX();
+        //         double ry = robotPose.getY() - pivot.getY();
+        //         dx = -rotComp * ry;
+        //         dy = rotComp * rx;
+        //         Logger.recordOutput(
+        //                 "SOTMAutoAlign/orbitPivot", new Pose2d(pivot, new Rotation2d()));
+        //     }
+        // }
+        // Logger.recordOutput("SOTMAutoAlign/orbiting", dx != 0 || dy != 0);
+        // Logger.recordOutput("SOTMAutoAlign/orbitVelX", dx);
+        // Logger.recordOutput("SOTMAutoAlign/orbitVelY", dy);
+
         return new Twist2d(0, 0, rotComp);
+    }
+
+    /**
+     * Returns the tower upright to orbit when auto-aligning to shoot, or {@code null} to rotate
+     * about the robot center as usual. Only orbits an upright when the robot's y is beyond that
+     * upright (to its side) and the robot is within {@link #kTowerPivotDistance} of it: orbit the
+     * low-y ("right") pole only when the robot is to the right of it, the high-y ("left") pole only
+     * when to the left of it. Between the two uprights, returns {@code null}.
+     */
+    private Translation2d getPivotPole() {
+        Translation2d robot = getPose().getTranslation();
+        Translation2d lowPole = towerPoleA.getY() <= towerPoleB.getY() ? towerPoleA : towerPoleB;
+        Translation2d highPole = towerPoleA.getY() <= towerPoleB.getY() ? towerPoleB : towerPoleA;
+
+        Translation2d pivot;
+        if (robot.getY() < lowPole.getY()) {
+            pivot = lowPole; // robot is beyond the low-y (right) pole
+        } else if (robot.getY() > highPole.getY()) {
+            pivot = highPole; // robot is beyond the high-y (left) pole
+        } else {
+            return null; // between the uprights: rotate about the robot center
+        }
+        return robot.getDistance(pivot) <= kTowerPivotDistance ? pivot : null;
     }
 
     @Override
     public void onAllianceFound(Alliance color) {
 
         this.color = color;
+
+        if (color == Alliance.Blue) {
+            towerPoleA = FieldConstants.blueTowerPoleA;
+            towerPoleB = FieldConstants.blueTowerPoleB;
+        } else {
+            towerPoleA = FieldConstants.redTowerPoleA;
+            towerPoleB = FieldConstants.redTowerPoleB;
+        }
         // Logger.recordOutput("@autodrive", color);
         // DriverStation.reportError("MUSTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARD", false);
     }
@@ -286,7 +357,7 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
         } else if (wantedMode == DriveMode.SHOOT_ON_THE_MOVE) {
             cachedAimingParams = targeting.shootAtHubOnTheMove();
         } else {
-            cachedAimingParams = targeting.shootAtPoseOnTheMove(targeting.robotTracker.getFeed());
+            cachedAimingParams = targeting.feedAtPose(targeting.robotTracker.getFeed());
         }
     }
 }

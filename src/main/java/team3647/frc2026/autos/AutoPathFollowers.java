@@ -6,6 +6,7 @@ import choreo.trajectory.Trajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -293,9 +294,20 @@ public class AutoPathFollowers implements AllianceObserver {
             Command ppCommand = AutoBuilder.followPath(path);
             Timer pathTimer = new Timer();
             BooleanSupplier finishedSupplier =
-                    () ->
-                            ppCommand.isFinished()
-                                    && finished.apply(swerve.getRealPose(), rawFinalPose);
+                    () -> {
+                        // AutoBuilder.followPath() flips the path to the alliance at runtime, so
+                        // the endpoint must be flipped the same way before comparing. Otherwise on
+                        // Red the robot drives to the mirrored endpoint while this compares against
+                        // the blue one and the command never finishes.
+                        boolean flip =
+                                DriverStation.getAlliance()
+                                        .map(a -> a == Alliance.Red)
+                                        .orElse(false);
+                        Pose2d endPose =
+                                flip ? FlippingUtil.flipFieldPose(rawFinalPose) : rawFinalPose;
+                        return ppCommand.isFinished()
+                                && finished.apply(swerve.getRealPose(), endPose);
+                    };
             return new FunctionalCommand(
                     () -> {
                         pathTimer.restart();
@@ -318,19 +330,19 @@ public class AutoPathFollowers implements AllianceObserver {
 
     public Command followPathPlannerPath(String pathName) {
 
-        BiFunction<Pose2d, Pose2d, Boolean> finished =
-                (finalPose, robotPose) -> {
-                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 10);
-                };
-        return followPathPlannerPath(pathName, finished, false);
+        return followPathPlannerPath(pathName, visionGatedFinished(), false);
     }
 
     public Command followMirroredPathPlannerPath(String pathName) {
         BiFunction<Pose2d, Pose2d, Boolean> finished =
-                (finalPose, robotPose) -> {
-                    return PoseUtils.aligned(swerve.getOdoPose(), finalPose, 0.1, 10);
+                (robotPose, finalPose) -> {
+                    return PoseUtils.aligned(
+                            robotPose,
+                            finalPose,
+                            AutoConstants.kEndRadius,
+                            AutoConstants.kEndAngle);
                 };
-        return followPathPlannerPath(pathName, finished, true);
+        return followPathPlannerPath(pathName, visionGatedFinished(), true);
     }
 
     // Odometry-only variants: original finish behavior, no vision required. Kept available in case
@@ -345,7 +357,9 @@ public class AutoPathFollowers implements AllianceObserver {
 
     /** Original finish: robot simply aligned with the endpoint, no vision required. */
     private BiFunction<Pose2d, Pose2d, Boolean> plainFinished() {
-        return (robotPose, endPose) -> PoseUtils.aligned(robotPose, endPose, 0.2, 10);
+        return (robotPose, endPose) ->
+                PoseUtils.aligned(
+                        robotPose, endPose, AutoConstants.kEndRadius, AutoConstants.kEndAngle);
     }
 
     /**
@@ -373,8 +387,15 @@ public class AutoPathFollowers implements AllianceObserver {
                 }
                 lastEval = now;
 
+                boolean aligned =
+                        PoseUtils.aligned(
+                                robotPose,
+                                endPose,
+                                AutoConstants.kEndRadius,
+                                AutoConstants.kEndAngle);
+
                 // Normal completion: aligned + a recent vision fix near the endpoint.
-                if (PoseUtils.aligned(robotPose, endPose, 0.2, 360)
+                if (aligned
                         && swerve.hasRecentVisionNear(
                                 endPose,
                                 AutoConstants.kVisionEndpointRadiusMeters,
@@ -382,12 +403,13 @@ public class AutoPathFollowers implements AllianceObserver {
                     return true;
                 }
 
-                // Fallback: no vision for the grace period after the path ended, but odometry
-                // still says we're at the endpoint -> end anyway.
+                // Fallback: no vision for the grace period after the path ended. Drop only the
+                // vision requirement -- we must still actually be at the endpoint by odometry,
+                // otherwise the path bails out short of its target (the trajectory clock ends
+                // before the robot physically arrives, especially after the delayed auto's wait).
                 boolean graceElapsed =
                         now - pathEndTime >= AutoConstants.kVisionEndpointFallbackSeconds;
-                boolean poseGood = PoseUtils.aligned(robotPose, endPose, 0.5, 360);
-                return graceElapsed && poseGood;
+                return graceElapsed && aligned;
             }
         };
     }

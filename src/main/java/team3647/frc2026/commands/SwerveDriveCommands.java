@@ -45,7 +45,8 @@ public class SwerveDriveCommands implements AllianceObserver {
             Supplier<Twist2d> autoDriveVelocities,
             Supplier<DriveMode> getMode,
             BooleanSupplier autoDriveEnabled,
-            BooleanSupplier isAligned) {
+            BooleanSupplier isAligned,
+            BooleanSupplier offTarget) {
 
         return Commands.run(
                 () -> {
@@ -70,6 +71,7 @@ public class SwerveDriveCommands implements AllianceObserver {
                     double motionTurnComponent = rot.getAsDouble() * kMaxRotRadPs * rotMultiplier;
                     double xyMult = 1.0 - motionTurnComponent * slowCoeff;
 
+                    boolean brakeForAlign = false;
                     if (isAutoDrive) {
                         motionTurnComponent = -velocities.dtheta;
                         switch (mode) {
@@ -80,10 +82,29 @@ public class SwerveDriveCommands implements AllianceObserver {
                             default:
                                 xyMult = 1.0;
                         }
+                        // Hold translation while the heading is still far off the target so the
+                        // robot settles its aim before driving; rotation keeps correcting.
+                        brakeForAlign = offTarget.getAsBoolean();
                     }
 
                     double motionXComponent = xyMult * ySquared * invert * kMaxSpeedMps;
                     double motionYComponent = xyMult * -xSquared * invert * kMaxSpeedMps;
+
+                    if (brakeForAlign) {
+                        motionXComponent = 0;
+                        motionYComponent = 0;
+                    }
+                    Logger.recordOutput("autoDriveBrakeForAlign", brakeForAlign);
+
+                    // When auto-aligning to shoot close to the tower, AutoDrive hands back a
+                    // field-relative orbit translation (dx/dy) so the robot rotates about the
+                    // tower pole rather than its own center. Override the driver's translation
+                    // with it. Negated because this path applies rotation as -dtheta; flipping
+                    // both translation and rotation keeps the orbit about the pole.
+                    // if (isAutoDrive && (velocities.dx != 0 || velocities.dy != 0)) {
+                    //     motionXComponent = -velocities.dx;
+                    //     motionYComponent = -velocities.dy;
+                    // }
                     // swerve.generate(motionXComponent, motionYComponent, motionTurnComponent);
                     swerve.driveFieldOriented(
                             motionXComponent, motionYComponent, motionTurnComponent);
@@ -100,9 +121,14 @@ public class SwerveDriveCommands implements AllianceObserver {
                         Commands.runOnce(() -> swerve.drive(0, 0, 0)),
                         autoDrive.enableAutoDrive(),
                         Commands.run(
-                                () ->
-                                        swerve.driveFieldOriented(
-                                                0, 0, autoDriveVelocities.get().dtheta),
+                                () -> {
+                                    // dx/dy are the field-relative orbit translation about the
+                                    // tower pole (zero when not close to it). This path applies
+                                    // rotation as +dtheta, so the orbit velocities pass through
+                                    // directly.
+                                    var vel = autoDriveVelocities.get();
+                                    swerve.driveFieldOriented(vel.dx, vel.dy, vel.dtheta);
+                                },
                                 swerve))
                 .finallyDo(() -> autoDrive.setEnabled(false));
     }

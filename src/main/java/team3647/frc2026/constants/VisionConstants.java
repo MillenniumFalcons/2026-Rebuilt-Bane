@@ -36,7 +36,7 @@ public class VisionConstants {
     public static final double kDefaultAmbiguityThreshold = 0.19;
     public static final double kDefaultYawDiffThreshold = 5.0; // degrees
     public static final double kTagAreaThresholdForYawCheck = 2.0;
-    public static final double kTagMinAreaForSingleTagMegatag = 0.34;
+    public static final double kTagMinAreaForSingleTagMegatag = 0.2;
     public static final double kDefaultZThreshold = 0.2; // meters
     public static final double kDefaultNormThreshold = 1.0; // meters
 
@@ -49,9 +49,10 @@ public class VisionConstants {
     // ---- Pose-fusion guards (added to stop vision from snapping odometry at auto start) ----
     // Ignore all vision fusion for this long at autonomous start while the pose/path initializes.
     public static final double kAutoStartVisionSuppressSeconds = 0.75;
-    // Floor on the fused XY std dev so a single optimistic frame can't near-absolutely trust vision
-    // (previously the acceptor pinned this at 0.05 m).
-    public static final double kMinVisionXYStdDev = 0.1; // meters
+    // Floor on the fused XY std dev so a single optimistic frame can't near-absolutely trust
+    // vision.
+    // Lowered to trust the vision pose more (pull the fused pose harder toward vision/odometry).
+    public static final double kMinVisionXYStdDev = 0.04; // meters
 
     // ---- Vision-only ("beached") mode ----
     // When the robot is beached/high-centered the wheels slip and odometry is garbage. Holding the

@@ -32,6 +32,7 @@ public class TargetingUtil {
     // =========================================================================
     private final InterpolatingDoubleTreeMap hoodAngleMap = HoodConstants.hoodAngleMap;
     private final InterpolatingDoubleTreeMap shootSpeedMap = ShooterConstants.shootSpeedMap;
+    private final InterpolatingDoubleTreeMap feedSpeedMap = ShooterConstants.feedSpeedMap;
 
     public TargetingUtil(RobotTracker robotTracker) {
         this.robotTracker = robotTracker;
@@ -94,6 +95,26 @@ public class TargetingUtil {
 
         return new AimingParameters(
                 aimHeading, hoodAngle, kShootSpeed, compensatedDistance, robotToTargetTranslation);
+    }
+
+    /**
+     * Calculates feeding parameters (lobbing to the corner) while moving. Same geometry as {@link
+     * #shootAtPoseOnTheMove(Pose2d)} but uses the dedicated {@link ShooterConstants#feedSpeedMap}
+     * for flywheel speed instead of the shooting map.
+     */
+    public AimingParameters feedAtPose(Pose2d targetPose) {
+        Pose2d shotPose = robotTracker.compensate(robotTracker.getPose());
+
+        Translation2d robotToTargetTranslation =
+                targetPose.getTranslation().minus(shotPose.getTranslation());
+        double compensatedDistance = robotToTargetTranslation.getNorm();
+        Rotation2d aimHeading = robotToTargetTranslation.getAngle();
+
+        double hoodAngle = hoodAngleMap.get(compensatedDistance);
+        double feedSpeed = feedSpeedMap.get(compensatedDistance);
+
+        return new AimingParameters(
+                aimHeading, hoodAngle, feedSpeed, compensatedDistance, robotToTargetTranslation);
     }
 
     /** Calculates aiming parameters assuming the robot is stationary. */

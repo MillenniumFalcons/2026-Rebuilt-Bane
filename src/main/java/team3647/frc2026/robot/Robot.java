@@ -157,6 +157,10 @@ public class Robot extends LoggedRobot {
     public void autonomousExit() {
         // Restore the normal (teleop) drive supply current limit after auto.
         // m_robotContainer.swerve.setDriveSupplyCurrentLimit(60);
+
+        // Arm the held-through shoot: if the driver holds the shoot trigger across the
+        // auto->teleop transition, startQueuedTeleopShoot() will begin shooting at teleop start.
+        m_robotContainer.onAutonomousExit();
     }
 
     @Override
@@ -168,6 +172,9 @@ public class Robot extends LoggedRobot {
         // ModifiedSignalLogger.start();
         ModifiedSignalLogger.stop();
         m_robotContainer.visionIO.setIMUMode(4);
+
+        // If the shoot trigger was held through the auto->teleop transition, start shooting now.
+        m_robotContainer.startQueuedTeleopShoot();
     }
 
     @Override

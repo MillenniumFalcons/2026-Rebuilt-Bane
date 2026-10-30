@@ -601,6 +601,13 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     public void driveFieldOriented(double x, double y, double rotation) {
         // Convert the field-relative command to robot-relative using ONLY the gyro heading,
         // then drive robot-centric. This keeps field orientation independent of vision fusion.
+        // SwerveDriveKinematics.desaturateWheelSpeeds(
+        //     getModuleStates(),
+        //     new ChassisSpeeds(x, y, rotation),
+
+        //     SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
+        //     SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
+
         this.fieldCentric.withVelocityX(x).withVelocityY(y).withRotationalRate(rotation);
         this.masterRequest = this.fieldCentric;
         // ChassisSpeeds robotRelative =
@@ -646,6 +653,11 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     @Override
     public void brake() {
         this.masterRequest = new SwerveRequest.SwerveDriveBrake();
+    }
+
+    @Override
+    public boolean isBraked() {
+        return this.masterRequest instanceof SwerveRequest.SwerveDriveBrake;
     }
 
     public SwerveModuleState[] getModuleStates() {

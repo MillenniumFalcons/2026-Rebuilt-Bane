@@ -52,6 +52,9 @@ public class Superstructure extends VirtualSubsystem {
     public Angle wantedIntakeAngle = Degrees.of(70);
     public final BooleanSupplier isRotAligned;
 
+    // True while an auto-align is actively driving rotation (i.e. the robot is "trying to align").
+    public final BooleanSupplier isAligning;
+
     // True while the robot is in feed mode (past the trench). Feeding uses a looser 2 rps
     // shot-velocity
     // tolerance so indexing starts sooner; shooting keeps the stricter isAtVelocity tolerance.
@@ -65,6 +68,11 @@ public class Superstructure extends VirtualSubsystem {
     public final Trigger atShotVel;
     public final BooleanSupplier atHoodAngle;
     public final Trigger readyToShoot;
+
+    // LED state: actively firing — rotation aligned, shooter at speed, and hood at angle.
+    public final Trigger shooting;
+    // LED state: spinning up the shooter / aligning rotation, but not yet ready to fire.
+    public final Trigger prepping;
 
     public boolean fuelLoaded = false;
     public final Trigger kickerCurrent;
@@ -86,7 +94,8 @@ public class Superstructure extends VirtualSubsystem {
             DoubleSupplier hoodAngle,
             DoubleSupplier shotSpeed,
             BooleanSupplier isRotAligned,
-            BooleanSupplier isFeeding) {
+            BooleanSupplier isFeeding,
+            BooleanSupplier isAligning) {
         this.shooter = shooter;
         this.indexer = indexer;
         this.hood = hood;
@@ -98,6 +107,7 @@ public class Superstructure extends VirtualSubsystem {
         this.shotSpeed = shotSpeed;
         this.isRotAligned = isRotAligned;
         this.isFeeding = isFeeding;
+        this.isAligning = isAligning;
 
         this.shooterCommands = new ShooterCommands(this.shooter);
         this.indexerCommands = new IndexerCommands(this.indexer);
@@ -116,6 +126,25 @@ public class Superstructure extends VirtualSubsystem {
                                         : shooterCommands.isAtVelocity(this.shotSpeed));
         this.atHoodAngle = () -> hoodCommands.angleReached(this.hoodAngle, 2.0);
         this.readyToShoot = new Trigger(this.isRotAligned).debounce(0.1);
+
+        this.shooting = this.readyToShoot.and(this.atShotVel).and(this.atHoodAngle);
+
+        // Trying to spin up the shooter: a shoot/prep command is driving the shooter instead of
+        // the idle default command.
+        Trigger spinningUp =
+                new Trigger(
+                        () ->
+                                shooter.getCurrentCommand() != null
+                                        && shooter.getCurrentCommand()
+                                                != shooter.getDefaultCommand());
+        // Trying to align rotation.
+        Trigger aligning = new Trigger(this.isAligning);
+        // Prepping = trying to spin up but not yet at shot speed, OR trying to align but not yet
+        // rotationally aligned.
+        this.prepping =
+                spinningUp
+                        .and(this.atShotVel.negate())
+                        .or(aligning.and(() -> !this.isRotAligned.getAsBoolean()));
 
         this.kickerCurrent = new Trigger(() -> kicker.getTotalCurrent() > 0.7).debounce(0.1);
         this.notLoaded = new Trigger(() -> !fuelLoaded && RobotState.isEnabled());
@@ -292,7 +321,7 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command intake() {
         return Commands.parallel(
-                wristCommands.deploy(), rollerCommands.intake(), indexerCommands.openLoop(0.2));
+                wristCommands.deploy(), rollerCommands.intake(), indexerCommands.openLoop(-0.3));
     }
 
     public Command intakeNoIndex() {

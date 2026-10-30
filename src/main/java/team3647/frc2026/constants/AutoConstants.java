@@ -26,6 +26,9 @@ public class AutoConstants {
     public static final PIDController autoXController = new PIDController(2.0, 0, 0.05);
     public static final PIDController autoYController = new PIDController(2.0, 0, 0.05);
 
+    public static final double kEndRadius = 0.3;
+    public static final double kEndAngle = 360;
+
     /**
      * Max age (s) of a vision fix for it to count toward ending an auto path at its endpoint. Kept
      * loose: the gate is only meant to reject completion with no recent vision at all.
@@ -43,6 +46,8 @@ public class AutoConstants {
      * odometry still places the robot at the endpoint, the path is allowed to finish anyway.
      */
     public static final double kVisionEndpointFallbackSeconds = 1.0;
+
+    public static final double kFallbackRadius = 0.5;
 
     //     public static final TunablePID tunableAutoXController =
     //             new TunablePID("Auto/x", autoXController);

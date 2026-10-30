@@ -40,13 +40,13 @@ public class ShooterConstants {
 
     public static final double kNominalVoltage = 11.0;
     public static final double kMaxStatorCurrent = 100.0;
-    public static final double kMaxSupplyCurrent = 36.0;
+    public static final double kMaxSupplyCurrent = 40.0;
     public static final double kidSpeed = 9.0;
 
     public static final double kIdleSpeed = 8.0;
     public static final double kIdleSpeedMid = 8.0;
 
-    public static final double kS = 12.0;
+    public static final double kS = 8.0;
     //    public static final double kS = 4.3;
     public static final double kV = 0.43;
     public static final double kA = 0;
@@ -65,19 +65,29 @@ public class ShooterConstants {
 
     public static final InterpolatingDoubleTreeMap shootSpeedMap = new InterpolatingDoubleTreeMap();
 
+    // Separate flywheel-speed lookup for feeding (lobbing to the corner), keyed on distance to the
+    // feed target. Placeholder values — tune on the robot.
+    public static final InterpolatingDoubleTreeMap feedSpeedMap = new InterpolatingDoubleTreeMap();
+
     public static double tempOffset = 0.0;
 
     static {
+        feedSpeedMap.put(3.0, 9.0);
+        feedSpeedMap.put(8.0, 12.0);
+        feedSpeedMap.put(9.0, 13.0);
+        feedSpeedMap.put(10.0, 14.0);
+        feedSpeedMap.put(11.0, 14.0);
+
         // need to reinterpolate
         shootSpeedMap.put(1.0, 8.5 + tempOffset); // made up
         shootSpeedMap.put(1.5, 8.5 + tempOffset);
         shootSpeedMap.put(2.0, 8.6 + tempOffset);
         shootSpeedMap.put(2.5, 9.25 + tempOffset);
-        shootSpeedMap.put(3.0, 9.4 + tempOffset);
-        shootSpeedMap.put(3.5, 10.2 + tempOffset);
+        shootSpeedMap.put(3.0, 9.45 + tempOffset);
+        shootSpeedMap.put(3.5, 10.25 + tempOffset);
         shootSpeedMap.put(4.0, 10.5 + tempOffset);
         shootSpeedMap.put(4.5, 11.0 + tempOffset); // made up
-        shootSpeedMap.put(5.0, 11.75 + tempOffset); // made up
+        shootSpeedMap.put(5.0, 11.9 + tempOffset); // made up
         shootSpeedMap.put(8.0, 14.5 + tempOffset); // made up
         shootSpeedMap.put(14.0, 14.5);
 

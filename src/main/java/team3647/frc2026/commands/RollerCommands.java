@@ -20,7 +20,7 @@ public class RollerCommands {
     }
 
     public Command intake() {
-        return Commands.run(() -> rollers.setOpenLoop(0.8), rollers);
+        return Commands.run(() -> rollers.setVelocityVoltage(80), rollers);
         // return Commands.runEnd(
         //         () ->
         //                 rollers.setVelocityTorque(
@@ -32,7 +32,7 @@ public class RollerCommands {
     }
 
     public Command intakeFast() {
-        return Commands.run(() -> rollers.setOpenLoop(1.0), rollers);
+        return Commands.run(() -> rollers.setVelocityVoltage(90), rollers);
     }
 
     public Command jerkOff() {
@@ -43,7 +43,7 @@ public class RollerCommands {
     }
 
     public Command spit() {
-        return Commands.run(() -> rollers.setOpenLoop(-0.6), rollers);
+        return Commands.run(() -> rollers.setVelocityVoltage(-80), rollers);
     }
 
     public boolean currentGreater(double current) {
