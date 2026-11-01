@@ -22,7 +22,7 @@ public class LEDConstants {
     public static LEDConfigs config = new LEDConfigs();
 
     static {
-        config.BrightnessScalar = 0.67;
+        config.BrightnessScalar = 0.50;
         config.LossOfSignalBehavior = LossOfSignalBehaviorValue.KeepRunning;
         config.StripType = StripTypeValue.RGB;
         m_candle.getConfigurator().apply(config);
@@ -31,7 +31,7 @@ public class LEDConstants {
     // LED COUNT
     public static final int candleLEDCount = 8;
 
-    public static final int hopperLEDCount = 160;
+    public static final int hopperLEDCount = 197;
 
     public static final int LEDCOUNT = candleLEDCount + hopperLEDCount;
 
@@ -39,7 +39,7 @@ public class LEDConstants {
     public static final EmptyAnimation EMPTY = new EmptyAnimation(0);
 
     public static final RainbowAnimation RAINBOW =
-            new RainbowAnimation(0, LEDCOUNT).withFrameRate(200).withBrightness(0.67);
+            new RainbowAnimation(0, LEDCOUNT).withFrameRate(100).withBrightness(0.67);
 
     public static final FireAnimation FIRE =
             new FireAnimation(0, LEDCOUNT).withFrameRate(50).withBrightness(0.67);

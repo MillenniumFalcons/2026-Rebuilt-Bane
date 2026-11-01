@@ -321,7 +321,7 @@ public class Superstructure extends VirtualSubsystem {
 
     public Command intake() {
         return Commands.parallel(
-                wristCommands.deploy(), rollerCommands.intake(), indexerCommands.openLoop(-0.3));
+                wristCommands.deploy(), rollerCommands.intake(), indexerCommands.spinSlow());
     }
 
     public Command intakeNoIndex() {

@@ -27,7 +27,7 @@ public class RollerConstants {
     public static final double kIntakeBaseSpeed = 75.0;
     public static final double kIntakeVxGain = 3.0;
 
-    public static final double kP = 0.7;
+    public static final double kP = 0.5;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.1;
@@ -40,8 +40,8 @@ public class RollerConstants {
 
         kMasterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 90.0;
+        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 25.0;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = 50.0;
         kMasterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;

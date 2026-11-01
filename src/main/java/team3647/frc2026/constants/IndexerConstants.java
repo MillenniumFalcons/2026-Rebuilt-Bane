@@ -20,7 +20,7 @@ public class IndexerConstants {
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kMasterConfig.CurrentLimits.SupplyCurrentLimit = 10.0;
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 50.0;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = 40.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kMasterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 

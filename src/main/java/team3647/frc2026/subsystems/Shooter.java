@@ -78,6 +78,10 @@ public class Shooter extends TalonFXSubsystem {
         this.prepSpeedSupplier = supplier;
     }
 
+    public boolean isPrepping() {
+        return prepping;
+    }
+
     public void startPrepIdle() {
         prepping = true;
     }

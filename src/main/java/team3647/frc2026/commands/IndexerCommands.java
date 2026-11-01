@@ -21,6 +21,10 @@ public class IndexerCommands {
                 () -> indexer.setOpenLoop(0.5), () -> indexer.setOpenLoop(0), indexer);
     }
 
+    public Command spinSlow() {
+        return openLoop(-0.2);
+    }
+
     public Command reverse() {
         return Commands.run(() -> indexer.setOpenLoop(-1.0), indexer);
     }

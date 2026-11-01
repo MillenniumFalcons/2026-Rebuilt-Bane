@@ -39,14 +39,14 @@ public class ShooterConstants {
     public static final double kNativeVelToSurfaceMpS = kWheelRotationMeters * kGearboxReduction;
 
     public static final double kNominalVoltage = 11.0;
-    public static final double kMaxStatorCurrent = 100.0;
-    public static final double kMaxSupplyCurrent = 40.0;
+    public static final double kMaxStatorCurrent = 45.0;
+    public static final double kMaxSupplyCurrent = 25.0;
     public static final double kidSpeed = 9.0;
 
-    public static final double kIdleSpeed = 8.0;
-    public static final double kIdleSpeedMid = 8.0;
+    public static final double kIdleSpeed = 6.0;
+    public static final double kIdleSpeedMid = 6.0;
 
-    public static final double kS = 8.0;
+    public static final double kS = 6.0;
     //    public static final double kS = 4.3;
     public static final double kV = 0.43;
     public static final double kA = 0;

@@ -45,7 +45,7 @@ public class LEDs implements AllianceObserver {
                 new Trigger(
                         () ->
                                 superstructure.wrist.getAngleDegs() < 5
-                                        && Math.abs(superstructure.rollers.getVelocity()) > 60);
+                                        && Math.abs(superstructure.rollers.getVelocity()) > 40);
         // Intake is stowed while the operator is asking to intake (left bumper held).
         Trigger intakeNotDown =
                 new Trigger(() -> superstructure.wrist.angleWithin(0, 5))

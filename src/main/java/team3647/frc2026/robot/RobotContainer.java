@@ -200,7 +200,7 @@ public class RobotContainer {
                         () -> autoDrive.headingErrorDegrees() > 8));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         // shooter.setDefaultCommand(shooterCommands.kill());
-        shooter.setDefaultCommand(shooterCommands.setVelocity(idleSpeed));
+        shooter.setDefaultCommand(shooterCommands.idleCoast(idleSpeed));
         hood.setDefaultCommand(hoodCommands.setAngle(HoodConstants.kMinAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         rollers.setDefaultCommand(rollerCommands.kill());
@@ -210,8 +210,8 @@ public class RobotContainer {
     private void configureBindings() {
         // preload balls, commented out for now, need to trigger after intake
         // superstructure.notLoaded.whileTrue(superstructure.loadWhenDetected());
-        // X lock: press A to toggle brake on; it cancels automatically once the driver moves a
-        // stick (or by pressing A again). Requires swerve so it interrupts the default drive
+        // X lock: press X to toggle brake on; it cancels automatically once the driver moves a
+        // stick (or by pressing X again). Requires swerve so it interrupts the default drive
         // command, and ending restores the default command.
         mainController.buttonX.toggleOnTrue(
                 Commands.run(() -> swerve.brake(), swerve).until(mainController::anyStickMoved));
@@ -223,7 +223,7 @@ public class RobotContainer {
         mainController
                 .leftBumper
                 .and(mainController.rightTrigger.negate())
-                .whileTrue(superstructure.indexerCommands.openLoop(0.3));
+                .whileTrue(superstructure.indexerCommands.spinSlow());
         mainController.leftBumper.onFalse(rollerCommands.kill());
 
         mainController.buttonB.onTrue(wristCommands.retract());
@@ -234,8 +234,11 @@ public class RobotContainer {
                         .alongWith(superstructure.shoot()));
         mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
         mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
-        // hardcoded shot from fixed 3.35m distance, no auto-align (driver aims)
-        mainController.leftTrigger.whileTrue(superstructure.shootFixed());
+        // same as normal shoot (dynamic targeting, pose-based feed/shoot) but no auto-align
+        // (driver aims rotation manually)
+        mainController.leftTrigger.whileTrue(
+                Commands.run(() -> autoDrive.updateDriveModeByPose())
+                        .alongWith(superstructure.shootNoAlign()));
         // Manual feed
         // mainController.buttonY.whileTrue(superstructure.shootInstantly());
         // feed out of intake
@@ -284,9 +287,8 @@ public class RobotContainer {
                 autoDrive
                         .setDriveMode(DriveMode.MANUAL_SHOOT)
                         .alongWith(autoDrive.incrementHood(-1)));
-        coController.buttonX.onTrue(superstructure.retractIntake());
-        coController.buttonY.whileTrue(superstructure.reverse());
-        // defense mode
+        coController.buttonX.toggleOnTrue(
+                Commands.run(() -> swerve.brake(), swerve).until(mainController::anyStickMoved));        // defense mode
         coController.buttonA.onTrue(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.9)));
         coController.buttonA.onFalse(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.6)));
 
@@ -461,7 +463,7 @@ public class RobotContainer {
 
     public final SwerveDriveCommands swerveCommands =
             new SwerveDriveCommands(
-                    swerve, 6.5, SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
+                    swerve, 4.0, SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
 
     public final ShooterCommands shooterCommands = new ShooterCommands(shooter);
 

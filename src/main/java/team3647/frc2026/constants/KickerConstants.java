@@ -60,9 +60,9 @@ public class KickerConstants {
         kMasterConfig.Slot1.kS = 0.0;
         kMasterConfig.Slot1.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
-        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
+        kMasterConfig.CurrentLimits.SupplyCurrentLimit = 35.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        kMasterConfig.CurrentLimits.StatorCurrentLimit = 120.0;
+        kMasterConfig.CurrentLimits.StatorCurrentLimit = 100.0;
         kMasterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kMasterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 

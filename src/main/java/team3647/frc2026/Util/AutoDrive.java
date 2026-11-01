@@ -251,6 +251,15 @@ public class AutoDrive extends VirtualSubsystem implements AllianceObserver {
             }
         }
 
+        if (wantedMode == DriveMode.FEED) {
+            // Point directly toward the alliance zone (180 deg on blue, flipped on red).
+            if (color == Alliance.Blue) {
+                angleToTarget = new Rotation2d(Degrees.of(180));
+            } else {
+                angleToTarget = new Rotation2d(Degrees.of(0));
+            }
+        }
+
         Logger.recordOutput(
                 "SOTMAutoAlign/wantedAngle",
                 new Pose2d(robotPose.getX(), robotPose.getY(), angleToTarget));
