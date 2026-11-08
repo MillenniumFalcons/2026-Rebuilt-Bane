@@ -35,7 +35,7 @@ public class ShooterCommands {
     public Command idleCoast(DoubleSupplier idleVel) {
         return Commands.run(
                 () -> {
-                    if (!shooter.isPrepping() && shooter.getVelocity() > idleVel.getAsDouble()) {
+                    if (!shooter.isPrepping() && shooter.getVelocity() > idleVel.getAsDouble() - 0.2) {
                         shooter.setOpenLoop(0);
                     } else {
                         shooter.setVelocityFOC(idleVel.getAsDouble());

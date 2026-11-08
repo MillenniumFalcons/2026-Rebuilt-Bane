@@ -315,6 +315,24 @@ public class VisionSubsystem extends SubsystemBase {
             return Optional.empty();
         }
 
+        // Reject if the vision heading disagrees with the gyro (odometry rotation) by too much. The
+        // gyro is trusted for heading, so a large yaw diff means the vision fix is bad.
+        var gyroPose = state.getFieldToRobot(poseEstimate.timestampSeconds());
+        if (gyroPose.isPresent()) {
+            double yawDiffDeg =
+                    Math.abs(
+                            poseEstimate
+                                    .fieldToRobot()
+                                    .getRotation()
+                                    .minus(gyroPose.get().getRotation())
+                                    .getDegrees());
+            if (yawDiffDeg > VisionConstants.kMaxVisionGyroYawDiffDegrees) {
+                Logger.recordOutput(
+                        logPrefix + "/RejectedGyroYawDiff", poseEstimate.fieldToRobot());
+                return Optional.empty();
+            }
+        }
+
         // Single-tag extra checks
         if (poseEstimate.fiducialIds().length < 2) {
             for (var fiducial : cam.fiducialObservations) {
@@ -381,8 +399,15 @@ public class VisionSubsystem extends SubsystemBase {
 
         double xyStd = Math.max(Math.max(xStd, yStd), VisionConstants.kMinVisionXYStdDev);
 
+        // Heading is trusted to the gyro more than vision: feed a large, fixed yaw std dev instead
+        // of the (optimistic) Limelight-reported value so vision only weakly corrects rotation.
+        // Multi-tag yaw is reliable, so trust it a bit more; single-tag yaw is noisier, so trust it
+        // even less (lean almost entirely on the gyro).
+        boolean multiTag = poseEstimate.fiducialIds().length >= 2;
         double rotStd =
-                cam.standardDeviations[VisionConstants.kMegatag1YawStdDevIndex] * scaleFactor;
+                multiTag
+                        ? VisionConstants.kVisionYawStdDevMultiTag
+                        : VisionConstants.kVisionYawStdDevSingleTag;
 
         Matrix<N3, N1> visionStdDevs = VecBuilder.fill(xyStd, xyStd, rotStd);
 

@@ -59,19 +59,25 @@ public class VisionConstants {
     // beached button overrides every accepted vision measurement with these tiny std devs so the
     // pose estimator trusts vision almost absolutely and effectively ignores wheel odometry.
     public static final double kVisionOnlyXYStdDev = 0.001; // meters
-    public static final double kVisionOnlyYawStdDev = 0.001; // radians
+    public static final double kVisionOnlyYawStdDev = 4.0; // radians
 
     // ---- Vision-vs-gyro trust tuning (lower std dev = pose estimator leans on vision over gyro)
     // --
     // Scales the Limelight-reported XY std devs before fusion; < 1 pulls the fused pose harder
     // toward vision instead of wheel odometry.
     public static final double kVisionXYTrustMultiplier = 0.5;
-    // Heading std devs (radians) fed to the pose estimator. Previously this was kLargeVariance
-    // (1e6), which meant heading came 100% from the gyro. Smaller values let vision correct
-    // heading.
-    // Multi-tag yaw is reliable, so trust it hard; single-tag yaw is noisier, so trust it weakly.
-    public static final double kVisionYawStdDevMultiTag = 0.2;
-    public static final double kVisionYawStdDevSingleTag = 1.0;
+    // Heading std devs (radians) fed to the pose estimator. Larger values make the estimator lean
+    // on the gyro for rotation and let vision only weakly correct heading. (kLargeVariance / 1e6
+    // would be heading 100% from the gyro.)
+    // Multi-tag yaw is more reliable, so trust it somewhat; single-tag yaw is noisier, so trust it
+    // very little and lean almost entirely on the gyro.
+    public static final double kVisionYawStdDevMultiTag = 1.0;
+    public static final double kVisionYawStdDevSingleTag = 4.0;
+
+    // Reject any MegaTag estimate whose heading disagrees with the gyro (odometry rotation) by more
+    // than this. The gyro is trusted for heading, so a vision pose this far off is almost certainly
+    // a bad fix (tag misdetect / ambiguity flip) and must not be fused.
+    public static final double kMaxVisionGyroYawDiffDegrees = 15.0;
 
     // ---- Camera specs ----
     public static final int kCameraImageWidth = 1280;

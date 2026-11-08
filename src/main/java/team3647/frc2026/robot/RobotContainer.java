@@ -288,7 +288,8 @@ public class RobotContainer {
                         .setDriveMode(DriveMode.MANUAL_SHOOT)
                         .alongWith(autoDrive.incrementHood(-1)));
         coController.buttonX.toggleOnTrue(
-                Commands.run(() -> swerve.brake(), swerve).until(mainController::anyStickMoved));        // defense mode
+                Commands.run(() -> swerve.brake(), swerve)
+                        .until(mainController::anyStickMoved)); // defense mode
         coController.buttonA.onTrue(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.9)));
         coController.buttonA.onFalse(Commands.runOnce(() -> swerveCommands.setRotMultiplier(0.6)));
 

@@ -22,7 +22,7 @@ public class IndexerCommands {
     }
 
     public Command spinSlow() {
-        return openLoop(-0.2);
+        return openLoop(0.2);
     }
 
     public Command reverse() {

@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.5640513552068467,
-        "y": 1.104393723252496
+        "y": 1.1043937232524959
       },
       "isLocked": false,
       "linkedName": "Right Bump End"
@@ -175,7 +175,7 @@
     },
     {
       "waypointRelativePos": 4.183368869936023,
-      "rotationDegrees": -163.40531055787494
+      "rotationDegrees": -158.6770779847091
     },
     {
       "waypointRelativePos": 5,

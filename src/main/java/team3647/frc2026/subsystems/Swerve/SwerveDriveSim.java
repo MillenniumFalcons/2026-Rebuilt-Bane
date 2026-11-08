@@ -65,7 +65,7 @@ public class SwerveDriveSim implements SwerveDrive {
     public void drive(double x, double y, double rotation) {
         periodicIO.outputSpeeds.vxMetersPerSecond = x;
         periodicIO.outputSpeeds.vyMetersPerSecond = y;
-        periodicIO.outputSpeeds.omegaRadiansPerSecond = rotation;
+        periodicIO.outputSpeeds.omegaRadiansPerSecond = -rotation;
 
         periodicIO.fieldRelative = false;
     }
@@ -74,7 +74,7 @@ public class SwerveDriveSim implements SwerveDrive {
     public void driveFieldOriented(double x, double y, double rotation) {
         periodicIO.outputSpeeds =
                 ChassisSpeeds.fromFieldRelativeSpeeds(
-                        x, y, rotation, periodicIO.simPose.getRotation());
+                        x, y, -rotation, periodicIO.simPose.getRotation());
 
         periodicIO.fieldRelative = false;
     }

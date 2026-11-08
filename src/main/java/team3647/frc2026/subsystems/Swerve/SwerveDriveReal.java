@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
@@ -599,16 +600,19 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     // }
 
     public void driveFieldOriented(double x, double y, double rotation) {
-        // Convert the field-relative command to robot-relative using ONLY the gyro heading,
-        // then drive robot-centric. This keeps field orientation independent of vision fusion.
-        // SwerveDriveKinematics.desaturateWheelSpeeds(
-        //     getModuleStates(),
-        //     new ChassisSpeeds(x, y, rotation),
+        // Desaturate the commanded wheel speeds: run the requested chassis speeds through the
+        // kinematics, scale any module that would exceed the max wheel speed back into range, then
+        // recompute the (now achievable) chassis speeds before handing them to the drivetrain.
+        ChassisSpeeds desired = new ChassisSpeeds(x, y, rotation);
+        SwerveModuleState[] states = this.getKinematics().toSwerveModuleStates(desired);
+        SwerveDriveKinematics.desaturateWheelSpeeds(
+                states, SwerveDriveConstants.kDrivePossibleMaxSpeedMPS);
+        ChassisSpeeds desaturated = this.getKinematics().toChassisSpeeds(states);
 
-        //     SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
-        //     SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
-
-        this.fieldCentric.withVelocityX(x).withVelocityY(y).withRotationalRate(rotation);
+        this.fieldCentric
+                .withVelocityX(desaturated.vxMetersPerSecond)
+                .withVelocityY(desaturated.vyMetersPerSecond)
+                .withRotationalRate(desaturated.omegaRadiansPerSecond);
         this.masterRequest = this.fieldCentric;
         // ChassisSpeeds robotRelative =
         //         ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotation, getGyroFieldHeading());

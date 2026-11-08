@@ -115,16 +115,16 @@ public class AutoCommands extends AutoPathFollowers {
     }
 
     public Command rightBumpDelayed() {
-        return Commands.waitSeconds(5)
+        return Commands.waitSeconds(3)
                 .andThen(
-                        sweepAndShoot("Right Mid Bump 1 Delayed", 4, 0.0),
+                        sweepAndShoot("Right Mid Bump 1 Delayed", 3.5, 0.0),
                         sweep("Right Mid Bump 3", false, intakeDelay));
     }
 
     public Command leftBumpDelayed() {
-        return Commands.waitSeconds(5)
+        return Commands.waitSeconds(3)
                 .andThen(
-                        sweepShootMirror("Right Mid Bump 1 Delayed", 4, 0.0),
+                        sweepShootMirror("Right Mid Bump 1 Delayed", 3.5, 0.0),
                         sweep("Right Mid Bump 3", true, intakeDelay));
     }
 

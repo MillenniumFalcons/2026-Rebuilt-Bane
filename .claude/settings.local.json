@@ -7,7 +7,8 @@
       "PowerShell(Test-Path \"C:\\\\Users\\\\chris\\\\wpilib\"; \\(Get-Command java -ErrorAction SilentlyContinue\\).Source)",
       "PowerShell($env:JAVA_HOME = \"C:\\\\Users\\\\Public\\\\wpilib\\\\2026\\\\jdk\"; .\\\\gradlew.bat compileJava -q 2>&1 | Select-Object -Last 30)",
       "Bash(./gradlew compileJava -q)",
-      "PowerShell($jdk = Get-ChildItem \"C:\\\\Users\\\\chris\\\\wpilib\" -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1; $env:JAVA_HOME = \"$\\($jdk.FullName\\)\\\\jdk\"; Write-Output $env:JAVA_HOME; & .\\\\gradlew.bat compileJava -q 2>&1 | Select-Object -Last 30)"
+      "PowerShell($jdk = Get-ChildItem \"C:\\\\Users\\\\chris\\\\wpilib\" -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1; $env:JAVA_HOME = \"$\\($jdk.FullName\\)\\\\jdk\"; Write-Output $env:JAVA_HOME; & .\\\\gradlew.bat compileJava -q 2>&1 | Select-Object -Last 30)",
+      "Bash(javap -cp /c/Users/chris/.gradle/caches/modules-2/files-2.1/com.ctre.phoenix6/wpiapi-java/26.3.0/f3db7fa1c312d391db2ba4700768423fdb121a4/wpiapi-java-26.3.0.jar com.ctre.phoenix6.swerve.SwerveDrivetrain)"
     ]
   }
 }
