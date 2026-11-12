@@ -84,10 +84,12 @@ public class LEDs implements AllianceObserver {
     }
 
     public void setAnimation(ControlRequest animation) {
-        if (animation != currentAnimation) {
-            currentAnimation = animation;
-            candle.setControl(animation);
-        }
+        // if (animation != currentAnimation) {
+        //     currentAnimation = animation;
+        //     candle.setControl(animation);
+        // }
+        currentAnimation = animation;
+        candle.setControl(animation);
     }
 
     @Override

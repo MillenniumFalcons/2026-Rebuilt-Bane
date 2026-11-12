@@ -8,7 +8,14 @@
       "PowerShell($env:JAVA_HOME = \"C:\\\\Users\\\\Public\\\\wpilib\\\\2026\\\\jdk\"; .\\\\gradlew.bat compileJava -q 2>&1 | Select-Object -Last 30)",
       "Bash(./gradlew compileJava -q)",
       "PowerShell($jdk = Get-ChildItem \"C:\\\\Users\\\\chris\\\\wpilib\" -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1; $env:JAVA_HOME = \"$\\($jdk.FullName\\)\\\\jdk\"; Write-Output $env:JAVA_HOME; & .\\\\gradlew.bat compileJava -q 2>&1 | Select-Object -Last 30)",
-      "Bash(javap -cp /c/Users/chris/.gradle/caches/modules-2/files-2.1/com.ctre.phoenix6/wpiapi-java/26.3.0/f3db7fa1c312d391db2ba4700768423fdb121a4/wpiapi-java-26.3.0.jar com.ctre.phoenix6.swerve.SwerveDrivetrain)"
+      "Bash(javap -cp /c/Users/chris/.gradle/caches/modules-2/files-2.1/com.ctre.phoenix6/wpiapi-java/26.3.0/f3db7fa1c312d391db2ba4700768423fdb121a4/wpiapi-java-26.3.0.jar com.ctre.phoenix6.swerve.SwerveDrivetrain)",
+      "Bash(find /c/Users/chris -ipath \"*wpimath*\" -name \"*.jar\" 2>/dev/null | grep -i source | head; echo \"---search estimator class---\"; find /c/Users/chris/.gradle -name \"PoseEstimator*\" 2>/dev/null | head)",
+      "Read(//c/Users/chris/**)",
+      "Read(//c/Users/chris/.gradle/**)",
+      "Bash(find /c/Users/Public/wpilib -ipath \"*wpimath*sources*.jar\" 2>/dev/null | head; echo \"===public maven wpimath===\"; find /c/Users/Public/wpilib -ipath \"*wpimath*\" -name \"*.jar\" 2>/dev/null | head; echo \"===m2===\"; find /c/Users/chris/.m2 -ipath \"*wpimath*\" -name \"*.jar\" 2>/dev/null | head)",
+      "Read(//c/Users/Public/wpilib/**)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Users\\\\Public\\\\wpilib\\\\2026\\\\jdk\"; & .\\\\gradlew.bat compileJava spotlessApply --offline 2>&1 | Select-String -Pattern \"BUILD SUCCESSFUL|BUILD FAILED|error:|warning:|What went wrong|> Task :compileJava\" | Select-Object -First 40)",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Users\\\\Public\\\\wpilib\\\\2026\\\\jdk\"; & .\\\\gradlew.bat compileJava spotlessApply --offline 2>&1 | Select-String -Pattern \"BUILD SUCCESSFUL|BUILD FAILED|error:|What went wrong\" | Select-Object -First 20)"
     ]
   }
 }

@@ -140,8 +140,8 @@ public class RobotContainer {
 
         PathFollowingController ppController =
                 new PPHolonomicDriveController(
-                        new com.pathplanner.lib.config.PIDConstants(8.0, 0, 0.0),
-                        new com.pathplanner.lib.config.PIDConstants(3.0, 0, 0.0)) {
+                        new com.pathplanner.lib.config.PIDConstants(6.0, 0, 0.0),
+                        new com.pathplanner.lib.config.PIDConstants(4.0, 0, 0.0)) {
                     @Override
                     public edu.wpi.first.math.kinematics.ChassisSpeeds calculateRobotRelativeSpeeds(
                             Pose2d currentPose, PathPlannerTrajectoryState targetState) {
@@ -464,7 +464,7 @@ public class RobotContainer {
 
     public final SwerveDriveCommands swerveCommands =
             new SwerveDriveCommands(
-                    swerve, 4.0, SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
+                    swerve, SwerveDriveConstants.kDrivePossibleMaxSpeedMPS, SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
 
     public final ShooterCommands shooterCommands = new ShooterCommands(shooter);
 

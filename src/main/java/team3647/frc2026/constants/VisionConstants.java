@@ -36,7 +36,7 @@ public class VisionConstants {
     public static final double kDefaultAmbiguityThreshold = 0.19;
     public static final double kDefaultYawDiffThreshold = 5.0; // degrees
     public static final double kTagAreaThresholdForYawCheck = 2.0;
-    public static final double kTagMinAreaForSingleTagMegatag = 0.2;
+    public static final double kTagMinAreaForSingleTagMegatag = 0.10; // 
     public static final double kDefaultZThreshold = 0.2; // meters
     public static final double kDefaultNormThreshold = 1.0; // meters
 
@@ -52,7 +52,7 @@ public class VisionConstants {
     // Floor on the fused XY std dev so a single optimistic frame can't near-absolutely trust
     // vision.
     // Lowered to trust the vision pose more (pull the fused pose harder toward vision/odometry).
-    public static final double kMinVisionXYStdDev = 0.04; // meters
+    public static final double kMinVisionXYStdDev = 0.1; // meters
 
     // ---- Vision-only ("beached") mode ----
     // When the robot is beached/high-centered the wheels slip and odometry is garbage. Holding the
@@ -73,6 +73,28 @@ public class VisionConstants {
     // very little and lean almost entirely on the gyro.
     public static final double kVisionYawStdDevMultiTag = 1.0;
     public static final double kVisionYawStdDevSingleTag = 4.0;
+    // Tighter heading trust (radians) used ONLY while disabled, so a reliable multi-tag MT1 fix can
+    // seed/correct the robot heading before auto starts. See VisionSubsystem disabled-seeding.
+    public static final double kVisionYawStdDevSeedMultiTag = 0.2;
+    // Large rotation std dev (radians, std-dev units -- NOT a variance) used for the gyro-fused
+    // single-tag fallback, where the heading comes entirely from the gyro and vision supplies only
+    // XY. Replaces the old overload of kLargeVariance, which was (incorrectly) reused as both a
+    // variance and a std dev.
+    public static final double kLargeRotationStdDev = 1e3; // radians
+
+    // ---- Distance-scaled XY std devs (replaces the old 1/quality scaling) ----
+    // xyStd = kXYStdDevBase * avgTagDist / tagCount, clamped to >= kMinVisionXYStdDev. Larger
+    // base = trust vision less as tags get farther away. Tune so a close single tag gives roughly
+    // kMinVisionXYStdDev and a far tag backs off smoothly.
+    public static final double kXYStdDevBase = 0.03;
+    // Reject single-tag MegaTag1 frames whose average tag distance exceeds this; far single tags
+    // are too noisy/ambiguous to trust for XY.
+    public static final double kMaxSingleTagDistanceMeters = 4.5; // meters
+
+    // When more than one camera is accepted in the same loop, WPILib's fixed-gain pose estimator
+    // over-weights them (N agreeing cameras pull N times as hard). Scale each accepted XY std dev
+    // by sqrt(N) to compensate. Set false to submit raw per-camera std devs.
+    public static final boolean kScaleStdDevsByCameraCount = true;
 
     // Reject any MegaTag estimate whose heading disagrees with the gyro (odometry rotation) by more
     // than this. The gyro is trusted for heading, so a vision pose this far off is almost certainly

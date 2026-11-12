@@ -213,22 +213,14 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
         periodicIO.rawHeading = periodicIO.heading;
         periodicIO.gyroRotation = Rotation2d.fromDegrees(periodicIO.heading);
         periodicIO.timestamp = Timer.getFPGATimestamp();
-        periodicIO.frontLeftDriveCurrent =
-                this.getModules()[0].getDriveMotor().getSupplyCurrent().getValueAsDouble();
-        periodicIO.frontLeftSteerCurrent =
-                this.getModules()[0].getSteerMotor().getSupplyCurrent().getValueAsDouble();
-        periodicIO.frontRightDriveCurrent =
-                this.getModules()[1].getDriveMotor().getSupplyCurrent().getValueAsDouble();
-        periodicIO.frontRightSteerCurrent =
-                this.getModules()[1].getSteerMotor().getSupplyCurrent().getValueAsDouble();
-        periodicIO.backLeftDriveCurrent =
-                this.getModules()[2].getDriveMotor().getSupplyCurrent().getValueAsDouble();
-        periodicIO.backLeftSteerCurrent =
-                this.getModules()[2].getSteerMotor().getSupplyCurrent().getValueAsDouble();
-        periodicIO.backRightDriveCurrent =
-                this.getModules()[3].getDriveMotor().getSupplyCurrent().getValueAsDouble();
-        periodicIO.backRightSteerCurrent =
-                this.getModules()[3].getSteerMotor().getSupplyCurrent().getValueAsDouble();
+        for (int i = 0; i < 4; i++) {
+            var drive = this.getModules()[i].getDriveMotor();
+            var steer = this.getModules()[i].getSteerMotor();
+            periodicIO.driveSupplyCurrent[i] = drive.getSupplyCurrent().getValueAsDouble();
+            periodicIO.steerSupplyCurrent[i] = steer.getSupplyCurrent().getValueAsDouble();
+            periodicIO.driveStatorCurrent[i] = drive.getStatorCurrent().getValueAsDouble();
+            periodicIO.driveVoltage[i] = drive.getMotorVoltage().getValueAsDouble();
+        }
         Logger.processInputs(getName(), periodicIO);
         // SmartDashboard.putBoolean("good", periodicIO.good);
 
@@ -238,18 +230,20 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
 
     @Override
     public double getTotalDriveCurrent() {
-        return periodicIO.frontLeftDriveCurrent
-                + periodicIO.frontRightDriveCurrent
-                + periodicIO.backLeftDriveCurrent
-                + periodicIO.backRightDriveCurrent;
+        double total = 0;
+        for (double current : periodicIO.driveSupplyCurrent) {
+            total += current;
+        }
+        return total;
     }
 
     @Override
     public double getTotalSteerCurrent() {
-        return periodicIO.frontLeftSteerCurrent
-                + periodicIO.frontRightSteerCurrent
-                + periodicIO.backLeftSteerCurrent
-                + periodicIO.backRightSteerCurrent;
+        double total = 0;
+        for (double current : periodicIO.steerSupplyCurrent) {
+            total += current;
+        }
+        return total;
     }
 
     @Override
@@ -627,18 +621,18 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
     // simpleSim.resetOdometry(simpleSim.getActualPoseInSimulationWorld());
     // }
 
-    public void driveFieldOriented(DoubleSupplier x, double y, double rotation) {
-        if (!periodicIO.good) {
-            reset();
-            return;
-        }
-        SwerveSetpoint setpoint = generate(x.getAsDouble(), y, -rotation);
-        this.robotCentric
-                .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
-                .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
-                .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
-        this.masterRequest = this.robotCentric;
-    }
+    // public void driveFieldOriented(double x, double y, double rotation) {
+    //     if (!periodicIO.good) {
+    //         reset();
+    //         return;
+    //     }
+    //     SwerveSetpoint setpoint = generate(x, y, rotation);
+    //     this.robotCentric
+    //             .withVelocityX(setpoint.mChassisSpeeds.vxMetersPerSecond)
+    //             .withVelocityY(setpoint.mChassisSpeeds.vyMetersPerSecond)
+    //             .withRotationalRate(setpoint.mChassisSpeeds.omegaRadiansPerSecond);
+    //     this.masterRequest = this.robotCentric;
+    // }
 
     public void driveFieldOriented(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rotation) {
         if (!periodicIO.good) {

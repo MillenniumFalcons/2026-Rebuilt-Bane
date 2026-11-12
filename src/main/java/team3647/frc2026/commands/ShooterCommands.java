@@ -27,15 +27,16 @@ public class ShooterCommands {
     }
 
     /**
-     * Idle/default command: hold the shooter at {@code idleVel}, but coast (open-loop 0) whenever it
-     * is spinning faster than that setpoint so it spins down naturally after a shot instead of being
-     * actively braked. While prepping, the setpoint tracks the live shot speed, so keep full
+     * Idle/default command: hold the shooter at {@code idleVel}, but coast (open-loop 0) whenever
+     * it is spinning faster than that setpoint so it spins down naturally after a shot instead of
+     * being actively braked. While prepping, the setpoint tracks the live shot speed, so keep full
      * velocity control there — it still needs to actively slow down if the robot drives closer.
      */
     public Command idleCoast(DoubleSupplier idleVel) {
         return Commands.run(
                 () -> {
-                    if (!shooter.isPrepping() && shooter.getVelocity() > idleVel.getAsDouble() - 0.2) {
+                    if (!shooter.isPrepping()
+                            && shooter.getVelocity() > idleVel.getAsDouble() - 0.2) {
                         shooter.setOpenLoop(0);
                     } else {
                         shooter.setVelocityFOC(idleVel.getAsDouble());

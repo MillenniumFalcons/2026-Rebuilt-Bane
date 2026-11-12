@@ -45,8 +45,8 @@ public class SwerveDriveConstants {
     public static final boolean kTurnMotorInvertedBoolean = false;
 
     // physical possible max speed
-    public static final double kDrivePossibleMaxSpeedMPS = 5.6;
-    public static final double kRotPossibleMaxSpeedRadPerSec = 11.2;
+    public static final double kDrivePossibleMaxSpeedMPS = 4.8;
+    public static final double kRotPossibleMaxSpeedRadPerSec = 9.6;
 
     // public static final TalonFX kFrontLeftDrive =
     // new TalonFX(GlobalConstants.SwerveDriveIds.kFrontLeftDriveId, "rio");

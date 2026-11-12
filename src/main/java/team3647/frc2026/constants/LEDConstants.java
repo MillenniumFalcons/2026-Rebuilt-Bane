@@ -45,7 +45,7 @@ public class LEDConstants {
             new FireAnimation(0, LEDCOUNT).withFrameRate(50).withBrightness(0.67);
 
     public static final StrobeAnimation STROBE_ORANGE =
-            new StrobeAnimation(0, LEDCOUNT).withColor(new RGBWColor(255, 165, 0)).withFrameRate(8);
+            new StrobeAnimation(0, LEDCOUNT).withColor(new RGBWColor(255, 127, 0)).withFrameRate(8);
 
     public static final StrobeAnimation STROBE_YELLOW =
             new StrobeAnimation(0, LEDCOUNT).withColor(new RGBWColor(255, 255, 0)).withFrameRate(8);

@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
  * @param timestampSeconds The timestamp when this estimate was captured
  * @param latency Processing latency in seconds
  * @param avgTagArea Average area of detected tags
+ * @param avgTagDist Average distance (meters) from the camera to the detected tags
  * @param quality Quality score of the pose estimate (0-1)
  * @param fiducialIds IDs of fiducials used for this estimate
  */
@@ -19,6 +20,7 @@ public record MegatagPoseEstimate(
         double timestampSeconds,
         double latency,
         double avgTagArea,
+        double avgTagDist,
         double quality,
         int[] fiducialIds) {
 
@@ -47,6 +49,7 @@ public record MegatagPoseEstimate(
                 poseEstimate.timestampSeconds,
                 poseEstimate.latency,
                 poseEstimate.avgTagArea,
+                poseEstimate.avgTagDist,
                 fiducialIds.length > 1 ? 1.0 : 1.0 - poseEstimate.rawFiducials[0].ambiguity,
                 fiducialIds);
     }
