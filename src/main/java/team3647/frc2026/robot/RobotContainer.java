@@ -200,7 +200,7 @@ public class RobotContainer {
                         () -> autoDrive.headingErrorDegrees() > 8));
         indexer.setDefaultCommand(superstructure.indexerCommands.kill());
         // shooter.setDefaultCommand(shooterCommands.kill());
-        shooter.setDefaultCommand(shooterCommands.idleCoast(idleSpeed));
+        shooter.setDefaultCommand(shooterCommands.kill()); // disabled idle for outreach purposes
         hood.setDefaultCommand(hoodCommands.setAngle(HoodConstants.kMinAngle));
         // hood.setDefaultCommand(hoodCommands.setAngleDeg(autoDrive::getHoodAngle));
         rollers.setDefaultCommand(rollerCommands.kill());
@@ -213,8 +213,9 @@ public class RobotContainer {
         // X lock: press X to toggle brake on; it cancels automatically once the driver moves a
         // stick (or by pressing X again). Requires swerve so it interrupts the default drive
         // command, and ending restores the default command.
-        mainController.buttonX.toggleOnTrue(
-                Commands.run(() -> swerve.brake(), swerve).until(mainController::anyStickMoved));
+
+        // mainController.buttonX.toggleOnTrue(
+        //        Commands.run(() -> swerve.brake(), swerve).until(mainController::anyStickMoved));
         mainController.buttonA.onTrue(shooterCommands.kill().alongWith(kickerCommands.reverse()));
         // interp
         // mainController.buttonX.whileTrue(superstructure.interpShot());
@@ -229,34 +230,39 @@ public class RobotContainer {
         mainController.buttonB.onTrue(wristCommands.retract());
         mainController.buttonA.onTrue(superstructure.intakeDown());
         // shooting / feeding (pose-based: past trench = feed, otherwise = shoot)
-        mainController.rightTrigger.whileTrue(
-                Commands.run(() -> autoDrive.updateDriveModeByPose())
-                        .alongWith(superstructure.shoot()));
-        mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
-        mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
+
+        mainController.rightTrigger.whileTrue(superstructure.outreachShot());
+
+        // mainController.rightTrigger.whileTrue(
+        //         Commands.run(() -> autoDrive.updateDriveModeByPose())
+        //                 .alongWith(superstructure.shoot()));
+        // mainController.rightTrigger.onTrue(autoDrive.enableAutoDrive());
+        // mainController.rightTrigger.onFalse(autoDrive.disableAutoDrive());
         // same as normal shoot (dynamic targeting, pose-based feed/shoot) but no auto-align
         // (driver aims rotation manually)
-        mainController.leftTrigger.whileTrue(
-                Commands.run(() -> autoDrive.updateDriveModeByPose())
-                        .alongWith(superstructure.shootNoAlign()));
+
+        // mainController.leftTrigger.whileTrue(
+        //         Commands.run(() -> autoDrive.updateDriveModeByPose())
+        //                 .alongWith(superstructure.shootNoAlign()));
         // Manual feed
         // mainController.buttonY.whileTrue(superstructure.shootInstantly());
         // feed out of intake
 
         // mainController.rightBumper.whileTrue(autoDrive.setDriveMode(DriveMode.INTAKE_FEED));
-        mainController.rightBumper.whileTrue(superstructure.feed());
+        // mainController.rightBumper.whileTrue(superstructure.feed());
         // mainController.rightBumper.onTrue(autoDrive.enableAutoDrive());
         // mainController.rightBumper.onFalse(autoDrive.disableAutoDrive());
 
         // intake autoalign facing other wall — auto-disables once rotation aligned
-        mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.INTAKE));
-        mainController.dPadLeft.whileTrue(superstructure.intake());
-        mainController.dPadLeft.onTrue(
-                autoDrive
-                        .enableAutoDrive()
-                        .andThen(Commands.waitUntil(autoDrive::rotAligned))
-                        .andThen(autoDrive.disableAutoDrive()));
-        mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
+        // mainController.dPadLeft.onTrue(autoDrive.setDriveMode(DriveMode.INTAKE));
+        // mainController.dPadLeft.whileTrue(superstructure.intake());
+        // mainController.dPadLeft.onTrue(
+        //         autoDrive
+        //                 .enableAutoDrive()
+        //                 .andThen(Commands.waitUntil(autoDrive::rotAligned))
+        //                 .andThen(autoDrive.disableAutoDrive()));
+        // mainController.dPadLeft.onFalse(autoDrive.disableAutoDrive());
+
         // pre align + spin up (no indexing)
         // Gate on !rightTrigger so that when rightTrigger is released while dPadRight is still
         // held, prep() gets re-scheduled (whileTrue only fires on rising edges of the trigger).
@@ -269,8 +275,8 @@ public class RobotContainer {
         // pre-spin: hold ~2s before shooting to raise the shooter idle speed to the target shot
         // speed. This only bumps the idle setpoint (consumed by the shooter default command), so
         // it never commands the shooter directly and can't interrupt an in-progress shoot().
-        coController.rightTrigger.whileTrue(
-                Commands.startEnd(shooter::startPrepIdle, shooter::stopPrepIdle));
+        //coController.rightTrigger.whileTrue(
+        //        Commands.startEnd(shooter::startPrepIdle, shooter::stopPrepIdle));
         // force-start indexing on an already-running shoot(): flips an override flag that opens
         // the indexWhenReady gate early. Requires no subsystems, so it won't interrupt the
         // shooter/hood spin-up that shoot() is driving.
@@ -464,7 +470,9 @@ public class RobotContainer {
 
     public final SwerveDriveCommands swerveCommands =
             new SwerveDriveCommands(
-                    swerve, SwerveDriveConstants.kDrivePossibleMaxSpeedMPS, SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
+                    swerve,
+                    SwerveDriveConstants.kDrivePossibleMaxSpeedMPS,
+                    SwerveDriveConstants.kRotPossibleMaxSpeedRadPerSec);
 
     public final ShooterCommands shooterCommands = new ShooterCommands(shooter);
 

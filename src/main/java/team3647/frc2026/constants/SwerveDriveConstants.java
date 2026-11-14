@@ -114,8 +114,8 @@ public class SwerveDriveConstants {
     public static final SwerveKinematicLimits kSOTMKinematicLimits = new SwerveKinematicLimits();
 
     static {
-        kTeleopKinematicLimits.kMaxDriveVelocity = 5.0; // TunerConstants.kSpeedAt12VoltsMps;
-        kTeleopKinematicLimits.kMaxDriveAcceleration = 5.0 / 0.1; // defaultAccel;
+        kTeleopKinematicLimits.kMaxDriveVelocity = 5; // TunerConstants.kSpeedAt12VoltsMps;
+        kTeleopKinematicLimits.kMaxDriveAcceleration = 5 / 0.1; // defaultAccel;
         kTeleopKinematicLimits.kMaxSteeringVelocity = Units.Degree.of(1500).in(Units.Radians);
 
         // SOTM Limits (Lowered Accel and slight Velocity cap)

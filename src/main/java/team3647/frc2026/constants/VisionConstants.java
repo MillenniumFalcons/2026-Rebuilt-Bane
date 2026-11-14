@@ -36,7 +36,7 @@ public class VisionConstants {
     public static final double kDefaultAmbiguityThreshold = 0.19;
     public static final double kDefaultYawDiffThreshold = 5.0; // degrees
     public static final double kTagAreaThresholdForYawCheck = 2.0;
-    public static final double kTagMinAreaForSingleTagMegatag = 0.10; // 
+    public static final double kTagMinAreaForSingleTagMegatag = 0.10; //
     public static final double kDefaultZThreshold = 0.2; // meters
     public static final double kDefaultNormThreshold = 1.0; // meters
 

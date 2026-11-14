@@ -79,7 +79,7 @@ public class TunerConstants {
                             new CurrentLimitsConfigs()
                                     .withStatorCurrentLimit(Amps.of(60))
                                     .withStatorCurrentLimitEnable(true)
-                                    .withSupplyCurrentLimit(Amps.of(40))
+                                    .withSupplyCurrentLimit(Amps.of(20))
                                     .withSupplyCurrentLowerLimit(35)
                                     .withSupplyCurrentLowerTime(0.25)
                                     .withSupplyCurrentLimitEnable(true)

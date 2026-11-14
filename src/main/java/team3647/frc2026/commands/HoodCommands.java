@@ -1,5 +1,6 @@
 package team3647.frc2026.commands;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -14,6 +15,8 @@ import team3647.lib.tunables.TunableNumber;
 public class HoodCommands {
 
     TunableNumber interpHoodAngle = new TunableNumber("interp hood angle", 5.0);
+    TunableNumber outreachAngle =
+            new TunableNumber("outreach angle", HoodConstants.kOutreachAngle.in(Units.Degrees));
 
     public Command setAngle(Angle angle) {
         return Commands.run(() -> hood.setAngle(angle), hood);
@@ -35,8 +38,16 @@ public class HoodCommands {
         return Commands.run(() -> hood.setAngleDegs(interpHoodAngle.get()), hood);
     }
 
+    public Command setOutreachAngle() {
+        return Commands.run(() -> hood.setAngleDegs(outreachAngle.get()), hood);
+    }
+
     public boolean angleReached(DoubleSupplier angle, double tolerance) {
         return Math.abs(hood.getAngleDegs() - angle.getAsDouble()) < tolerance;
+    }
+
+    public TunableNumber getOutreachTunable() {
+        return this.outreachAngle;
     }
 
     public Command holdPositionAtCall() {

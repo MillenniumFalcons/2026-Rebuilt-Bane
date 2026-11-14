@@ -265,16 +265,24 @@ public class Superstructure extends VirtualSubsystem {
                 setFuelLoaded(false));
     }
 
-    public Command shootInstantly() {
+    public Command outreachShot() {
         return Commands.parallel(
-                prepKids(),
+                prepOutreach(),
+                hoodCommands.setOutreachAngle(),
                 Commands.sequence(
                         Commands.waitUntil(
                                 () ->
                                         shooterCommands.isAtVelocity(
-                                                () -> ShooterConstants.kidSpeed)),
+                                                shooterCommands::outreachVelocity, 0.5)),
                         index()));
     }
+
+    // public Command interpShot() {
+    //     return Commands.parallel(
+    //             prepForInterp(),
+    //             hoodCommands.setInterpAngle(),
+    //             Commands.sequence(Commands.waitSeconds(3.0), index()));
+    // }
 
     public Command prepShoot() {
         return shooterCommands.setVelocity(shotSpeed);
@@ -286,8 +294,8 @@ public class Superstructure extends VirtualSubsystem {
                 .alongWith(hoodCommands.setAngleDeg(hoodAngle::getAsDouble));
     }
 
-    public Command prepKids() {
-        return shooterCommands.setVelocity(() -> ShooterConstants.kidSpeed);
+    public Command prepOutreach() {
+        return shooterCommands.setOutreachTunable();
     }
 
     public Command bumpShot() {

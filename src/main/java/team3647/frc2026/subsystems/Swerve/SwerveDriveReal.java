@@ -191,8 +191,8 @@ public class SwerveDriveReal extends TunerSwerveDrivetrain
 
         this.limits = limits;
 
-        this.limits.kMaxDriveVelocity = 5; // TunerConstants.kSpeedAt12VoltsMps;
-        this.limits.kMaxDriveAcceleration = 5 / 0.1; // defaultAccel;
+        this.limits.kMaxDriveVelocity = 2.5; // TunerConstants.kSpeedAt12VoltsMps;
+        this.limits.kMaxDriveAcceleration = 2.5 / 0.1; // defaultAccel;
         this.limits.kMaxSteeringVelocity = Units.Degree.of(1500).in(Units.Radians);
     }
 
